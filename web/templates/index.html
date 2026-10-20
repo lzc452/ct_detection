@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基于深度学习的CT智能缺陷检测系统{{ sys_ver }} （研发设计：戴钟科）</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <canvas id="matrixBg" style="position:fixed; top:0; left:0; z-index:0; pointer-events:none; opacity:0.15;"></canvas>
+
+    <!-- 顶部导航栏 -->
+    <header class="top-header">
+        <div class="header-inner">
+            <!-- 左侧操作区 -->
+            <div class="header-left">
+                <button class="luxury-btn" id="btnPic">
+                    <span class="icon">★</span>
+                    <span>选择图片</span>
+                </button>
+                <button class="luxury-btn" id="btnVideo">
+                    <span class="icon">▶</span>
+                    <span>选择视频</span>
+                </button>
+                <button class="luxury-btn" id="btnFolder">
+                <span class="icon">▤</span>
+                    <span>图片文件夹</span>
+                </button>
+                <button class="luxury-btn" id="btnSmart" title="选择图片合集母文件夹，自动只检测各组的正面图，报表按组（A/B/C...）分组">
+                <span class="icon">✦</span>
+                    <span>智能检测</span>
+                </button>
+            </div>
+
+            <!-- 中间标题 -->
+            <div class="header-center">
+                <h1 class="section-title">基于深度学习的CT智能缺陷检测系统{{ sys_ver }}<span class="title-sub">（研发设计：戴钟科）</span></h1>
+                <div class="gold-line"></div>
+            </div>
+
+            <!-- 右侧状态 -->
+            <div class="header-right">
+                <div class="model-select-wrap">
+                    <label class="model-select-label">模型选择</label>
+                    <select id="modelSelect" class="model-select">
+                        <option value="">加载中...</option>
+                    </select>
+                </div>
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    <span id="modelStatus">模型就绪</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+
+    <!-- 隐藏文件输入（全部恢复） -->
+    <input type="file" id="fileInput" accept="image/*" style="display:none">
+    <input type="file" id="videoInput" accept="video/*" style="display:none">
+    <input type="file" id="folderInput" webkitdirectory directory multiple style="display:none">
+    <input type="file" id="smartInput" webkitdirectory directory multiple style="display:none">
+    <input type="file" id="batchInput" multiple accept="image/*" style="display:none">
+
+    <!-- 主内容区 -->
+    <main class="main-area">
+        <!-- 左侧主区域 -->
+        <div class="left-area">
+            <!-- 图像显示区 -->
+            <div class="luxury-card corner-accent" id="displayCard">
+                <div class="upload-zone" id="uploadZone">
+                    <div class="deco-bg">
+                        <div class="deco-circle deco-c1"></div>
+                        <div class="deco-circle deco-c2"></div>
+                    </div>
+                    <div class="upload-content" id="uploadContent">
+                        <div class="upload-icon-circle">
+                            <span class="upload-icon">↑</span>
+                        </div>
+                        <div class="upload-text">
+                            <p class="upload-title">请上传 CT 影像</p>
+                            <p class="upload-subtitle">支持多种格式上传，请点击顶部按钮</p>
+                        </div>
+                    </div>
+                    <img id="resultImage" src="" alt="检测结果" style="display:none;">
+                    <video id="resultVideo" controls style="display:none;"></video>
+                    <!-- 全屏查看按钮 -->
+                    <button class="fullscreen-btn" id="fullscreenBtn" style="display:none;" title="全屏查看">
+                        <span>⛶</span>
+                    </button>
+            <!-- 进度条弹窗 -->
+            <div class="progress-modal" id="progressOverlay" style="display:none;">
+                <div class="progress-modal-card">
+                    <div class="progress-modal-header">
+                        <div class="progress-pulse-icon"></div>
+                        <span>正在检测中</span>
+                    </div>
+                    <div class="progress-filename" id="progressFilename">准备中...</div>
+                    <div class="progress-bar-box">
+                        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                    </div>
+                    <div class="progress-text-row">
+                        <span id="progressText">0%</span>
+                        <span id="progressCount">0 / 0</span>
+                    </div>
+                    <button class="progress-stop-btn" id="progressStopBtn">停止检测</button>
+                </div>
+            </div>
+                    <!-- 扫描线特效 -->
+                    <div class="scan-line-overlay" id="scanLineOverlay" style="display:none;">
+                        <div class="scan-line"></div>
+                    </div>
+                    <!-- 加载覆盖层 -->
+                    <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+                        <div class="spinner"></div>
+                        <div class="loading-text" id="loadingText">Processing...</div>
+                    </div>
+                    <!-- 底部提示 -->
+                    <div class="bottom-tips">
+                        <span><span class="tip-dot">✓</span> 自动预处理</span>
+                        <span><span class="tip-dot">✓</span> 实时推理</span>
+                        <span><span class="tip-dot">✓</span> 结果导出</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 检测结果表格 -->
+            <div class="luxury-card table-card">
+                <div class="table-header">
+                    <div class="table-title-group">
+                        <div class="title-bar"></div>
+                        <h2 class="section-title">检测结果与位置信息</h2>
+                    </div>
+                    <div class="table-header-right">
+                        <span class="record-count" id="recordCount">共 0 条记录</span>
+                        <button class="btn-expand" id="btnExpand" title="全屏查看表格">
+                            <span>⛶</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="filter-bar" id="filterBar">
+                    <div class="filter-group">
+                        <label class="filter-label">类别</label>
+                        <select id="filterClass" class="input-elegant">
+                            <option value="all">全部</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-check">
+                            <input type="checkbox" id="filterHasConf">
+                            <span>仅显示有检测结果</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="table-wrapper scroll-elegant">
+                    <table id="resultTable">
+                        <thead>
+                            <tr>
+                                <th class="w-16">序号</th>
+                                <th>文件路径</th>
+                                <th class="w-28">类别</th>
+                                <th class="w-24">置信度</th>
+                                <th>坐标位置</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultTableBody">
+                            <tr class="empty-row">
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <span class="empty-icon">□</span>
+                                        <span class="empty-text">暂无检测数据，请先上传影像</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧边栏 -->
+        <div class="right-sidebar">
+            <!-- 推理参数 -->
+            <div class="luxury-card">
+                <div class="card-header">
+                    <div class="icon-box">
+                        <span class="icon-text">⚙</span>
+                    </div>
+                    <h2 class="section-title">推理参数</h2>
+                </div>
+                <div class="param-body">
+                    <div class="param-group">
+                        <div class="param-label-row">
+                            <label class="param-label">置信度阈值</label>
+                            <span class="param-value" id="confDisplay">0.30</span>
+                        </div>
+                        <input type="range" id="confSlider" min="0" max="100" value="30" class="slider-thumb">
+                        <div class="slider-ticks">
+                            <span>0</span><span>0.5</span><span>1.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 检测结果 -->
+            <div class="luxury-card">
+                <div class="card-header">
+                    <div class="icon-box">
+                        <span class="icon-text">◑</span>
+                    </div>
+                    <h2 class="section-title">检测结果</h2>
+                </div>
+                <div class="result-body">
+                    <div class="result-row">
+                        <span class="result-key">推理用时</span>
+                        <span class="result-val" id="timeValue">--</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-key">目标数目</span>
+                        <span class="result-val" id="targetCount">--</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-key">置信度</span>
+                        <span class="result-val" id="confValue">--</span>
+                    </div>
+                    <div class="select-group">
+                        <label class="result-key">目标筛选</label>
+                        <div class="select-wrap">
+                            <select id="targetSelect" class="input-elegant">
+                                <option value="-1">全部类别</option>
+                            </select>
+                            <span class="select-arrow">▼</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 目标位置 -->
+            <div class="luxury-card">
+                <div class="card-header">
+                    <div class="icon-box">
+                        <span class="icon-text">+</span>
+                    </div>
+                    <h2 class="section-title">目标位置</h2>
+                </div>
+                <div class="loc-grid">
+                    <div>
+                        <label class="loc-label">xmin</label>
+                        <input type="text" id="xmin" value="--" readonly class="input-elegant">
+                    </div>
+                    <div>
+                        <label class="loc-label">ymin</label>
+                        <input type="text" id="ymin" value="--" readonly class="input-elegant">
+                    </div>
+                    <div>
+                        <label class="loc-label">xmax</label>
+                        <input type="text" id="xmax" value="--" readonly class="input-elegant">
+                    </div>
+                    <div>
+                        <label class="loc-label">ymax</label>
+                        <input type="text" id="ymax" value="--" readonly class="input-elegant">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作 -->
+            <div class="luxury-card">
+                <div class="card-header">
+                    <div class="icon-box">
+                        <span class="icon-text">◆</span>
+                    </div>
+                    <h2 class="section-title">操作</h2>
+                </div>
+                <div class="action-grid">
+                    <button class="luxury-btn btn-dark" id="btnDownload">
+                        <span class="icon">↓</span>
+                        <span>下载结果</span>
+                    </button>
+                    <button class="luxury-btn btn-dark" id="btnExport">
+                        <span class="icon">▷</span>
+                        <span>导出报表</span>
+                    </button>
+                </div>
+                <button class="luxury-btn btn-danger" id="btnClear">
+                    <span class="icon">×</span>
+                    <span>清空结果</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部装饰线 -->
+    <div class="bottom-line"></div>
+
+    <!-- 全屏图片查看器 -->
+    <div class="fullscreen-overlay" id="fullscreenOverlay" style="display:none;">
+        <div class="fullscreen-inner">
+            <button class="fullscreen-close" id="fullscreenClose" title="关闭">✕</button>
+            <img id="fullscreenImage" src="" alt="全屏查看">
+        </div>
+    </div>
+
+    <!-- 全屏表格查看器 -->
+    <div class="fullscreen-table-overlay" id="fullscreenTableOverlay" style="display:none;">
+        <div class="fullscreen-table-inner">
+            <div class="fullscreen-table-header">
+                <h2 class="section-title">检测结果与位置信息（全屏）</h2>
+                <button class="fullscreen-table-close" id="fullscreenTableClose" title="关闭">✕</button>
+            </div>
+            <div class="fullscreen-table-body" id="fullscreenTableBody">
+                <table id="fullscreenResultTable">
+                    <thead>
+                        <tr>
+                            <th class="w-16">序号</th>
+                            <th>文件路径</th>
+                            <th class="w-28">类别</th>
+                            <th class="w-24">置信度</th>
+                            <th>坐标位置</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fullscreenTableBodyInner">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js?v=20261019"></script>
+    <!-- Toast 通知容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- 底部数据流动背景 -->
+    <div class="data-flow-bg"></div>
+
+</body>
+</html>

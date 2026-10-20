@@ -1,0 +1,45 @@
+version: v2
+title: CT电芯缺陷智能检测系统 - 向上汇报（一页版）
+size: [960, 540]
+theme:
+  colors:
+    base: "#F4F6F8"
+    ink: "#1F3240"
+    accent: "#F0A202"
+    steel: "#C3CCD4"
+    muted: "#5B6B7A"
+    panel: "#EAEEF2"
+  textStyles:
+    kicker:
+      fontSize: 12
+      color: "$muted"
+      letterSpacing: 3
+    title:
+      fontSize: 24
+      color: "$ink"
+      bold: true
+    body:
+      fontSize: 13
+      color: "$ink"
+      lineHeight: 1.6
+    note:
+      fontSize: 10
+      color: "$muted"
+      lineHeight: 1.4
+  tableStyles:
+    default:
+      cellStyle:
+        fontSize: 12
+        color: "$ink"
+        border: [null, null, {style: solid, width: 1, color: "#C3CCD4"}, null]
+        align: [center, middle]
+      firstRowStyle:
+        fill: {type: solid, color: "$ink"}
+        color: "#FFFFFF"
+        bold: true
+        fontSize: 12
+      bodyStyles:
+        - fill: {type: solid, color: "#FFFFFF"}
+        - fill: {type: solid, color: "$panel"}
+pages:
+  - pages/01_summary.page

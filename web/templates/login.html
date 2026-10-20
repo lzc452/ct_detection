@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - CT 缺陷检测系统</title>
+    <link rel="stylesheet" href="/static/css/login.css">
+</head>
+<body>
+    <!-- 漫游浩瀚星海背景 -->
+    <canvas id="starBg"></canvas>
+
+    <!-- 登录卡片 -->
+    <div class="login-wrapper">
+        <div class="login-card">
+            <!-- 公司图标 -->
+            <div class="logo-area">
+                <img src="/static/img/logo.png" alt="豪鹏科技" class="company-logo">
+            </div>
+
+            <!-- 标题 -->
+            <div class="login-title">
+                <h2>CT 智能缺陷检测系统 {{ sys_ver }}</h2>
+                <div class="gold-line"></div>
+                <p class="subtitle">Highpower Technology</p>
+            </div>
+
+            <!-- 登录表单 -->
+            <form id="loginForm" class="login-form">
+                <div class="input-group">
+                    <label class="input-label">
+                        <span class="label-icon">◆</span>
+                        账号
+                    </label>
+                    <input type="text" id="username" class="input-field" placeholder="请输入账号" value="HPT" autocomplete="off">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">
+                        <span class="label-icon">◈</span>
+                        密码
+                    </label>
+                    <div class="password-wrap">
+                        <input type="password" id="password" class="input-field" placeholder="请输入密码" autocomplete="new-password">
+                        <button type="button" class="eye-btn" id="eyeBtn" title="显示密码">
+                            <span id="eyeIcon">◉</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="error-msg" id="errorMsg"></div>
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span class="btn-icon">→</span>
+                    <span>登 录</span>
+                </button>
+            </form>
+
+            <!-- 底部装饰 -->
+            <div class="login-footer">
+                <span class="footer-line"></span>
+                <span class="footer-text">基于 YOLOv8 深度学习</span>
+                <span class="footer-line"></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+version: v2
+title: CT电芯缺陷智能检测系统 - 项目阶段汇报
+size: [960, 540]
+theme:
+  colors:
+    base: "#F4F6F8"
+    ink: "#1F3240"
+    accent: "#F0A202"
+    steel: "#C3CCD4"
+    muted: "#5B6B7A"
+    panel: "#EAEEF2"
+  textStyles:
+    kicker:
+      fontSize: 12
+      color: "$muted"
+      letterSpacing: 3
+    title:
+      fontSize: 26
+      color: "$ink"
+      bold: true
+    body:
+      fontSize: 14
+      color: "$ink"
+      lineHeight: 1.6
+    bignum:
+      fontSize: 38
+      color: "$ink"
+      bold: true
+    note:
+      fontSize: 11
+      color: "$muted"
+      lineHeight: 1.4
+  tableStyles:
+    default:
+      cellStyle:
+        fontSize: 13
+        color: "$ink"
+        border: [null, null, {style: solid, width: 1, color: "#C3CCD4"}, null]
+        align: [center, middle]
+      firstRowStyle:
+        fill: {type: solid, color: "$ink"}
+        color: "#FFFFFF"
+        bold: true
+        fontSize: 13
+      bodyStyles:
+        - fill: {type: solid, color: "#FFFFFF"}
+        - fill: {type: solid, color: "$panel"}
+pages:
+  - pages/01_cover.page
+  - pages/02_toc.page
+  - pages/03_background.page
+  - pages/04_pipeline.page
+  - pages/05_dataset.page
+  - pages/06_flywheel.page
+  - pages/07_versions.page
+  - pages/08_training.page
+  - pages/09_exam.page
+  - pages/10_perclass.page
+  - pages/11_battlefield.page
+  - pages/12_showcase.page
+  - pages/13_challenge.page
+  - pages/14_system.page
+  - pages/15_plan.page
+  - pages/16_final.page
