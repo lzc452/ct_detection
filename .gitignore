@@ -24,12 +24,7 @@ battlefield_*.csv
 *.onnx
 *.engine
 *.tflite
-weights/
-models/pretrained/
-models/启用/
 
-# ---------- 训练记录 ----------
-runs/
 
 # ---------- 便携 Python 运行环境（~8 GB，严禁入库） ----------
 runtime/
@@ -41,7 +36,6 @@ tools/*.exe
 logs/
 web/results/
 web/uploads/
-*.log
 
 # ---------- 汇报材料中的图片/媒体（保留 md 文档，排除媒体） ----------
 ppt汇报/media/
