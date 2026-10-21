@@ -89,6 +89,10 @@
                     <button class="fullscreen-btn" id="fullscreenBtn" style="display:none;" title="全屏查看">
                         <span>⛶</span>
                     </button>
+                    <!-- 原图/标注图切换按钮（问题图才有） -->
+                    <button class="fullscreen-btn toggle-orig-btn" id="toggleOrigBtn" style="display:none;" title="标注框可能遮挡细节，点击切换原图/标注图">
+                        <span>原图</span>
+                    </button>
             <!-- 进度条弹窗 -->
             <div class="progress-modal" id="progressOverlay" style="display:none;">
                 <div class="progress-modal-card">
@@ -146,12 +150,6 @@
                             <option value="all">全部</option>
                         </select>
                     </div>
-                    <div class="filter-group">
-                        <label class="filter-check">
-                            <input type="checkbox" id="filterHasConf">
-                            <span>仅显示有检测结果</span>
-                        </label>
-                    </div>
                 </div>
                 <div class="table-wrapper scroll-elegant">
                     <table id="resultTable">
@@ -162,14 +160,15 @@
                                 <th class="w-28">类别</th>
                                 <th class="w-24">置信度</th>
                                 <th>坐标位置</th>
+                                <th class="w-16">操作</th>
                             </tr>
                         </thead>
                         <tbody id="resultTableBody">
                             <tr class="empty-row">
-                                <td colspan="5">
+                                <td colspan="6">
                                     <div class="empty-state">
                                         <span class="empty-icon">□</span>
-                                        <span class="empty-text">暂无检测数据，请先上传影像</span>
+                                        <span class="empty-text">暂无检测数据，请先开始检测；历史批次请点「历史结果」查看</span>
                                     </div>
                                 </td>
                             </tr>
@@ -281,10 +280,14 @@
                         <span class="icon">▷</span>
                         <span>导出报表</span>
                     </button>
+                    <button class="luxury-btn btn-dark" id="btnHistory" style="grid-column:1/-1;">
+                        <span class="icon">☰</span>
+                        <span>历史结果</span>
+                    </button>
                 </div>
                 <button class="luxury-btn btn-danger" id="btnClear">
                     <span class="icon">×</span>
-                    <span>清空结果</span>
+                    <span>清空所有结果</span>
                 </button>
             </div>
         </div>
@@ -326,7 +329,80 @@
         </div>
     </div>
 
-    <script src="/static/js/main.js?v=20261019"></script>
+    <!-- 启动加载遮罩 -->
+    <div class="boot-overlay" id="bootOverlay">
+        <div class="boot-card">
+            <div class="boot-title">基于深度学习的CT智能缺陷检测系统</div>
+            <div class="boot-stage" id="bootStage">正在连接服务器…</div>
+            <div class="boot-bar-box"><div class="boot-bar-fill" id="bootFill" style="width:5%"></div></div>
+            <div class="boot-pct" id="bootPct">5%</div>
+        </div>
+    </div>
+
+    <!-- 智能检测：路径直读 + 分组打勾 -->
+    <div class="path-modal-overlay" id="pathModal" style="display:none;">
+        <div class="path-modal-card">
+            <div class="path-modal-header">
+                <h2 class="section-title">智能检测（路径直读）</h2>
+                <button class="path-modal-close" id="pathModalClose" title="关闭">✕</button>
+            </div>
+            <div class="path-input-row">
+                <input type="text" id="pathInput" class="input-elegant" placeholder="粘贴或浏览选择图片文件夹路径，如 E:\图片合集\A">
+                <button class="luxury-btn" id="btnBrowsePath" title="打开文件夹选择窗口"><span class="icon">▤</span><span>浏览</span></button>
+                <button class="luxury-btn" id="btnScanPath"><span class="icon">⌕</span><span>扫描</span></button>
+            </div>
+            <div class="path-tip">支持结构：文件夹直接是图 / 含"正面"子文件夹 / 多组（A\1-10\正面…）。图片直接从硬盘读取，无需上传。</div>
+            <div class="group-panel" id="groupPanel" style="display:none;">
+                <div class="group-panel-head">
+                    <span id="groupSummary"></span>
+                    <span class="group-ops" id="groupOps" style="display:none;"><a id="groupSelectAll">全选</a> · <a id="groupSelectNone">全不选</a></span>
+                </div>
+                <div class="group-list scroll-elegant" id="groupList"></div>
+            </div>
+            <button class="luxury-btn btn-start-detect" id="btnStartDetect" style="display:none;"><span class="icon">★</span><span>开始检测</span></button>
+        </div>
+    </div>
+
+    <!-- 后台检测浮动进度（点击返回实时视图） -->
+    <div class="detect-float" id="detectFloat" style="display:none;" title="点击返回实时检测视图">
+        <div class="detect-float-head">
+            <span class="progress-pulse-icon"></span>
+            <span>正在检测中</span>
+            <button class="detect-float-stop" id="detectStopBtn">停止</button>
+        </div>
+        <div class="detect-float-file" id="detectFloatFile">…</div>
+        <div class="progress-bar-box"><div class="progress-fill" id="detectFloatFill" style="width:0%"></div></div>
+        <div class="detect-float-stats" id="detectFloatStats">0 / 0</div>
+    </div>
+
+    <!-- 查看历史批次时的返回入口 -->
+    <div class="back-live-pill" id="backLivePill" style="display:none;">◀ 返回实时结果</div>
+
+    <!-- 历史结果弹窗（按检测批次组织，可逐条/整批删除） -->
+    <div class="path-modal-overlay" id="historyModal" style="display:none;">
+        <div class="path-modal-card history-card">
+            <div class="path-modal-header">
+                <h2 class="section-title">历史结果</h2>
+                <button class="path-modal-close" id="historyClose" title="关闭">✕</button>
+            </div>
+            <div class="history-list scroll-elegant" id="historyList"></div>
+        </div>
+    </div>
+
+    <!-- 清空所有结果确认弹窗（防误点） -->
+    <div class="confirm-modal-overlay" id="clearModal" style="display:none;">
+        <div class="confirm-card">
+            <div class="confirm-icon">⚠</div>
+            <div class="confirm-title">清空所有结果</div>
+            <div class="confirm-msg" id="clearModalMsg">确定要清空所有检测结果吗？</div>
+            <div class="confirm-btns">
+                <button class="confirm-btn-cancel" id="clearCancel">取消</button>
+                <button class="confirm-btn-danger" id="clearConfirm">确认清空</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js?v=20261021"></script>
     <!-- Toast 通知容器 -->
     <div class="toast-container" id="toastContainer"></div>
 

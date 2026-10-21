@@ -6,9 +6,9 @@ import cv2
 from ultralytics import YOLO
 
 ROOT = r'D:\CT Detection'
-SRC = os.path.join(ROOT, '收割结果_积攒')
-MODEL = os.path.join(ROOT, 'models', '启用', '20261014_v2mild', 'best.pt')
-CONF = 0.5
+SRC = os.path.join(ROOT, '收割结果_积攒_V4')
+MODEL = os.path.join(ROOT, 'models', '启用', '20261019_V4', 'best.pt')
+CONF = 0.40
 NAMES = {0: 'damage', 1: 'dark', 2: 'light'}
 
 def imread_cn(p):

@@ -111,17 +111,47 @@
         btnClear: document.getElementById('btnClear'),
         recordCount: document.getElementById('recordCount'),
         fullscreenBtn: document.getElementById('fullscreenBtn'),
+        toggleOrigBtn: document.getElementById('toggleOrigBtn'),
         fullscreenOverlay: document.getElementById('fullscreenOverlay'),
         fullscreenImage: document.getElementById('fullscreenImage'),
         fullscreenClose: document.getElementById('fullscreenClose'),
         filterClass: document.getElementById('filterClass'),
-        filterHasConf: document.getElementById('filterHasConf'),
         btnExpand: document.getElementById('btnExpand'),
         fullscreenTableOverlay: document.getElementById('fullscreenTableOverlay'),
         fullscreenTableBodyInner: document.getElementById('fullscreenTableBodyInner'),
         fullscreenTableClose: document.getElementById('fullscreenTableClose'),
         modelSelect: document.getElementById('modelSelect'),
         modelStatus: document.getElementById('modelStatus'),
+        bootOverlay: document.getElementById('bootOverlay'),
+        bootStage: document.getElementById('bootStage'),
+        bootFill: document.getElementById('bootFill'),
+        bootPct: document.getElementById('bootPct'),
+        pathModal: document.getElementById('pathModal'),
+        pathModalClose: document.getElementById('pathModalClose'),
+        pathInput: document.getElementById('pathInput'),
+        btnBrowsePath: document.getElementById('btnBrowsePath'),
+        btnScanPath: document.getElementById('btnScanPath'),
+        groupPanel: document.getElementById('groupPanel'),
+        groupSummary: document.getElementById('groupSummary'),
+        groupOps: document.getElementById('groupOps'),
+        groupList: document.getElementById('groupList'),
+        groupSelectAll: document.getElementById('groupSelectAll'),
+        groupSelectNone: document.getElementById('groupSelectNone'),
+        btnStartDetect: document.getElementById('btnStartDetect'),
+        detectFloat: document.getElementById('detectFloat'),
+        detectFloatFile: document.getElementById('detectFloatFile'),
+        detectFloatFill: document.getElementById('detectFloatFill'),
+        detectFloatStats: document.getElementById('detectFloatStats'),
+        detectStopBtn: document.getElementById('detectStopBtn'),
+        backLivePill: document.getElementById('backLivePill'),
+        btnHistory: document.getElementById('btnHistory'),
+        historyModal: document.getElementById('historyModal'),
+        historyClose: document.getElementById('historyClose'),
+        historyList: document.getElementById('historyList'),
+        clearModal: document.getElementById('clearModal'),
+        clearModalMsg: document.getElementById('clearModalMsg'),
+        clearCancel: document.getElementById('clearCancel'),
+        clearConfirm: document.getElementById('clearConfirm'),
     };
 
     // 检测执行期间禁用所有动作按钮（防重入/防抖），结束后恢复
@@ -295,8 +325,28 @@
         els.resultVideo.src = '';
         els.uploadContent.style.display = 'flex';
         els.fullscreenBtn.style.display = 'none';
+        els.toggleOrigBtn.style.display = 'none';
         currentMode = 'none';
     }
+
+    // ── 原图/标注图切换（标注框会遮挡细节，问题图可同时看两版）──
+    const viewPair = { ann: '', orig: '', showing: 'ann' };
+    function showResultImage(annUrl, origUrl) {
+        viewPair.ann = annUrl || '';
+        viewPair.orig = origUrl || '';
+        viewPair.showing = 'ann';
+        showImage(viewPair.ann || viewPair.orig);
+        const canToggle = !!(viewPair.ann && viewPair.orig);
+        els.toggleOrigBtn.style.display = canToggle ? 'flex' : 'none';
+        if (canToggle) els.toggleOrigBtn.querySelector('span').textContent = '原图';
+    }
+    els.toggleOrigBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!viewPair.ann || !viewPair.orig) return;
+        viewPair.showing = viewPair.showing === 'ann' ? 'orig' : 'ann';
+        els.resultImage.src = viewPair.showing === 'ann' ? viewPair.ann : viewPair.orig;
+        els.toggleOrigBtn.querySelector('span').textContent = viewPair.showing === 'ann' ? '原图' : '标注图';
+    });
 
     // 更新结果标签
     function updateResultLabels(time, count, conf, locations) {
@@ -395,14 +445,17 @@
         const confs = detection.confs || [];
         const filename = detection.filename || '';
         const imageUrl = detection.image_url || '';
+        const origUrl = detection.orig_url || '';
         const time = detection.time || '--';
         const hasTargets = locations.length > 0;
 
         if (!hasTargets) {
             const row = document.createElement('tr');
             row.className = 'no-target';
-            row.innerHTML = `<td colspan="5"><span style="color:#8A8580;">${imageIndex} - 未检出目标：${escapeHtml(filename)}</span></td>`;
+            row.innerHTML = `<td colspan="6"><span style="color:#8A8580;">${imageIndex} - 未检出目标：${escapeHtml(filename)}</span></td>`;
             row.dataset.imageUrl = imageUrl;
+            row.dataset.origUrl = origUrl;
+            row.dataset.batchId = detection.batch_id || '';
             row.dataset.time = time;
             row.dataset.targetCount = 0;
             row.dataset.filename = filename;
@@ -410,6 +463,7 @@
             row.addEventListener('click', () => {
                 highlightRow(row);
                 if (row.dataset.imageUrl) showImage(row.dataset.imageUrl);
+                els.toggleOrigBtn.style.display = 'none';
                 updateResultLabels(row.dataset.time, 0, null, []);
                 updateTargetSelect([], [], []);
             });
@@ -434,6 +488,7 @@
                 <td>${escapeHtml(clsName)}</td>
                 <td>${escapeHtml(conf)}</td>
                 <td>[${loc.join(', ')}]</td>
+                <td class="cell-del">${idx === 0 ? '<button class="row-del" title="删除这张图的所有记录（含备份文件）">✕</button>' : ''}</td>
             `;
             row.dataset.xmin = loc[0];
             row.dataset.ymin = loc[1];
@@ -444,14 +499,25 @@
             row.dataset.targetCount = locations.length;
             row.dataset.clsName = clsName;
             row.dataset.imageUrl = imageUrl;
+            row.dataset.origUrl = origUrl;
+            row.dataset.batchId = detection.batch_id || '';
             row.dataset.filename = filename;
             row.dataset.imageIndex = imageIndex;
             row.dataset.defectIndex = idx;
 
+            if (idx === 0) {
+                const delBtn = row.querySelector('.row-del');
+                if (delBtn) {
+                    delBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        deleteImageRecord(row.dataset.batchId, filename);
+                    });
+                }
+            }
+
             row.addEventListener('click', () => {
                 highlightRow(row);
-                const imgUrl = row.dataset.imageUrl;
-                if (imgUrl) showImage(imgUrl);
+                if (row.dataset.imageUrl) showResultImage(row.dataset.imageUrl, row.dataset.origUrl);
 
                 els.timeValue.textContent = row.dataset.time || '--';
                 els.targetCount.textContent = row.dataset.targetCount || '--';
@@ -506,7 +572,7 @@
 
     function applyFilter() {
         const classFilter = els.filterClass.value;
-        const hasConfOnly = els.filterHasConf.checked;
+        const hasConfOnly = true;   // 2026-10-21：表格默认只显示问题图，勾选项已移除、固定生效
         const rows = els.resultTableBody.querySelectorAll('tr');
 
         let visibleCount = 0;
@@ -532,7 +598,6 @@
     }
 
     els.filterClass.addEventListener('change', applyFilter);
-    els.filterHasConf.addEventListener('change', applyFilter);
 
     // ════════════════════════════════════════
     // 单张图片检测（文件上传）
@@ -553,7 +618,10 @@
         const form = new FormData();
         form.append('file', file);
         form.append('conf', (els.confSlider.value / 100).toFixed(2));
+        const bid = 'B' + Date.now().toString(36);
+        form.append('batch_id', bid);
         form.append('file_paths', JSON.stringify([file.webkitRelativePath || file.name]));
+        switchToLive(bid);
 
         showLoading('Detecting...');
 
@@ -571,7 +639,7 @@
                 return;
             }
 
-            showImage(data.image_url);
+            showResultImage(data.image_url, data.orig_url);
             updateResultLabels(data.time, data.target_nums, data.confs[0], data.locations);
             updateTargetSelect(data.classes, data.confs, data.locations);
 
@@ -582,6 +650,7 @@
                 classes: data.classes,
                 confs: data.confs,
                 image_url: data.image_url,
+                orig_url: data.orig_url,
                 time: data.time
             };
             allResults.push(detection);
@@ -667,7 +736,7 @@
 
                     removeEmptyRow();
                     const row = document.createElement('tr');
-                    row.innerHTML = `<td colspan="5" style="color:#A0834B; font-weight:500; text-align:center; padding:10px;">Video processed: ${escapeHtml(file.name)}</td>`;
+                    row.innerHTML = `<td colspan="6" style="color:#A0834B; font-weight:500; text-align:center; padding:10px;">Video processed: ${escapeHtml(file.name)}</td>`;
                     row.dataset.targetCount = '0';
                     els.resultTableBody.appendChild(row);
                     els.resultTableBody.scrollTop = els.resultTableBody.scrollHeight;
@@ -715,32 +784,220 @@
     });
 
     // ════════════════════════════════════════
-    // 智能检测：选母文件夹（图片合集），自动只测各电芯的"正面"图
-    // 目录结构：图片合集/A/正面|侧面|上面/xxx.jpg，报表按 A/B/C 分组
+    // 智能检测（路径直读）：粘贴文件夹路径 → 扫描结构 → 分组打勾 → 后台检测
+    // 支持结构：文件夹直接是图 / 含"正面"子文件夹 / 多组（A\1-10\正面…）
+    // 图片直接从硬盘读取零上传；后台任务不阻塞页面；中断可续检
     // ════════════════════════════════════════
-    const SMART_TARGET_VIEW = '正面';   // 只检测这个视角
-    els.btnSmart.addEventListener('click', () => els.smartInput.click());
-    els.smartInput.addEventListener('change', async () => {
-        const all = Array.from(els.smartInput.files);
-        const isImg = f => ['jpg', 'jpeg', 'png', 'bmp'].includes(f.name.split('.').pop().toLowerCase());
-        const frontFiles = all.filter(f => {
-            if (!isImg(f)) return false;
-            const parts = (f.webkitRelativePath || '').split('/');
-            return parts.includes(SMART_TARGET_VIEW);
-        });
-        if (frontFiles.length === 0) {
-            showToast('error', '未找到正面图',
-                `智能检测要求目录结构为：合集/电芯编号/${SMART_TARGET_VIEW}/图片。请确认选择的是母文件夹。`);
-            els.smartInput.value = '';
-            return;
+    let scanData = null;        // 上次扫描结果
+    let detectTaskId = null;    // 进行中的后台任务
+    let detectCursor = 0;       // 已消费的问题图条数
+
+    function openPathModal() {
+        els.pathModal.style.display = 'flex';
+        els.pathInput.value = localStorage.getItem('ct_last_path') || '';
+        els.groupPanel.style.display = 'none';
+        els.btnStartDetect.style.display = 'none';
+        scanData = null;
+    }
+    function closePathModal() {
+        els.pathModal.style.display = 'none';
+    }
+    els.btnSmart.addEventListener('click', () => {
+        if (isProcessing || detectTaskId) return;
+        openPathModal();
+    });
+    els.pathModalClose.addEventListener('click', closePathModal);
+    els.pathModal.addEventListener('click', (e) => {
+        if (e.target === els.pathModal) closePathModal();
+    });
+    els.pathInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') els.btnScanPath.click();
+    });
+
+    els.btnBrowsePath.addEventListener('click', async () => {
+        if (!btnBusy(els.btnBrowsePath, '选择中…')) return;
+        try {
+            const res = await fetch('/api/pick_folder', { method: 'POST' });
+            const data = await res.json();
+            if (data.success && data.path) {
+                els.pathInput.value = data.path;
+                els.btnScanPath.click();   // 选完自动扫描
+            }
+        } catch (e) {
+            showToast('error', '网络错误', '打开文件夹窗口失败');
+        } finally {
+            btnIdle(els.btnBrowsePath);
         }
-        const groups = new Set(frontFiles.map(f => {
-            const parts = (f.webkitRelativePath || '').split('/');
-            return parts[parts.indexOf(SMART_TARGET_VIEW) - 1] || '';
-        }));
-        showToast('info', '智能检测', `识别到 ${groups.size} 个组（${Array.from(groups).join('、')}），共 ${frontFiles.length} 张正面图`);
-        await detectBatch(frontFiles);
-        els.smartInput.value = '';
+    });
+
+    els.btnScanPath.addEventListener('click', async () => {
+        const path = els.pathInput.value.trim();
+        if (!path) { showToast('info', '提示', '请先粘贴文件夹路径'); return; }
+        if (!btnBusy(els.btnScanPath, '扫描中…')) return;
+        try {
+            const res = await fetch('/api/scan_path', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path })
+            });
+            const data = await res.json();
+            if (!data.success) {
+                showToast('error', '扫描失败', data.message || '路径无效');
+                els.groupPanel.style.display = 'none';
+                els.btnStartDetect.style.display = 'none';
+                return;
+            }
+            scanData = data;
+            localStorage.setItem('ct_last_path', path);
+            renderGroupList(data);
+            els.btnStartDetect.style.display = 'flex';
+        } catch (e) {
+            showToast('error', '网络错误', '扫描请求失败');
+        } finally {
+            btnIdle(els.btnScanPath);
+        }
+    });
+
+    function renderGroupList(data) {
+        els.groupPanel.style.display = 'block';
+        els.groupList.innerHTML = '';
+        if (data.mode === 'groups') {
+            els.groupSummary.textContent = `识别到 ${data.groups.length} 个分组，共 ${data.total} 张（打勾选择要检测的组）`;
+            els.groupOps.style.display = 'inline';
+            data.groups.forEach(g => {
+                const row = document.createElement('label');
+                row.className = 'group-item';
+                row.innerHTML = `<input type="checkbox" class="group-check" value="${escapeHtml(g.name)}" checked>
+                                 <span class="g-name">${escapeHtml(g.name)}</span>
+                                 <span class="g-count">${g.count} 张</span>`;
+                els.groupList.appendChild(row);
+            });
+        } else {
+            const modeText = data.mode === 'flat' ? '文件夹内直接是图片' : '检测到"正面"子文件夹';
+            els.groupSummary.textContent = `${modeText}，共 ${data.total} 张，直接开始即可`;
+            els.groupOps.style.display = 'none';
+        }
+    }
+    els.groupSelectAll.addEventListener('click', (e) => {
+        e.preventDefault();
+        els.groupList.querySelectorAll('.group-check').forEach(c => c.checked = true);
+    });
+    els.groupSelectNone.addEventListener('click', (e) => {
+        e.preventDefault();
+        els.groupList.querySelectorAll('.group-check').forEach(c => c.checked = false);
+    });
+
+    els.btnStartDetect.addEventListener('click', async () => {
+        if (!scanData) return;
+        let groups = null;
+        if (scanData.mode === 'groups') {
+            groups = [];
+            els.groupList.querySelectorAll('.group-check:checked').forEach(c => groups.push(c.value));
+            if (groups.length === 0) { showToast('info', '提示', '请至少勾选一个分组'); return; }
+        }
+        const conf = (els.confSlider.value / 100).toFixed(2);
+        if (!btnBusy(els.btnStartDetect, '启动中…')) return;
+        try {
+            const res = await fetch('/api/detect/start', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: scanData.root, groups, conf })
+            });
+            const data = await res.json();
+            if (!data.success) {
+                showToast('error', '启动失败', data.message || '任务启动失败');
+                return;
+            }
+            closePathModal();
+            showToast('success', '检测已开始', `共 ${data.total} 张，后台运行中，页面可正常操作`);
+            attachDetectTask(data.task_id, 0, data.batch_id);
+        } catch (e) {
+            showToast('error', '网络错误', '启动请求失败');
+        } finally {
+            btnIdle(els.btnStartDetect);
+        }
+    });
+
+    // 后台任务期间：只锁检测入口与模型切换，浏览/筛选/导出/下载照常可用
+    function setDetectButtons(v) {
+        [els.btnPic, els.btnFolder, els.btnSmart, els.btnClear].forEach(b => {
+            if (!b) return;
+            b.disabled = v;
+            b.style.opacity = v ? '0.5' : '';
+        });
+        els.modelSelect.disabled = v;
+    }
+
+    function fmtEta(s) {
+        if (s < 0) return '估算中…';
+        const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), ss = s % 60;
+        if (h > 0) return `${h}时${m}分`;
+        if (m > 0) return `${m}分${ss}秒`;
+        return `${ss}秒`;
+    }
+
+    function attachDetectTask(taskId, startCursor, batchId) {
+        detectTaskId = taskId;
+        detectCursor = startCursor || 0;
+        // 正在看历史批次时启动/接上任务 → 主表切到实时视图
+        if (batchId) switchToLive(batchId);
+        els.detectFloat.style.display = 'block';
+        setDetectButtons(true);
+        updateBackPill();
+        pollDetect();
+    }
+
+    async function pollDetect() {
+        if (!detectTaskId) return;
+        try {
+            const st = await (await fetch(`/api/detect_status/${detectTaskId}?cursor=${detectCursor}`)).json();
+            if (st.success) {
+                detectCursor = st.cursor;
+                const pct = st.total ? Math.round(st.done / st.total * 100) : 0;
+                els.detectFloatFill.style.width = pct + '%';
+                els.detectFloatStats.textContent =
+                    `${st.done} / ${st.total} 张 · ${st.speed} 张/秒 · 预计剩余 ${fmtEta(st.eta_s)} · 缺陷图 ${st.defect_imgs} 张`;
+                if (st.current) els.detectFloatFile.textContent = st.current.split('/').pop();
+
+                // 新检出的问题图实时流入表格（仅当前正看着实时批次时；看历史批次不混入）
+                if (st.items && st.items.length && (!viewBatchId || viewBatchId === liveBatchId)) {
+                    let imageIndex = getCurrentImageCount() + 1;
+                    st.items.forEach(it => { allResults.push(it); addTableRows(it, imageIndex++); });
+                    animateNewRows();
+                    updateRecordCount();
+                    updateFilterOptions();
+                    applyFilter();
+                }
+
+                if (st.status === 'done' || st.status === 'stopped' || st.status === 'error') {
+                    els.detectFloat.style.display = 'none';
+                    setDetectButtons(false);
+                    detectTaskId = null;
+                    updateBackPill();
+                    if (st.status === 'done') {
+                        flashScanComplete();
+                        showToast('success', '检测完成', `共 ${st.total} 张，缺陷图 ${st.defect_imgs} 张 / 缺陷 ${st.defects} 个`);
+                    } else if (st.status === 'stopped') {
+                        showToast('info', '已停止', `完成 ${st.done}/${st.total}，重开页面可续检`);
+                    } else {
+                        showToast('error', '检测出错', st.message || '未知错误');
+                    }
+                    return;
+                }
+            }
+        } catch (e) { /* 网络抖动，继续轮询 */ }
+        setTimeout(pollDetect, 700);
+    }
+
+    els.detectStopBtn.addEventListener('click', async () => {
+        if (!detectTaskId) return;
+        try {
+            await fetch('/api/detect/stop', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ task_id: detectTaskId })
+            });
+        } catch (e) {}
     });
 
     async function detectBatch(files) {
@@ -750,6 +1007,8 @@
         showScanLine();
 
         const conf = (els.confSlider.value / 100).toFixed(2);
+        const batchId = 'B' + Date.now().toString(36);   // 一次检测=一个批次（所有chunk共用）
+        switchToLive(batchId);   // 看历史批次时开始新检测 → 切回实时视图
 
         // 分批发送：每批 16 张（与后端 BATCH_SIZE 对齐），进度条按 16 张更新
         const CHUNK_SIZE = 16;
@@ -771,6 +1030,7 @@
             const form = new FormData();
             chunk.forEach(f => form.append('files', f));
             form.append('conf', conf);
+            form.append('batch_id', batchId);
             form.append('file_paths', JSON.stringify(chunk.map(f => f.webkitRelativePath || f.name)));
 
             // 上传前更新进度条文字（current/total 传入右下角计数器）
@@ -805,14 +1065,19 @@
                     files.length
                 );
 
-                // 渲染结果
-                for (const item of data.results) {
+                // 渲染结果（干净图后端不再画图，用本地 blob 直接显示原图）
+                for (let k = 0; k < data.results.length; k++) {
+                    const item = data.results[k];
+                    if (!item.image_url && chunk[k]) {
+                        item.image_url = URL.createObjectURL(chunk[k]);
+                    }
                     const detection = {
                         filename: item.filename,
                         locations: item.locations,
                         classes: item.classes,
                         confs: item.confs,
                         image_url: item.image_url,
+                        orig_url: item.orig_url,
                         time: item.time || '--'
                     };
                     allResults.push(detection);
@@ -820,7 +1085,7 @@
                     imageIndex += 1;
 
                     if (!firstShown && item.image_url) {
-                        showImage(item.image_url);
+                        showResultImage(item.image_url, item.orig_url);
                         updateResultLabels(item.time, item.target_nums, item.confs[0], item.locations);
                         updateTargetSelect(item.classes, item.confs, item.locations);
                         firstShown = true;
@@ -900,10 +1165,15 @@
     }
 
     // ── 通用：打包任务（导出报表/下载结果共用）：启动 → 轮询进度 → 下载 ──
+    // 正在查看历史批次时，只打包当前批次；实时视图则打包全部当前结果
     async function runPackTask(btn, apiUrl, busyLabel, zipName) {
         if (!btnBusy(btn, busyLabel)) return;
         try {
-            const res = await fetch(apiUrl, { method: 'POST' });
+            const res = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(viewBatchId ? { batch_id: viewBatchId } : {})
+            });
             const data = await res.json();
             if (!data.success) {
                 showToast('error', '操作失败', data.message || '任务启动失败');
@@ -937,7 +1207,7 @@
             }).then((st) => {
                 const fname = decodeURIComponent(st.url.split('/').pop());
                 downloadBlob(st.url, fname);
-                showToast('success', '完成', st.message || '打包下载完成');
+                showToast('success', '完成', (st.message || '打包下载完成') + (viewBatchId ? '（仅当前批次）' : ''));
             });
         } catch (err) {
             console.error(err);
@@ -952,11 +1222,15 @@
         runPackTask(els.btnDownload, '/api/download-all', '打包中…', '问题图.zip');
     });
 
-    // ── 导出报表（仅 Excel，同步生成直接下载）──
+    // ── 导出报表（仅 Excel，同步生成直接下载；查看历史批次时只导该批）──
     els.btnExport.addEventListener('click', async () => {
         if (!btnBusy(els.btnExport, '生成报表…')) return;
         try {
-            const res = await fetch('/api/export', { method: 'POST' });
+            const res = await fetch('/api/export', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(viewBatchId ? { batch_id: viewBatchId } : {})
+            });
             const data = await res.json();
             if (!data.success) {
                 showToast('error', '导出失败', data.message || '报表导出失败');
@@ -964,7 +1238,7 @@
             }
             const fname = decodeURIComponent(data.download_url.split('/').pop());
             await downloadBlob(data.download_url, fname);
-            showToast('success', '导出成功', fname);
+            showToast('success', '导出成功', fname + (viewBatchId ? '（仅当前批次）' : ''));
         } catch (err) {
             console.error(err);
             showToast('error', '导出失败', err.message || '请求失败');
@@ -973,9 +1247,25 @@
         }
     });
 
-    // ── 清空结果 ──
+    // ── 清空所有结果（弹窗确认，防误点）──
     els.btnClear.addEventListener('click', async () => {
-        if (!confirm('确定要清空所有检测结果吗？')) return;
+        if (isProcessing || detectTaskId) return;
+        let n = 0, m = 0;
+        try {
+            const st = await (await fetch('/api/state')).json();
+            n = (st.detection_results || []).length;
+            m = (st.problem_images || []).length;
+        } catch (e) {}
+        els.clearModalMsg.innerHTML = n > 0
+            ? `将删除全部 <b>${n}</b> 条检测记录与 <b>${m}</b> 张问题图备份，<b>不可恢复</b>。<br>如需要请先「下载结果」或「导出报表」留存。`
+            : '当前没有检测结果。';
+        els.clearModal.style.display = 'flex';
+    });
+    function closeClearModal() { els.clearModal.style.display = 'none'; }
+    els.clearCancel.addEventListener('click', closeClearModal);
+    els.clearModal.addEventListener('click', (e) => { if (e.target === els.clearModal) closeClearModal(); });
+    els.clearConfirm.addEventListener('click', async () => {
+        closeClearModal();
         if (!btnBusy(els.btnClear, '清空中…')) return;
         try {
             await fetch('/api/clear', { method: 'POST' });
@@ -983,12 +1273,15 @@
             btnIdle(els.btnClear);
         }
         allResults = [];
+        viewBatchId = null;
+        liveBatchId = null;
+        updateBackPill();
         els.resultTableBody.innerHTML = `
             <tr class="empty-row">
-                <td colspan="5">
+                <td colspan="6">
                     <div class="empty-state">
                         <span class="empty-icon">□</span>
-                        <span class="empty-text">暂无检测数据，请先上传影像</span>
+                        <span class="empty-text">暂无检测数据，请先开始检测；历史批次请点「历史结果」查看</span>
                     </div>
                 </td>
             </tr>`;
@@ -998,11 +1291,255 @@
         els.targetSelect.innerHTML = '<option value="-1">全部类别</option>';
         els.filterClass.innerHTML = '<option value="all">全部</option>';
         els.filterClass.value = 'all';
-        els.filterHasConf.checked = true;
         hideProgress();
         updateRecordCount();
         showToast('info', '已清空', '所有检测结果已清除');
     });
+
+    // ════════════════════════════════════════
+    // 历史结果：按检测批次组织（一次检测=一批），可逐条/整批删除
+    // ════════════════════════════════════════
+    function restoreEmptyRow() {
+        if (!els.resultTableBody.children.length) {
+            els.resultTableBody.innerHTML = `
+                <tr class="empty-row">
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <span class="empty-icon">□</span>
+                            <span class="empty-text">暂无检测数据，请先开始检测；历史批次请点「历史结果」查看</span>
+                        </div>
+                    </td>
+                </tr>`;
+        }
+    }
+
+    // 逐条删除（主表格）：该图所有检测行 + 备份文件
+    async function deleteImageRecord(bid, fn) {
+        if (!confirm(`删除这条记录？\n${fn}\n该图的备份文件将一并删除，不可恢复。`)) return;
+        try {
+            const res = await fetch('/api/state/delete_image', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ batch_id: bid, filename: fn })
+            });
+            const d = await res.json();
+            if (d.success) {
+                els.resultTableBody.querySelectorAll('tr').forEach(r => {
+                    if (r.dataset.filename === fn && (r.dataset.batchId || '') === (bid || '')) r.remove();
+                });
+                allResults = allResults.filter(x => !(x.filename === fn && (x.batch_id || '') === (bid || '')));
+                restoreEmptyRow();
+                updateRecordCount();
+                updateFilterOptions();
+                applyFilter();
+                showToast('success', '已删除', fn.split('/').pop());
+            } else {
+                showToast('error', '删除失败', d.message || '');
+            }
+        } catch (e) { showToast('error', '网络错误', '删除请求失败'); }
+    }
+
+    // 检测行+问题图 → 表格条目（一图一条，多缺陷合并）
+    function buildDetections(rows, pim) {
+        const pmap = {};
+        (pim || []).forEach(p => {
+            const rel = (p['相对目录'] ? p['相对目录'] + '/' : '') + p['文件名'];
+            pmap[(p['批次ID'] || '') + '|' + rel] = {
+                ann: p['标注图'] ? '/api/results/' + p['标注图'] : '',
+                orig: p['原图'] ? '/api/results/' + p['原图'] : ''
+            };
+        });
+        const groups = new Map();
+        (rows || []).forEach(r => {
+            const fn = r['文件路径'];
+            const bid = r['批次ID'] || '';
+            if (!groups.has(fn)) {
+                const pm = pmap[bid + '|' + fn] || { ann: '', orig: '' };
+                groups.set(fn, {
+                    filename: fn, locations: [], classes: [], confs: [],
+                    image_url: pm.ann, orig_url: pm.orig, batch_id: bid,
+                    time: (r['检测时间'] || '--').slice(11) || '--'
+                });
+            }
+            const d = groups.get(fn);
+            d.locations.push([r['X最小值'], r['Y最小值'], r['X最大值'], r['Y最大值']]);
+            d.classes.push(r['类别ID']);
+            d.confs.push(r['置信度(百分比)']);
+        });
+        return Array.from(groups.values());
+    }
+
+    // 分批渲染条目到主表格（不卡顿）
+    async function renderDetections(arr) {
+        let idx = 0, imageIndex = 1;
+        await new Promise(resolve => {
+            function step() {
+                const end = Math.min(idx + 25, arr.length);
+                for (; idx < end; idx++) {
+                    allResults.push(arr[idx]);
+                    addTableRows(arr[idx], imageIndex++);
+                }
+                if (idx < arr.length) requestAnimationFrame(step);
+                else resolve();
+            }
+            step();
+        });
+        updateRecordCount();
+        updateFilterOptions();
+        applyFilter();
+    }
+
+    // 历史批次 → 载入主界面查看
+    let viewBatchId = null;   // 正在查看的批次（null=实时视图）
+    let liveBatchId = null;   // 本次会话当前/最近检测的批次（"实时结果"的归属）
+
+    // 切回实时视图：看历史批次时启动新检测 → 主表清空切到实时
+    function switchToLive(bid) {
+        if (bid) liveBatchId = bid;
+        if (viewBatchId && viewBatchId !== liveBatchId) {
+            viewBatchId = liveBatchId;
+            allResults = [];
+            els.resultTableBody.innerHTML = '';
+            restoreEmptyRow();
+            updateRecordCount();
+        }
+        updateBackPill();
+    }
+
+    // "返回实时结果"悬浮入口：看历史批次且与实时批次不同时出现
+    function updateBackPill() {
+        const show = !!(viewBatchId && liveBatchId && viewBatchId !== liveBatchId);
+        els.backLivePill.style.display = show ? 'block' : 'none';
+        if (show) {
+            els.backLivePill.textContent = detectTaskId ? '◀ 返回正在检测的批次' : '◀ 返回实时结果';
+        }
+    }
+
+    els.backLivePill.addEventListener('click', () => {
+        closeHistory();
+        if (liveBatchId) loadBatch(liveBatchId);
+    });
+    // 点浮动进度窗也可返回实时视图（停止按钮除外）
+    els.detectFloat.addEventListener('click', (e) => {
+        if (e.target.closest('#detectStopBtn')) return;
+        closeHistory();
+        if (liveBatchId && viewBatchId !== liveBatchId) loadBatch(liveBatchId);
+    });
+
+    async function loadBatch(bid) {
+        showLoading('载入批次…');
+        try {
+            const st = await (await fetch(`/api/batch/${bid}`)).json();
+            if (!st.success) { showToast('error', '读取失败', '批次数据读取失败'); return; }
+            const arr = buildDetections(st.detection_results, st.problem_images);
+            viewBatchId = bid;
+            allResults = [];
+            els.resultTableBody.innerHTML = '';
+            await renderDetections(arr);
+            restoreEmptyRow();
+            updateBackPill();
+            const info = st.info || {};
+            showToast('success', '已载入历史批次', `${info.time || ''} · 问题图 ${arr.length} 张，逐条删除直接点表格右侧 ✕`);
+        } catch (e) {
+            showToast('error', '网络错误', '批次读取失败');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // 历史结果：只显示批次汇总卡片，点击载入主界面查看明细
+    function renderHistory(state) {
+        const rows = state.detection_results || [];
+        const binfo = state.batch_info || {};
+        if (!rows.length) {
+            els.historyList.innerHTML = '<div class="history-empty">暂无历史结果</div>';
+            return;
+        }
+        const batches = new Map();
+        rows.forEach(r => {
+            const bid = r['批次ID'] || 'L01';
+            if (!batches.has(bid)) batches.set(bid, []);
+            batches.get(bid).push(r);
+        });
+        const arr = Array.from(batches.entries())
+            .map(([bid, rs]) => ({
+                bid, rs,
+                time: rs[0]['检测时间'] || '',
+                imgs: new Set(rs.map(r => r['文件路径'])).size
+            }))
+            .sort((a, b) => b.time.localeCompare(a.time));
+        const modeText = { path: '路径检测', groups: '路径检测', flat: '路径检测', view: '路径检测', upload: '上传检测', single: '单图检测' };
+
+        els.historyList.innerHTML = '';
+        const runningBid = detectTaskId ? liveBatchId : null;   // 正在检测的批次禁止删除（防止与后台任务打架）
+        arr.forEach(b => {
+            const info = binfo[b.bid] || {};
+            const rootText = info.root || '—（早期数据未记录）';
+            const groupsText = (info.groups && info.groups.length)
+                ? info.groups.join('、')
+                : (info.mode === 'single' ? '—' : '全部');
+            const isRunning = b.bid === runningBid;
+            const card = document.createElement('div');
+            card.className = 'history-batch';
+            card.innerHTML = `
+                <div class="history-batch-head" title="点击载入主界面查看这一批">
+                    <span class="hb-arrow">▸</span>
+                    <div class="hb-info">
+                        <div class="hb-title">${escapeHtml(b.time)}<span class="hb-src">${modeText[info.mode] || '检测'}</span>${isRunning ? '<span class="hb-running">检测中</span>' : ''}</div>
+                        <div class="hb-sub">路径：${escapeHtml(rootText)}</div>
+                        <div class="hb-sub">分组：${escapeHtml(groupsText)} · 问题图 ${b.imgs} 张 · 缺陷 ${b.rs.length} 个</div>
+                    </div>
+                    <button class="hb-del" ${isRunning ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''} title="${isRunning ? '该批次正在检测中，不能删除' : '删除这一整批（含备份文件）'}">删除本批</button>
+                </div>`;
+            card.querySelector('.history-batch-head').addEventListener('click', () => {
+                closeHistory();
+                loadBatch(b.bid);
+            });
+            card.querySelector('.hb-del').addEventListener('click', async (e) => {
+                e.stopPropagation();
+                if (!confirm(`删除这一整批？\n${b.time} · 问题图 ${b.imgs} 张 · 缺陷 ${b.rs.length} 个\n备份文件一并删除，不可恢复。`)) return;
+                try {
+                    const res = await fetch('/api/state/delete_batch', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ batch_id: b.bid })
+                    });
+                    const d = await res.json();
+                    if (d.success) {
+                        card.remove();
+                        if (b.bid === liveBatchId) liveBatchId = null;
+                        if (viewBatchId === b.bid) {   // 正在看的就是这批 → 主表清空
+                            viewBatchId = null;
+                            allResults = [];
+                            els.resultTableBody.innerHTML = '';
+                            restoreEmptyRow();
+                            updateRecordCount();
+                            updateFilterOptions();
+                            applyFilter();
+                        }
+                        updateBackPill();
+                        showToast('success', '已删除该批', `${d.removed_rows} 条记录 / ${d.removed_imgs} 张问题图`);
+                    } else {
+                        showToast('error', '删除失败', d.message || '');
+                    }
+                } catch (err) { showToast('error', '网络错误', '删除请求失败'); }
+            });
+            els.historyList.appendChild(card);
+        });
+    }
+
+    function closeHistory() { els.historyModal.style.display = 'none'; }
+    els.btnHistory.addEventListener('click', async () => {
+        els.historyModal.style.display = 'flex';
+        els.historyList.innerHTML = '<div class="history-empty">读取中…</div>';
+        try {
+            const st = await (await fetch('/api/state')).json();
+            if (st.success) renderHistory(st);
+            else els.historyList.innerHTML = '<div class="history-empty">读取失败</div>';
+        } catch (e) {
+            els.historyList.innerHTML = '<div class="history-empty">网络错误</div>';
+        }
+    });
+    els.historyClose.addEventListener('click', closeHistory);
+    els.historyModal.addEventListener('click', (e) => { if (e.target === els.historyModal) closeHistory(); });
 
     // ── 全屏表格查看 ──
     function openFullscreenTable() {
@@ -1015,9 +1552,11 @@
         rows.forEach(row => {
             if (row.style.display === 'none') return;
             const clone = row.cloneNode(true);
+            const delCell = clone.querySelector('.cell-del');
+            if (delCell) delCell.remove();   // 全屏表只读，不带删除列
             clone.addEventListener('click', () => {
                 const imgUrl = clone.dataset.imageUrl || row.dataset.imageUrl;
-                if (imgUrl) showImage(imgUrl);
+                if (imgUrl) showResultImage(imgUrl, clone.dataset.origUrl || '');
                 els.timeValue.textContent = clone.dataset.time || '--';
                 els.targetCount.textContent = clone.dataset.targetCount || '--';
                 els.confValue.textContent = clone.dataset.conf || '--';
@@ -1132,7 +1671,75 @@
         }
     });
 
-    // 页面加载时获取模型列表
-    loadModelList();
+    // ════════════════════════════════════════
+    // 启动加载：分阶段进度条 → 连接服务器 → 模型列表 → 恢复历史结果（分批渲染）
+    // ════════════════════════════════════════
+    function bootSet(pct, text) {
+        if (!els.bootOverlay || els.bootOverlay.style.display === 'none') return;
+        els.bootFill.style.width = pct + '%';
+        els.bootPct.textContent = pct + '%';
+        if (text) els.bootStage.textContent = text;
+    }
+    function bootDone() {
+        bootSet(100, '就绪');
+        setTimeout(() => {
+            els.bootOverlay.style.opacity = '0';
+            setTimeout(() => { els.bootOverlay.style.display = 'none'; }, 400);
+        }, 250);
+    }
+
+    async function bootInit() {
+        // 1. 连接服务器（模型预热期间服务还没起来，循环重试最多90秒）
+        let connected = false;
+        for (let i = 0; i < 90; i++) {
+            try {
+                const r = await fetch('/api/models');
+                if (r.ok) { connected = true; break; }
+            } catch (e) {}
+            bootSet(5 + Math.min(i, 55), i >= 3 ? '模型预热中，请稍候…' : '正在连接服务器…');
+            await new Promise(r => setTimeout(r, 1000));
+        }
+        if (!connected) {
+            bootSet(100, '服务器无响应，请检查启动窗口');
+            return;
+        }
+        // 2. 模型列表
+        bootSet(75, '加载模型列表…');
+        await loadModelList();
+        // 3. 初始界面保持空白（历史批次到「历史结果」里翻）；只处理任务恢复
+        bootSet(90, '检查未完成任务…');
+        let state = null;
+        try { state = await (await fetch('/api/state')).json(); } catch (e) {}
+        bootDone();
+        if (state && state.success && state.active_task) {
+            // 正在跑的任务：恢复进度条 + 把已检出的部分载入主表
+            showToast('info', '检测进行中', `已接上后台任务（${state.active_task.done}/${state.active_task.total}）`);
+            attachDetectTask(state.active_task.task_id, state.active_task.items_count || 0, state.active_task.batch_id);
+            if (state.active_task.batch_id) loadBatch(state.active_task.batch_id);
+        } else if (state && state.success && state.interrupted_task) {
+            const t = state.interrupted_task;
+            if (confirm(`检测到上次任务未跑完（已完成 ${t.done}/${t.total}）：\n${t.root}\n\n是否继续检测剩余部分？`)) {
+                try {
+                    const res = await fetch('/api/detect/start', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ path: t.root, conf: t.conf, resume: true })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('success', '续检已开始', `跳过已完成 ${data.skipped} 张，剩余 ${data.total - data.skipped} 张`);
+                        attachDetectTask(data.task_id, 0, data.batch_id || t.batch_id);
+                        if (t.batch_id) loadBatch(t.batch_id);
+                    } else {
+                        showToast('error', '续检失败', data.message || '启动失败');
+                    }
+                } catch (e) {
+                    showToast('error', '网络错误', '续检请求失败');
+                }
+            }
+        }
+    }
+
+    bootInit();
 
 })();

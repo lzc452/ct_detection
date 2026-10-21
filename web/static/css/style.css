@@ -1723,3 +1723,96 @@ select.input-elegant {
     .model-select { min-width: 90px; font-size: 12px; }
     .header-center .section-title { font-size: 13px; }
 }
+
+/* ══════════ 2026-10-21 路径直读后台检测 ══════════ */
+/* ── 启动加载遮罩 ── */
+.boot-overlay{position:fixed;inset:0;z-index:9999;background:#FAF9F6;display:flex;align-items:center;justify-content:center;transition:opacity .4s;}
+.boot-card{text-align:center;width:420px;max-width:86vw;}
+.boot-title{font-size:18px;font-weight:600;color:#3D3833;letter-spacing:1px;margin-bottom:18px;}
+.boot-stage{font-size:13px;color:#A0834B;margin-bottom:14px;min-height:18px;}
+.boot-bar-box{height:8px;background:#EDE9E2;border-radius:6px;overflow:hidden;}
+.boot-bar-fill{height:100%;background:linear-gradient(90deg,#C9A96A,#A0834B);border-radius:6px;transition:width .3s;}
+.boot-pct{margin-top:10px;font-size:12px;color:#8A8580;}
+
+/* ── 路径检测弹窗 ── */
+.path-modal-overlay{position:fixed;inset:0;z-index:9000;background:rgba(40,35,30,.45);display:flex;align-items:center;justify-content:center;}
+.path-modal-card{background:#FFFEFC;border-radius:14px;padding:22px 26px;width:560px;max-width:92vw;box-shadow:0 18px 60px rgba(0,0,0,.18);}
+.path-modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.path-modal-close{background:none;border:none;font-size:18px;cursor:pointer;color:#8A8580;line-height:1;}
+.path-input-row{display:flex;gap:10px;}
+.path-input-row .input-elegant{flex:1;}
+.path-tip{font-size:12px;color:#8A8580;margin:10px 0 14px;line-height:1.6;}
+.group-panel{border:1px solid #E8E2D8;border-radius:10px;margin-bottom:14px;}
+.group-panel-head{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;font-size:13px;color:#3D3833;border-bottom:1px solid #EFEAE2;}
+.group-ops a{color:#A0834B;cursor:pointer;text-decoration:none;}
+.group-list{max-height:220px;overflow-y:auto;padding:6px 12px;}
+.group-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:#3D3833;cursor:pointer;}
+.group-item .g-name{flex:1;}
+.group-item .g-count{color:#8A8580;font-size:12px;}
+.btn-start-detect{width:100%;justify-content:center;}
+
+/* ── 后台检测浮动进度 ── */
+.detect-float{position:fixed;right:18px;bottom:18px;z-index:8500;width:340px;background:#FFFEFC;border:1px solid #E8E2D8;border-radius:12px;padding:12px 16px;box-shadow:0 10px 40px rgba(0,0,0,.15);}
+.detect-float-head{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#3D3833;margin-bottom:6px;}
+.detect-float-stop{margin-left:auto;font-size:12px;padding:2px 10px;border:1px solid #C9A96A;background:none;color:#A0834B;border-radius:6px;cursor:pointer;}
+.detect-float-stop:hover{background:#C9A96A;color:#fff;}
+.detect-float-file{font-size:12px;color:#8A8580;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px;}
+.detect-float-stats{font-size:12px;color:#3D3833;margin-top:6px;line-height:1.5;}
+
+/* ══════════ 2026-10-21 历史结果 & 清空确认 ══════════ */
+.history-card{width:640px;max-width:94vw;}
+.history-list{max-height:60vh;overflow-y:auto;}
+.history-empty{text-align:center;color:#8A8580;font-size:13px;padding:30px 0;}
+.history-batch{border:1px solid #E8E2D8;border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.history-batch-head{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;background:#F7F4EE;}
+.hb-title{font-size:13px;font-weight:600;color:#3D3833;}
+.hb-info{flex:1;min-width:0;text-align:left;}
+.hb-src{margin-left:8px;font-size:11px;font-weight:400;color:#A0834B;background:#F0E8D8;border-radius:4px;padding:1px 6px;}
+.hb-sub{font-size:12px;color:#8A8580;margin-top:2px;}
+.hb-del{font-size:12px;padding:3px 10px;border:1px solid #D9B3B3;background:none;color:#B45454;border-radius:6px;cursor:pointer;white-space:nowrap;}
+.hb-del:hover{background:#B45454;color:#fff;}
+.history-imgs{padding:4px 14px 8px;}
+.history-img-item{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:13px;border-bottom:1px dashed #F0ECE4;}
+.history-img-item:last-child{border-bottom:none;}
+.hi-name{flex:1;color:#3D3833;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hi-defects{color:#A0834B;font-size:12px;white-space:nowrap;}
+.hi-del{border:none;background:none;color:#B0A99F;cursor:pointer;font-size:13px;padding:2px 6px;border-radius:4px;}
+.hi-del:hover{background:#F5E3E3;color:#B45454;}
+
+/* ── 清空确认弹窗 ── */
+.confirm-modal-overlay{position:fixed;inset:0;z-index:9500;background:rgba(40,35,30,.45);display:flex;align-items:center;justify-content:center;}
+.confirm-card{background:#FFFEFC;border-radius:14px;padding:26px 30px;width:400px;max-width:90vw;text-align:center;box-shadow:0 18px 60px rgba(0,0,0,.2);}
+.confirm-icon{font-size:30px;color:#C68A3A;margin-bottom:8px;}
+.confirm-title{font-size:16px;font-weight:600;color:#3D3833;margin-bottom:10px;}
+.confirm-msg{font-size:13px;color:#6B655E;line-height:1.8;margin-bottom:20px;}
+.confirm-btns{display:flex;gap:12px;justify-content:center;}
+.confirm-btn-cancel{padding:7px 22px;border:1px solid #DDD6CA;background:none;color:#6B655E;border-radius:8px;cursor:pointer;font-size:13px;}
+.confirm-btn-cancel:hover{background:#F0ECE4;}
+.confirm-btn-danger{padding:7px 22px;border:none;background:#B45454;color:#fff;border-radius:8px;cursor:pointer;font-size:13px;}
+.confirm-btn-danger:hover{background:#9E4343;}
+
+/* ══════════ 2026-10-21 原图切换 & 历史折叠 ══════════ */
+.toggle-orig-btn{right:56px;width:auto;padding:0 10px;font-size:12px;font-weight:600;color:#A0834B;}
+.hb-arrow{font-size:11px;color:#A0834B;margin-right:4px;flex-shrink:0;}
+.history-batch-head{cursor:pointer;user-select:none;}
+.hb-del{flex-shrink:0;margin-left:8px;}
+.hi-links{white-space:nowrap;}
+.hi-links a{color:#5B8DEF;cursor:pointer;font-size:12px;margin-left:8px;text-decoration:none;}
+.hi-links a:hover{text-decoration:underline;}
+
+/* ══════════ 2026-10-21 表格逐条删除 ══════════ */
+.row-del{border:none;background:none;color:#B0A99F;cursor:pointer;font-size:13px;padding:2px 6px;border-radius:4px;}
+.row-del:hover{background:#F5E3E3;color:#B45454;}
+td.cell-del{text-align:center;}
+
+/* ══════════ 2026-10-21 返回实时视图 ══════════ */
+.detect-float{z-index:9600;cursor:pointer;}   /* 提到弹窗之上，看历史时也能看到/点回 */
+/* 尺寸对齐右侧栏卡片：盖住操作区（含“清空所有结果”），主区padding 16px + 侧栏padding-right 4px */
+.detect-float{width:376px;right:20px;bottom:12px;}
+@media (max-width:1400px){.detect-float{width:336px;}}
+@media (max-width:1200px){.detect-float{width:296px;}}
+@media (max-width:900px){.detect-float{width:calc(100% - 40px);}}
+.back-live-pill{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:8600;background:#FFFEFC;border:1px solid #C9A96A;color:#A0834B;font-size:13px;padding:7px 18px;border-radius:20px;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,.12);user-select:none;}
+.back-live-pill:hover{background:#C9A96A;color:#fff;}
+
+.hb-running{margin-left:8px;font-size:11px;color:#fff;background:#5B8DEF;border-radius:4px;padding:1px 6px;}
