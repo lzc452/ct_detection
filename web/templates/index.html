@@ -194,9 +194,12 @@
                             <label class="param-label">置信度阈值</label>
                             <span class="param-value" id="confDisplay">0.30</span>
                         </div>
-                        <input type="range" id="confSlider" min="0" max="100" value="30" class="slider-thumb">
+                        <input type="range" id="confSlider" min="5" max="100" value="30" class="slider-thumb">
                         <div class="slider-ticks">
-                            <span>0</span><span>0.5</span><span>1.0</span>
+                            <span>0.05</span><span>0.5</span><span>1.0</span>
+                        </div>
+                        <div class="conf-warn" id="confWarn" style="display:none;">
+                            低于 0.25 会显著增加误报，仅用于排查漏检
                         </div>
                     </div>
                 </div>

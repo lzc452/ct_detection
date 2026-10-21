@@ -692,6 +692,25 @@ body {
     color: #8A8580;
 }
 
+/* 检测失败行（#3）：与"未检出"必须一眼可分，红色左边界 + 浅红底 */
+#resultTable tbody tr.row-failed {
+    background-color: #FDF2F2;
+    box-shadow: inset 3px 0 0 #C0392B;
+}
+
+#resultTable tbody tr.row-failed td {
+    color: #C0392B;
+    font-weight: 500;
+}
+
+.fullscreen-table-body tbody tr.row-failed {
+    background-color: #FDF2F2;
+}
+
+.fullscreen-table-body tbody tr.row-failed td {
+    color: #C0392B;
+}
+
 .empty-row td {
     padding: 48px 16px !important;
     text-align: center;
@@ -793,6 +812,18 @@ body {
     font-size: 10px;
     color: #8A8580;
     margin-top: 4px;
+}
+
+/* 阈值低于 0.25 时的提示（#8：低阈值会显著增加误报） */
+.conf-warn {
+    margin-top: 6px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #C0392B;
+    background: #FDEDEC;
+    border: 1px solid #F5B7B1;
+    border-radius: 4px;
+    padding: 4px 6px;
 }
 
 /* ── 滑块 ── */
@@ -1816,3 +1847,5 @@ td.cell-del{text-align:center;}
 .back-live-pill:hover{background:#C9A96A;color:#fff;}
 
 .hb-running{margin-left:8px;font-size:11px;color:#fff;background:#5B8DEF;border-radius:4px;padding:1px 6px;}
+/* 该批次存在检测失败（#3）：和"检测中"并列，避免整批失败被当成无缺陷 */
+.hb-failed{margin-left:8px;font-size:11px;color:#fff;background:#C0392B;border-radius:4px;padding:1px 6px;}

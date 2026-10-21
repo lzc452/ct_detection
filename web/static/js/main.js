@@ -98,6 +98,7 @@
         resultTableBody: document.getElementById('resultTableBody'),
         confSlider: document.getElementById('confSlider'),
         confDisplay: document.getElementById('confDisplay'),
+        confWarn: document.getElementById('confWarn'),
         timeValue: document.getElementById('timeValue'),
         targetCount: document.getElementById('targetCount'),
         confValue: document.getElementById('confValue'),
@@ -173,11 +174,16 @@
         });
     }
 
-    // 参数同步
-    els.confSlider.addEventListener('input', () => {
+    // 参数同步（#8：阈值直传模型，0.05~1.00 都可生效；低于 0.25 显著增加误报）
+    function syncConfHint() {
         const v = els.confSlider.value / 100;
         els.confDisplay.textContent = v.toFixed(2);
-    });
+        if (els.confWarn) {
+            els.confWarn.style.display = v < 0.25 ? 'block' : 'none';
+        }
+    }
+    els.confSlider.addEventListener('input', syncConfHint);
+    syncConfHint();
 
     // 显示/隐藏 加载
     function showLoading(text) {
@@ -447,7 +453,41 @@
         const imageUrl = detection.image_url || '';
         const origUrl = detection.orig_url || '';
         const time = detection.time || '--';
+        const status = detection.status || '';
         const hasTargets = locations.length > 0;
+
+        // 检测失败（#3）：必须与"未检出目标"完全区分，否则坏图会被当成良品流下去
+        if (status === 'failed') {
+            const row = document.createElement('tr');
+            row.className = 'row-failed';
+            const reason = detection.error ? `（${escapeHtml(detection.error)}）` : '';
+            row.innerHTML = `
+                <td colspan="5">⚠ ${imageIndex} - 检测失败：${escapeHtml(filename)}${reason}</td>
+                <td class="cell-del"><button class="row-del" title="删除这条失败记录">✕</button></td>
+            `;
+            row.dataset.status = 'failed';
+            row.dataset.batchId = detection.batch_id || '';
+            row.dataset.time = time;
+            row.dataset.targetCount = 0;
+            row.dataset.filename = filename;
+            row.dataset.imageIndex = imageIndex;
+            const delBtn = row.querySelector('.row-del');
+            if (delBtn) {
+                delBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteImageRecord(row.dataset.batchId, filename);
+                });
+            }
+            row.addEventListener('click', () => {
+                highlightRow(row);
+                els.toggleOrigBtn.style.display = 'none';
+                updateResultLabels(time, 0, null, []);
+                updateTargetSelect([], [], []);
+            });
+            tbody.appendChild(row);
+            tbody.scrollTop = tbody.scrollHeight;
+            return;
+        }
 
         if (!hasTargets) {
             const row = document.createElement('tr');
@@ -582,6 +622,15 @@
             const targetCount = parseInt(row.dataset.targetCount || '0');
             const clsName = row.dataset.clsName || '';
 
+            // 失败行永远显示（无类别筛选时）：它是需要人工处理的异常，
+            // 不能被"只显示问题图"规则连坐隐藏（#3）
+            if (row.dataset.status === 'failed') {
+                const showFailed = classFilter === 'all';
+                row.style.display = showFailed ? '' : 'none';
+                if (showFailed) visibleCount++;
+                return;
+            }
+
             let show = true;
             if (hasConfOnly && targetCount === 0) {
                 show = false;
@@ -646,6 +695,7 @@
             const imageIndex = getCurrentImageCount() + 1;
             const detection = {
                 filename: data.filename,
+                status: data.status || '',
                 locations: data.locations,
                 classes: data.classes,
                 confs: data.confs,
@@ -1013,7 +1063,9 @@
         // 分批发送：每批 16 张（与后端 BATCH_SIZE 对齐），进度条按 16 张更新
         const CHUNK_SIZE = 16;
         let totalProcessed = 0;
-        let totalDefects = 0;
+        let totalDefectImgs = 0;
+        let totalCleanImgs = 0;
+        let totalFailed = 0;
         let imageIndex = getCurrentImageCount() + 1;
         let firstShown = false;
 
@@ -1053,7 +1105,9 @@
                 }
 
                 totalProcessed += data.total || chunk.length;
-                totalDefects += data.results.filter(r => r.target_nums > 0).length;
+                totalDefectImgs += data.ok_defect || 0;
+                totalCleanImgs += data.ok_clean || 0;
+                totalFailed += data.failed || 0;
 
                 // 真实进度更新：每完成一个 chunk 就更新
                 const pct = Math.round(totalProcessed / files.length * 100);
@@ -1068,18 +1122,30 @@
                 // 渲染结果（干净图后端不再画图，用本地 blob 直接显示原图）
                 for (let k = 0; k < data.results.length; k++) {
                     const item = data.results[k];
-                    if (!item.image_url && chunk[k]) {
-                        item.image_url = URL.createObjectURL(chunk[k]);
+                    // 用后端回传的 index 取本地 blob：绝不能用循环下标 k，
+                    // 否则有文件失败时缩略图会串到别的图上（#3 的错位问题）
+                    const localIdx = (typeof item.index === 'number') ? item.index : (chunkStart + k);
+                    const localFile = chunk[localIdx - chunkStart];
+                    if (!item.image_url && localFile) {
+                        item.image_url = URL.createObjectURL(localFile);
                     }
                     const detection = {
                         filename: item.filename,
-                        locations: item.locations,
-                        classes: item.classes,
-                        confs: item.confs,
+                        status: item.status || '',
+                        locations: item.locations || [],
+                        classes: item.classes || [],
+                        confs: item.confs || [],
                         image_url: item.image_url,
                         orig_url: item.orig_url,
+                        error: item.error || '',
                         time: item.time || '--'
                     };
+                    if (detection.status === 'failed') {
+                        // 失败项不进 allResults（它没有框/没有图），但必须出现在表格里
+                        addTableRows(detection, imageIndex);
+                        imageIndex += 1;
+                        continue;
+                    }
                     allResults.push(detection);
                     addTableRows(detection, imageIndex);
                     imageIndex += 1;
@@ -1108,7 +1174,13 @@
         flashScanComplete();
 
         if (!abortBatch) {
-            showToast('success', '批量检测完成', `共检测 ${totalProcessed} 张，有缺陷 ${totalDefects} 张`);
+            const summary = `共检测 ${totalProcessed} 张：有缺陷 ${totalDefectImgs}、无缺陷 ${totalCleanImgs}、失败 ${totalFailed}`;
+            if (totalFailed > 0) {
+                showToast('error', '批量检测完成（存在失败）',
+                          summary + '。失败项已在表格中标红，请重测后再判良品', 6000);
+            } else {
+                showToast('success', '批量检测完成', summary);
+            }
         }
         if (!firstShown) {
             clearDisplay();
@@ -1431,10 +1503,19 @@
             const st = await (await fetch(`/api/batch/${bid}`)).json();
             if (!st.success) { showToast('error', '读取失败', '批次数据读取失败'); return; }
             const arr = buildDetections(st.detection_results, st.problem_images);
+            // #3：台账里的"检测失败"文件没有框，不在 detection_results 里，必须单独补回表格，
+            // 否则历史批次回看时会以为这批"只有 N 张图"。
+            const failedRows = (st.file_records || [])
+                .filter(f => f['状态'] === 'failed')
+                .map(f => ({
+                    filename: f['文件路径'] || '', status: 'failed',
+                    locations: [], classes: [], confs: [],
+                    error: f['备注'] || '', batch_id: f['批次ID'] || bid, time: '--'
+                }));
             viewBatchId = bid;
             allResults = [];
             els.resultTableBody.innerHTML = '';
-            await renderDetections(arr);
+            await renderDetections(arr.concat(failedRows));
             restoreEmptyRow();
             updateBackPill();
             const info = st.info || {};
@@ -1478,15 +1559,21 @@
                 ? info.groups.join('、')
                 : (info.mode === 'single' ? '—' : '全部');
             const isRunning = b.bid === runningBid;
+            // #3/#6：优先用文件台账的计数，否则"全失败"和"全干净"在卡片上长得一模一样
+            const bs = (state.batch_stats || {})[b.bid];
+            const statText = bs
+                ? `共 ${bs.total} 张 · 有缺陷 ${bs.defect} · 无缺陷 ${bs.clean} · 失败 ${bs.failed}`
+                : `问题图 ${b.imgs} 张 · 缺陷 ${b.rs.length} 个`;
+            const failTag = (bs && bs.failed > 0) ? '<span class="hb-failed">有失败</span>' : '';
             const card = document.createElement('div');
             card.className = 'history-batch';
             card.innerHTML = `
                 <div class="history-batch-head" title="点击载入主界面查看这一批">
                     <span class="hb-arrow">▸</span>
                     <div class="hb-info">
-                        <div class="hb-title">${escapeHtml(b.time)}<span class="hb-src">${modeText[info.mode] || '检测'}</span>${isRunning ? '<span class="hb-running">检测中</span>' : ''}</div>
+                        <div class="hb-title">${escapeHtml(b.time)}<span class="hb-src">${modeText[info.mode] || '检测'}</span>${isRunning ? '<span class="hb-running">检测中</span>' : ''}${failTag}</div>
                         <div class="hb-sub">路径：${escapeHtml(rootText)}</div>
-                        <div class="hb-sub">分组：${escapeHtml(groupsText)} · 问题图 ${b.imgs} 张 · 缺陷 ${b.rs.length} 个</div>
+                        <div class="hb-sub">分组：${escapeHtml(groupsText)} · ${statText}</div>
                     </div>
                     <button class="hb-del" ${isRunning ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''} title="${isRunning ? '该批次正在检测中，不能删除' : '删除这一整批（含备份文件）'}">删除本批</button>
                 </div>`;

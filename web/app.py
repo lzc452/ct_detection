@@ -6,8 +6,12 @@ CT 缺陷检测 — Web 后端（文件上传 + 后端 batch 优化版）
 2. 单张：内存中直接 PIL Image → 推理，不保存原始文件。
 3. 批量：前端选文件夹一次性/分 chunk 发送 files，后端内存中 batch 推理。
 4. 视频：保存到 results/ 临时文件（OpenCV 需要路径），处理后可删除。
-5. 推理参数统一优化：imgsz=640, half=False(FP32), max_det=300, verbose=False。
+5. 推理参数统一优化：imgsz=INFER_SIZE(1920)，half 按显卡自动，max_det=300, verbose=False。
 6. 移除 uploads 目录，所有文件只保存在 results/。
+7. 阈值只有一个：用户阈值直接交给 ultralytics（同时作用于 NMS 与输出），不再二次过滤，
+   nan/inf/非法输入统一回落到默认值（见 parse_conf）。
+8. 逐文件状态是一等公民：ok_defect / ok_clean / failed，检测失败不再伪装成"未检出"。
+9. 文件级台账 file_records：每个输入文件恰好一条，Excel 汇总与失败率都从它来。
 """
 import os
 # 修复：部分 Windows 环境缺少 PROCESSOR_ARCHITECTURE 变量，
@@ -18,6 +22,7 @@ import time
 import uuid
 import threading
 import datetime
+import math
 import cv2
 import numpy as np
 import shutil
@@ -50,7 +55,7 @@ os.chdir(PROJECT_ROOT)
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024 * 1024  # 10GB，支持大批量上传
 
-RESULTS_FOLDER = os.path.join(BASE_DIR, 'results')
+RESULTS_FOLDER = os.environ.get('CT_RESULTS_DIR') or os.path.join(BASE_DIR, 'results')
 os.makedirs(RESULTS_FOLDER, exist_ok=True)
 
 # ==================== 设备与推理参数 ====================
@@ -67,13 +72,37 @@ IMG_EXTS = ('.jpg', '.jpeg', '.png', '.bmp')
 
 print(f"[Device] {DEVICE} | FP16: {USE_FP16} | imgsz: {INFER_SIZE} | batch: {BATCH_SIZE}")
 
+
+def parse_conf(value, default=CONF_DEFAULT):
+    """用户阈值解析：唯一入口，非法输入不抛 500、不产生"全过滤/全通过"。
+
+    以前 `float(request.form.get('conf'))` 直接裸转：传 nan 让 `conf >= nan` 恒 False
+    （界面显示"未检出"），传 inf 全部通过，传 'abc' 直接 500。
+    """
+    try:
+        f = float(value)
+    except (TypeError, ValueError):
+        return default
+    if not math.isfinite(f):
+        return default
+    return round(min(1.0, max(0.0, f)), 4)
+
 # ==================== 模型扫描与注册 ====================
 # 网页可选模型只来自 models/启用/ —— 训练出的模型不会自动出现在这里，
 # 必须由人工确认效果后，手动把 .pt 文件复制进来才会出现在网页模型列表。
-MODEL_DIR = os.path.join(PROJECT_ROOT, 'models', '启用')
+MODEL_DIR = os.environ.get('CT_MODEL_DIR') or os.path.join(PROJECT_ROOT, 'models', '启用')
 os.makedirs(MODEL_DIR, exist_ok=True)
 
 MODEL_REGISTRY = {}
+
+
+def _safe_rel(path, start):
+    """跨盘符时 os.path.relpath 会抛 ValueError（如模型放在 C:、工程在 D:），退回绝对路径"""
+    try:
+        return os.path.relpath(path, start)
+    except ValueError:
+        return path
+
 
 def scan_models():
     """扫描 models/启用/ 目录下所有 .pt 文件"""
@@ -85,11 +114,11 @@ def scan_models():
             if f.endswith('.pt'):
                 pt_files.append(os.path.join(root, f))
     for pt_path in pt_files:
-        rel_path = os.path.relpath(pt_path, PROJECT_ROOT)
+        rel_path = _safe_rel(pt_path, PROJECT_ROOT)
         model_id = rel_path.replace(os.sep, '/').replace('.pt', '')
         basename = os.path.basename(pt_path).replace('.pt', '')
         # 显示名：相对于 models/启用/ 的路径（如 "旧版/best"），子文件夹用于区分同名模型
-        rel_to_dir = os.path.relpath(pt_path, MODEL_DIR).replace(os.sep, '/').replace('.pt', '')
+        rel_to_dir = _safe_rel(pt_path, MODEL_DIR).replace(os.sep, '/').replace('.pt', '')
         MODEL_REGISTRY[model_id] = {
             'id': model_id,
             'path': pt_path,
@@ -151,13 +180,48 @@ else:
         f"models/启用/ 里没有 .pt 模型文件。请把训练好并确认可用的模型手动复制到该文件夹后再启动。")
 
 # ==================== 全局状态 ====================
-detection_results = []
+detection_results = []      # 框级明细（每检出 1 个框 1 行），供 Excel 明细与坐标展示
+file_records = []           # 文件级台账（每个输入文件恰好 1 条），供汇总统计与失败率
 video_tasks = {}
 problem_images = []   # 有检出的图：{文件名, 组别, 原图文件, 标注图文件}，供导出打包
 export_tasks = {}     # 导出任务进度：{task_id: {status, done, total, url, message}}
 batch_info = {}       # 批次元信息：{批次ID: {root, groups, mode, time}}，历史结果展示用
 
 STATE_FILE = os.path.join(RESULTS_FOLDER, '_state.json')
+
+
+# ---------- 逐文件状态（#3）：失败不再伪装成"未检出" ----------
+STATUS_OK_DEFECT = 'ok_defect'   # 检出缺陷
+STATUS_OK_CLEAN = 'ok_clean'     # 真的没有缺陷
+STATUS_FAILED = 'failed'         # 读图/推理/保存失败（必须计数、必须可见）
+STATUS_TEXT = {STATUS_OK_DEFECT: '有缺陷', STATUS_OK_CLEAN: '无缺陷', STATUS_FAILED: '检测失败'}
+
+
+def add_file_record(batch_id, path, status, n_boxes=0, conf=None, model_id=None,
+                    full_path='', error='', extra=None):
+    """文件级台账：每个输入文件恰好一条，无论成功/干净/失败。
+
+    这是 #6（Excel 统计错误）与 #3（失败态）共用的数据底座：
+    - 以前 `检测文件数` 用 len(set(文件全路径)) 统计，上传模式下全路径恒为 ''，永远是 1；
+    - 以前无缺陷图根本不进 detection_results，没有可用的分母。
+    """
+    rec = {
+        "批次ID": batch_id,
+        "文件路径": path,
+        "文件全路径": full_path or '',
+        "组别": extract_group(path or ''),
+        "状态": status,
+        "缺陷数": int(n_boxes or 0),
+        "模型": model_id or (current_model_id or ''),
+        "阈值": conf if conf is not None else CONF_DEFAULT,
+        "检测时间": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "备注": error or '',
+    }
+    if extra:
+        rec.update(extra)
+    file_records.append(rec)
+    return rec
+
 
 
 def new_batch_id():
@@ -170,6 +234,7 @@ def save_state():
     try:
         with open(STATE_FILE, 'w', encoding='utf-8') as f:
             json.dump({'detection_results': detection_results,
+                       'file_records': file_records,
                        'problem_images': problem_images,
                        'batch_info': batch_info}, f, ensure_ascii=False)
     except Exception as e:
@@ -210,11 +275,13 @@ def load_state():
             with open(STATE_FILE, encoding='utf-8') as f:
                 st = json.load(f)
             detection_results = st.get('detection_results', [])
+            file_records.extend(st.get('file_records', []))
             problem_images.extend(st.get('problem_images', []))
             batch_info.update(st.get('batch_info', {}))
             _migrate_legacy_batches()
             if detection_results:
-                print(f"[State] 恢复上次检测结果 {len(detection_results)} 条 / 问题图 {len(problem_images)} 张")
+                print(f"[State] 恢复上次检测结果 {len(detection_results)} 条 / "
+                      f"文件台账 {len(file_records)} 条 / 问题图 {len(problem_images)} 张")
     except Exception as e:
         print(f"[WARN] load_state failed: {e}")
 
@@ -276,8 +343,11 @@ def register_problem_image(filename, orig_file, annotated_file, cls_ids, batch_i
 
 def result_guolv_yolov8(result, conf_threshold):
     """
-    YOLOv8 结果过滤 — 与 MainProgram.py 的 result_guolv 完全一致
-    直接操作 result.boxes.conf 张量，而非 YOLOv5 的 DataFrame 索引
+    【已弃用，2026-10-21 #8】保留仅为兼容旧调用/回溯。
+
+    旧结构是"模型固定 conf=0.25 进 NMS，再用用户阈值二次过滤"，有效阈值 = max(0.25, 用户值)，
+    滑块调到 0.25 以下不会有任何效果（低于 0.25 的候选在 NMS 阶段就没了）。
+    现在用户阈值直接传给 ultralytics（conf 同时作用于 NMS 与输出），不要再用这个函数过滤。
     """
     try:
         if result is None or result.boxes is None:
@@ -424,6 +494,20 @@ def switch_model():
         return jsonify({"success": False, "message": str(e)}), 500
 
 
+def _failed_payload(idx, filename, batch_id, conf, error, log=True):
+    """失败文件的统一记录：同时写进文件台账与响应体。
+
+    这是 #3 的核心：失败必须先成为一条显式记录（带 index），前端才能把它渲染成
+    "检测失败"而不是"未检出目标"，也才能用 index 取到正确的缩略图。
+    """
+    if log:
+        add_file_record(batch_id, filename, STATUS_FAILED, 0, conf, error=error)
+    return {"index": idx, "filename": filename, "status": STATUS_FAILED,
+            "target_nums": 0, "locations": [], "classes": [], "confs": [],
+            "image_url": None, "orig_url": None, "batch_id": batch_id,
+            "conf": conf, "error": error}
+
+
 @app.route('/api/detect/image', methods=['POST'])
 def detect_image():
     """单图检测（文件上传方式）"""
@@ -433,7 +517,7 @@ def detect_image():
         if not file:
             return jsonify({"success": False, "message": "未收到文件"})
 
-        conf_threshold = float(request.form.get('conf', CONF_DEFAULT))
+        conf_threshold = parse_conf(request.form.get('conf'), CONF_DEFAULT)
         batch_id = request.form.get('batch_id') or new_batch_id()
         if batch_id not in batch_info:
             batch_info[batch_id] = {'root': '', 'groups': [], 'mode': 'single',
@@ -447,10 +531,14 @@ def detect_image():
             # PIL 对象直接喂模型有兼容问题（可能静默漏检），统一转 numpy RGB
             img = np.array(Image.open(file.stream).convert('RGB'))
         except Exception as e:
-            return jsonify({"success": False, "message": f"无法读取图片: {str(e)}"})
+            add_file_record(batch_id, filename, STATUS_FAILED, 0, conf_threshold,
+                            error='读图失败: %s' % e)
+            save_state()
+            return jsonify({"success": False, "status": STATUS_FAILED,
+                            "message": f"无法读取图片: {str(e)}"})
         t_read = time.time() - t0
 
-        # --- 计时：模型推理 ---
+        # --- 计时：模型推理（阈值直传，#8）---
         t1 = time.time()
         results = current_model(
             img,
@@ -459,15 +547,10 @@ def detect_image():
             device=DEVICE,
             max_det=MAX_DET,
             verbose=False,
-            conf=0.25  # 低阈值进入NMS，保留所有候选框
+            conf=conf_threshold,   # 唯一阈值：NMS 与输出都是它
         )[0]
         t2 = time.time()
         t_infer = t2 - t1
-
-        # --- 计时：置信度过滤 ---
-        t3 = time.time()
-        results = result_guolv_yolov8(results, conf_threshold)
-        t_filter = time.time() - t3
 
         has_det = results.boxes is not None and len(results.boxes) > 0
 
@@ -487,7 +570,11 @@ def detect_image():
         result_filename = save_annotated_image(draw_img, filename)
         t_save = time.time() - t5
         if not result_filename:
-            return jsonify({"success": False, "message": "结果图片保存失败，请检查 results 目录权限"})
+            add_file_record(batch_id, filename, STATUS_FAILED, 0, conf_threshold,
+                            error='结果图保存失败（检查 results 目录权限）')
+            save_state()
+            return jsonify({"success": False, "status": STATUS_FAILED,
+                            "message": "结果图片保存失败，请检查 results 目录权限"})
 
         # --- 汇总 ---
         boxes = results.boxes
@@ -500,7 +587,10 @@ def detect_image():
         if has_det:
             orig_file = save_original_image(img)
             register_problem_image(filename, orig_file, result_filename, classes, batch_id)
-            save_state()
+
+        status = STATUS_OK_DEFECT if has_det else STATUS_OK_CLEAN
+        add_file_record(batch_id, filename, status, len(classes), conf_threshold)
+        save_state()
 
         # 统计各类别数量
         cls_count = {}
@@ -510,10 +600,12 @@ def detect_image():
         cls_summary = ','.join(f'{k}x{v}' for k, v in cls_count.items()) if cls_count else '无'
 
         t_total = time.time() - t0
-        print(f"[Image] {filename} | 读取:{t_read:.3f}s | 推理:{t_infer:.3f}s | 过滤:{t_filter:.3f}s | 画图:{t_plot:.3f}s | 保存:{t_save:.3f}s | 总计:{t_total:.3f}s | 缺陷:{len(classes)}个({cls_summary})")
+        print(f"[Image] {filename} | 读取:{t_read:.3f}s | 推理:{t_infer:.3f}s | 画图:{t_plot:.3f}s | 保存:{t_save:.3f}s | 总计:{t_total:.3f}s | 阈值:{conf_threshold} | 缺陷:{len(classes)}个({cls_summary})")
 
         return jsonify({
             "success": True,
+            "status": status,
+            "conf": conf_threshold,
             "time": f"{t_total:.3f}",
             "target_nums": len(classes),
             "locations": locations,
@@ -532,14 +624,18 @@ def detect_image():
 
 @app.route('/api/detect/batch', methods=['POST'])
 def detect_batch():
-    """批量检测（文件上传方式）"""
+    """批量检测（文件上传方式）
+
+    #3 关键约束：返回的 results 按**输入下标**组织，长度恒等于本 chunk 的文件数。
+    读图失败的条目不再"从数组里消失"，而是变成 status=failed 的记录——否则前端
+    `data.results[k]` 与 `chunk[k]` 会错位，出现"文件名 A、缩略图 B"的张冠李戴。
+    """
     try:
-        global detection_results
         files = request.files.getlist('files')
         if not files:
             return jsonify({"success": False, "message": "未收到文件"})
 
-        conf_threshold = float(request.form.get('conf', CONF_DEFAULT))
+        conf_threshold = parse_conf(request.form.get('conf'), CONF_DEFAULT)
         batch_id = request.form.get('batch_id') or new_batch_id()
         file_paths = json.loads(request.form.get('file_paths', '[]'))
         if batch_id not in batch_info:
@@ -550,36 +646,42 @@ def detect_batch():
             batch_info[batch_id] = {'root': root0, 'groups': [], 'mode': 'upload',
                                     'time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
-        response = []
         t_start = time.time()
-
         total_files = len(files)
-        total_defect_imgs = 0
-        total_no_defect_imgs = 0
+
+        def name_of(idx):
+            return file_paths[idx] if idx < len(file_paths) else files[idx].filename
+
+        records = {}       # 输入下标 -> 该文件的完整记录（含失败态）
+        n_defect = n_clean = n_failed = 0
         total_defects = 0
 
         for i in range(0, total_files, BATCH_SIZE):
             chunk_files = files[i:i + BATCH_SIZE]
             chunk_imgs = []
-            chunk_names = []
+            chunk_idx = []
 
             # 读取计时
             t_read0 = time.time()
-            for j, f in enumerate(chunk_files):
+            for pos, f in enumerate(chunk_files):
+                idx = i + pos
+                nm = name_of(idx)
                 try:
                     # PIL 对象直接喂模型有兼容问题（可能静默漏检），统一转 numpy RGB
                     img = np.array(Image.open(f.stream).convert('RGB'))
                     chunk_imgs.append(img)
-                    chunk_names.append(file_paths[i + j] if (i + j) < len(file_paths) else f.filename)
+                    chunk_idx.append(idx)
                 except Exception as e:
-                    print(f"[Skip] Cannot read {f.filename}: {e}")
-                    continue
+                    print(f"[Skip] Cannot read {nm}: {e}")
+                    records[idx] = _failed_payload(idx, nm, batch_id, conf_threshold,
+                                                   '读图失败: %s' % e)
+                    n_failed += 1
             t_read = time.time() - t_read0
 
             if not chunk_imgs:
                 continue
 
-            # 推理计时
+            # 推理计时（阈值直传，#8）
             t_infer0 = time.time()
             try:
                 results = current_model(
@@ -589,25 +691,28 @@ def detect_batch():
                     device=DEVICE,
                     max_det=MAX_DET,
                     verbose=False,
-                    conf=0.25
+                    conf=conf_threshold
                 )
             except Exception as e:
+                # 整块推理失败：本块每个文件都记 failed，然后继续下一块（不丢掉已检出的结果）
                 print(f"[ERROR] model() batch inference failed: {e}")
                 traceback.print_exc()
-                return jsonify({"success": False, "message": f"模型推理失败: {type(e).__name__}: {str(e)}"}), 500
+                for idx in chunk_idx:
+                    records[idx] = _failed_payload(idx, name_of(idx), batch_id, conf_threshold,
+                                                   '模型推理失败: %s' % e)
+                    n_failed += 1
+                continue
             t_infer = time.time() - t_infer0
 
-            t_filter = 0
             t_plot = 0
             t_save = 0
             chunk_defects = 0
+            chunk_defect_imgs = 0
+            chunk_clean_imgs = 0
 
-            for img, filename, result in zip(chunk_imgs, chunk_names, results):
+            for img, idx, result in zip(chunk_imgs, chunk_idx, results):
+                filename = name_of(idx)
                 try:
-                    t_f0 = time.time()
-                    result = result_guolv_yolov8(result, conf_threshold)
-                    t_filter += (time.time() - t_f0)
-
                     boxes = result.boxes
                     has_det = boxes is not None and len(boxes) > 0
                     orig_file = None
@@ -616,19 +721,12 @@ def detect_batch():
                     if _g and _g not in batch_info[batch_id]['groups']:
                         batch_info[batch_id]['groups'].append(_g)
 
-                    if has_det:
-                        total_defect_imgs += 1
-                        chunk_defects += len(boxes)
-                    else:
-                        total_no_defect_imgs += 1
-
                     # 安全调用 parse_results_to_global
                     if 'parse_results_to_global' in globals():
                         parse_results_to_global(result, filename, '', batch_id)
-                    else:
-                        print("[WARNING] parse_results_to_global not found in globals, skipping result storage")
 
                     # 提速（2026-10-21）：无检出的干净图不画图不存盘（产线大多数是干净图，省100~300ms/张）
+                    result_filename = None
                     if has_det:
                         t_p0 = time.time()
                         draw_img = result.plot()
@@ -637,8 +735,6 @@ def detect_batch():
                         t_s0 = time.time()
                         result_filename = save_annotated_image(draw_img, filename)
                         t_save += (time.time() - t_s0)
-                    else:
-                        result_filename = None
 
                     locations = [list(map(int, e)) for e in boxes.xyxy.tolist()] if has_det else []
                     classes = [int(i) for i in boxes.cls.tolist()] if has_det else []
@@ -649,43 +745,72 @@ def detect_batch():
                         orig_file = save_original_image(img)
                         register_problem_image(filename, orig_file, result_filename, classes, batch_id)
 
-                    response.append({
+                    status = STATUS_OK_DEFECT if has_det else STATUS_OK_CLEAN
+                    if has_det:
+                        chunk_defect_imgs += 1
+                        chunk_defects += len(classes)
+                    else:
+                        chunk_clean_imgs += 1
+                    add_file_record(batch_id, filename, status, len(classes), conf_threshold,
+                                    error='' if result_filename or not has_det
+                                    else '标注图保存失败')
+
+                    records[idx] = {
+                        "index": idx,
                         "filename": filename,
+                        "status": status,
                         "target_nums": len(classes),
                         "locations": locations,
                         "classes": classes,
                         "confs": confs,
                         "image_url": f"/api/results/{result_filename}" if result_filename else None,
                         "orig_url": f"/api/results/{orig_file}" if orig_file else None,
-                        "batch_id": batch_id
-                    })
+                        "batch_id": batch_id,
+                        "conf": conf_threshold,
+                        "error": ''
+                    }
                 except Exception as e:
                     print(f"[ERROR] Processing result for {filename}: {e}")
                     traceback.print_exc()
-                    response.append({
-                        "filename": filename,
-                        "target_nums": 0,
-                        "locations": [],
-                        "classes": [],
-                        "confs": [],
-                        "image_url": None,
-                        "error": str(e)
-                    })
+                    records[idx] = _failed_payload(idx, filename, batch_id, conf_threshold,
+                                                   '结果处理失败: %s' % e,
+                                                   log=(idx not in records))
+                    n_failed += 1
 
+            n_defect += chunk_defect_imgs
+            n_clean += chunk_clean_imgs
             total_defects += chunk_defects
             chunk_done = min(i + BATCH_SIZE, total_files)
-            chunk_time = t_read + t_infer + t_filter + t_plot + t_save
+            chunk_time = t_read + t_infer + t_plot + t_save
             avg_per_img = chunk_time / len(chunk_imgs) if chunk_imgs else 0
-            print(f"[Batch Chunk {chunk_done}/{total_files}] 读取:{t_read:.3f}s | 推理:{t_infer:.3f}s | 过滤:{t_filter:.3f}s | 画图:{t_plot:.3f}s | 保存:{t_save:.3f}s | {len(chunk_imgs)}张 | 平均:{avg_per_img*1000:.1f}ms/张 | 缺陷:{chunk_defects}个")
+            print(f"[Batch Chunk {chunk_done}/{total_files}] 读取:{t_read:.3f}s | 推理:{t_infer:.3f}s | 画图:{t_plot:.3f}s | 保存:{t_save:.3f}s | {len(chunk_imgs)}张 | 平均:{avg_per_img*1000:.1f}ms/张 | 缺陷:{chunk_defects}个 | 阈值:{conf_threshold}")
+
+        # 兜底：任何漏填的下标都显式标成失败，绝不让数组长度和输入对不上
+        for idx in range(total_files):
+            if idx not in records:
+                records[idx] = _failed_payload(idx, name_of(idx), batch_id, conf_threshold,
+                                               '未处理（内部错误）')
+                n_failed += 1
+        response = [records[k] for k in sorted(records)]
+        failed_files = [r["filename"] for r in response if r["status"] == STATUS_FAILED]
 
         elapsed = time.time() - t_start
         avg_total = elapsed / total_files * 1000 if total_files > 0 else 0
-        print(f"[Batch Done] 共{total_files}张 | 总耗时:{elapsed:.2f}s | 平均:{avg_total:.1f}ms/张 | 有缺陷:{total_defect_imgs}张 | 无缺陷:{total_no_defect_imgs}张 | 缺陷总数:{total_defects}个")
+        print(f"[Batch Done] 共{total_files}张 | 总耗时:{elapsed:.2f}s | 平均:{avg_total:.1f}ms/张 | "
+              f"有缺陷:{n_defect}张 | 无缺陷:{n_clean}张 | 失败:{n_failed}张 | 缺陷总数:{total_defects}个")
+        if n_failed:
+            print(f"[Batch Failed] {n_failed} 张检测失败：{failed_files[:10]}"
+                  f"{' ...' if len(failed_files) > 10 else ''}")
         save_state()
 
         return jsonify({
             "success": True,
             "total": total_files,
+            "ok_defect": n_defect,
+            "ok_clean": n_clean,
+            "failed": n_failed,
+            "failed_files": failed_files,
+            "conf": conf_threshold,
             "time": f"{elapsed:.3f}",
             "results": response
         })
@@ -708,7 +833,7 @@ def detect_video():
         temp_path = os.path.join(RESULTS_FOLDER, temp_filename)
         file.save(temp_path)
 
-        conf_threshold = float(request.form.get('conf', CONF_DEFAULT))
+        conf_threshold = parse_conf(request.form.get('conf'), CONF_DEFAULT)
 
         task_id = uuid.uuid4().hex
         video_tasks[task_id] = {
@@ -733,9 +858,23 @@ def detect_video():
 
 
 def process_video_task(task_id, temp_path, conf_threshold, original_filename):
-    """后台线程处理视频"""
+    """后台线程处理视频
+
+    #3：视频侧的"静默成功"更危险——打不开的视频、写不出的 writer 以前都会走到
+    status=done，界面显示"处理完成"但可能一帧都没检测。现在显式区分：
+    error（整体失败）/ done_with_errors（部分帧推理失败，已用原帧填充）。
+    """
     try:
         cap = cv2.VideoCapture(temp_path)
+        if not cap.isOpened():
+            video_tasks[task_id].update(status='error',
+                                        message='视频无法打开（编码不支持或文件损坏）')
+            print(f"[Video Error] 无法打开视频：{temp_path}")
+            try:
+                os.remove(temp_path)
+            except Exception:
+                pass
+            return
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         fps = cap.get(cv2.CAP_PROP_FPS)
         if fps == 0 or fps > 120:
@@ -745,15 +884,27 @@ def process_video_task(task_id, temp_path, conf_threshold, original_filename):
         total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         if total <= 0:
             total = 1000
+        if width <= 0 or height <= 0:
+            cap.release()
+            video_tasks[task_id].update(status='error', message='无法读取视频尺寸，文件可能损坏')
+            try:
+                os.remove(temp_path)
+            except Exception:
+                pass
+            return
 
         result_filename = f"video_result_{task_id}.mp4"
         result_path = os.path.join(RESULTS_FOLDER, result_filename)
         out = cv2.VideoWriter(result_path, fourcc, fps, (width, height))
+        if not out.isOpened():
+            cap.release()
+            video_tasks[task_id].update(status='error', message='视频写入器初始化失败（检查 results 目录与编码器）')
+            return
 
         cur = 0
+        frame_failed = 0
         t_start = time.time()
         t_total_infer = 0
-        t_total_filter = 0
         t_total_plot = 0
         total_frames_with_defects = 0
 
@@ -770,13 +921,9 @@ def process_video_task(task_id, temp_path, conf_threshold, original_filename):
                     device=DEVICE,
                     max_det=MAX_DET,
                     verbose=False,
-                    conf=0.25
+                    conf=conf_threshold
                 )[0]
                 t_total_infer += (time.time() - t_i0)
-
-                t_f0 = time.time()
-                results = result_guolv_yolov8(results, conf_threshold)
-                t_total_filter += (time.time() - t_f0)
 
                 has_det = results.boxes is not None and len(results.boxes) > 0
                 if has_det:
@@ -788,7 +935,8 @@ def process_video_task(task_id, temp_path, conf_threshold, original_filename):
             except Exception as e:
                 print(f"[Video Error] frame {cur}: {e}")
                 traceback.print_exc()
-                annotated = frame
+                frame_failed += 1
+                annotated = frame          # 保底写原帧，但必须记账
             out.write(annotated)
             cur += 1
             progress = int(cur / total * 100) if total > 0 else 0
@@ -798,7 +946,7 @@ def process_video_task(task_id, temp_path, conf_threshold, original_filename):
             if cur % 100 == 0:
                 t_elapsed = time.time() - t_start
                 fps_avg = cur / t_elapsed if t_elapsed > 0 else 0
-                print(f"[Video Progress] {cur}/{total} frames | 已耗时:{t_elapsed:.1f}s | 平均FPS:{fps_avg:.1f} | 有缺陷帧:{total_frames_with_defects}")
+                print(f"[Video Progress] {cur}/{total} frames | 已耗时:{t_elapsed:.1f}s | 平均FPS:{fps_avg:.1f} | 有缺陷帧:{total_frames_with_defects} | 失败帧:{frame_failed}")
 
         cap.release()
         out.release()
@@ -810,11 +958,19 @@ def process_video_task(task_id, temp_path, conf_threshold, original_filename):
 
         t_total = time.time() - t_start
         avg_fps = cur / t_total if t_total > 0 else 0
-        print(f"[Video Done] {original_filename} | {cur}帧 | 总耗时:{t_total:.2f}s | 平均FPS:{avg_fps:.1f} | 有缺陷帧:{total_frames_with_defects}/{cur} | 推理累计:{t_total_infer:.2f}s | 过滤累计:{t_total_filter:.2f}s | 画图累计:{t_total_plot:.2f}s")
+        print(f"[Video Done] {original_filename} | {cur}帧 | 总耗时:{t_total:.2f}s | 平均FPS:{avg_fps:.1f} | 有缺陷帧:{total_frames_with_defects}/{cur} | 失败帧:{frame_failed} | 推理累计:{t_total_infer:.2f}s | 画图累计:{t_total_plot:.2f}s | 阈值:{conf_threshold}")
 
-        video_tasks[task_id]['status'] = 'done'
-        video_tasks[task_id]['result_url'] = f"/api/results/{result_filename}"
-        video_tasks[task_id]['progress'] = 100
+        if cur == 0:
+            video_tasks[task_id].update(status='error', message='视频里没有读到任何帧')
+            return
+        video_tasks[task_id].update(
+            status='done' if frame_failed == 0 else 'done_with_errors',
+            result_url=f"/api/results/{result_filename}",
+            progress=100,
+            frames=cur,
+            frames_defect=total_frames_with_defects,
+            frames_failed=frame_failed,
+            message=(f'{frame_failed} 帧推理失败，已用原帧填充' if frame_failed else ''))
     except Exception as e:
         print(f"[ERROR] process_video_task failed: {e}")
         traceback.print_exc()
@@ -845,9 +1001,32 @@ def serve_result(filename):
         return jsonify({"success": False, "message": f"文件读取失败: {str(e)}"}), 500
 
 
-def _build_report_excel(filepath, rows):
-    """生成 Excel 报表到指定路径（rows：要导出的检测行，可为某一批次）"""
+def _pct(series, how='mean'):
+    """置信度百分比：空表返回 '—'，不要吐 'nan%'"""
+    if series is None or len(series) == 0:
+        return '—'
+    v = series.mean() if how == 'mean' else (series.max() if how == 'max' else series.min())
+    try:
+        if pd.isna(v):
+            return '—'
+    except Exception:
+        pass
+    return f"{v * 100:.2f}%"
+
+
+def _build_report_excel(filepath, rows, files=None):
+    """生成 Excel 报表到指定路径。
+
+    rows  ：框级明细（每框 1 行），可为某一批次，也可能为空（全批次无缺陷）
+    files ：文件级台账（每文件 1 行），#6 起作为汇总口径的唯一依据
+
+    旧口径用 len(set(文件全路径)) 统计"检测文件数"，上传模式该字段恒为 ''，
+    于是永远显示 1；而无缺陷图不进明细，分母根本不存在。现在汇总全部来自台账。
+    """
+    rows = rows or []
+    files = files or []
     df = pd.DataFrame(rows)
+
     wb = Workbook()
     ws = wb.active
     ws.title = "检测结果明细"
@@ -862,13 +1041,16 @@ def _build_report_excel(filepath, rows):
     data_font = Font(name="微软雅黑", size=11)
     data_alignment = Alignment(horizontal="center", vertical="center")
 
+    def _header(ws_, cols):
+        for col, header in enumerate(cols, 1):
+            cell = ws_.cell(row=1, column=col, value=header)
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = header_alignment
+            cell.border = thin_border
+
     headers = ["序号", "组别", "文件路径", "类别名称", "置信度(百分比)", "X最小值", "Y最小值", "X最大值", "Y最大值", "检测时间"]
-    for col, header in enumerate(headers, 1):
-        cell = ws.cell(row=1, column=col, value=header)
-        cell.font = header_font
-        cell.fill = header_fill
-        cell.alignment = header_alignment
-        cell.border = thin_border
+    _header(ws, headers)
 
     for row_idx, (_, row) in enumerate(df.iterrows(), 2):
         ws.cell(row=row_idx, column=1, value=row["序号"]).font = data_font
@@ -886,17 +1068,31 @@ def _build_report_excel(filepath, rows):
             cell.alignment = data_alignment
             cell.border = thin_border
 
-    # 汇总表
-    ws_summary = wb.create_sheet(title="统计汇总")
+    # ---------- 统计汇总（口径 = 文件台账） ----------
+    n_files = len(files)
+    n_fail = sum(1 for r in files if r.get("状态") == STATUS_FAILED)
+    n_defect = sum(1 for r in files if r.get("状态") == STATUS_OK_DEFECT)
+    n_clean = sum(1 for r in files if r.get("状态") == STATUS_OK_CLEAN)
+    confs_used = sorted({r.get("阈值") for r in files if r.get("阈值") is not None})
+    ok_files = max(1, n_files - n_fail)
+
+    confidence_col = df["置信度(数值)"] if "置信度(数值)" in df.columns else None
     summary_data = [
         ["统计项", "数值"],
-        ["检测文件数", len(set(item["文件全路径"] for item in rows))],
+        ["检测文件数", n_files if files else "（旧数据无台账）"],
+        ["　其中：有缺陷", n_defect if files else "—"],
+        ["　其中：无缺陷", n_clean if files else "—"],
+        ["　其中：检测失败", n_fail if files else "—"],
         ["检测目标总数", len(rows)],
-        ["平均置信度", f"{df['置信度(数值)'].mean() * 100:.2f}%"],
-        ["最高置信度", f"{df['置信度(数值)'].max() * 100:.2f}%"],
-        ["最低置信度", f"{df['置信度(数值)'].min() * 100:.2f}%"],
-        ["报表生成时间", datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        ["缺陷图片占比", f"{n_defect / ok_files * 100:.2f}%" if files else "—"],
+        ["检测失败率", f"{n_fail / max(1, n_files) * 100:.2f}%" if files else "—"],
+        ["平均置信度", _pct(confidence_col, 'mean')],
+        ["最高置信度", _pct(confidence_col, 'max')],
+        ["最低置信度", _pct(confidence_col, 'min')],
+        ["检测阈值", "/".join(str(c) for c in confs_used) if confs_used else "—"],
+        ["报表生成时间", datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
     ]
+    ws_summary = wb.create_sheet(title="统计汇总")
     for row_idx, (key, value) in enumerate(summary_data, 1):
         if row_idx == 1:
             for col, val in enumerate([key, value], 1):
@@ -918,8 +1114,27 @@ def _build_report_excel(filepath, rows):
     for col, width in enumerate([8, 12, 35, 15, 15, 10, 10, 10, 10, 20], 1):
         ws.column_dimensions[chr(64 + col)].width = width
 
-    # 分组汇总表（智能检测模式：按 A/B/C... 电芯文件夹统计）
-    if "组别" in df.columns and df["组别"].astype(str).str.len().gt(0).any():
+    # ---------- 文件台账（#6：可核对"这批到底测了多少张、失败了几张"） ----------
+    if files:
+        ws_files = wb.create_sheet(title="文件台账")
+        f_headers = ["批次ID", "文件路径", "组别", "状态", "缺陷数", "模型", "阈值", "检测时间", "备注"]
+        _header(ws_files, f_headers)
+        status_order = {STATUS_FAILED: 0, STATUS_OK_DEFECT: 1, STATUS_OK_CLEAN: 2}
+        for row_idx, r in enumerate(sorted(files, key=lambda x: (status_order.get(x.get("状态"), 9),
+                                                                 x.get("文件路径", ""))), 2):
+            vals = [r.get("批次ID", ""), r.get("文件路径", ""), r.get("组别", ""),
+                    STATUS_TEXT.get(r.get("状态"), r.get("状态", "")), r.get("缺陷数", 0),
+                    r.get("模型", ""), r.get("阈值", ""), r.get("检测时间", ""), r.get("备注", "")]
+            for col, val in enumerate(vals, 1):
+                cell = ws_files.cell(row=row_idx, column=col, value=val)
+                cell.font = data_font
+                cell.alignment = data_alignment
+                cell.border = thin_border
+        for col, width in enumerate([18, 40, 12, 10, 8, 22, 8, 20, 30], 1):
+            ws_files.column_dimensions[chr(64 + col)].width = width
+
+    # 分组汇总表（智能检测模式：按 A/B/C... 电芯文件夹统计；无明细时跳过）
+    if len(df) and "组别" in df.columns and df["组别"].astype(str).str.len().gt(0).any():
         ws_group = wb.create_sheet(title="分组汇总")
         g_headers = ["组别", "缺陷框总数", "极片损伤", "暗斑", "亮斑", "涉及图片数", "平均置信度"]
         for col, header in enumerate(g_headers, 1):
@@ -1029,22 +1244,34 @@ def _export_root_name(batch_id=None):
         p = (r.get('文件路径') or '').replace('\\', '/').strip('/')
         if '/' in p:
             return p.split('/')[0]
+    for f in file_records:   # 全批次无缺陷时没有明细行，靠台账取目录名
+        if batch_id and f.get('批次ID', '') != batch_id:
+            continue
+        p = (f.get('文件路径') or '').replace('\\', '/').strip('/')
+        if '/' in p:
+            return p.split('/')[0]
     return '未分组'
 
 
 @app.route('/api/export', methods=['POST'])
 def export_report():
-    """导出检测报表（仅 Excel，同步生成直接下载）；带 batch_id 时只导出该批次"""
+    """导出检测报表（仅 Excel，同步生成直接下载）；带 batch_id 时只导出该批次
+
+    注意：一批图全部"无缺陷"时明细为空但台账有记录，这种情况也要能出报表
+    （检测文件数=500、有缺陷=0 是产线最想看到的结论），所以判空看台账而不是看明细。
+    """
     try:
         data = request.get_json(force=True, silent=True) or {}
         bid = data.get('batch_id') or None
         rows = [r for r in detection_results if not bid or r.get('批次ID', '') == bid]
-        if not rows:
+        files = [f for f in file_records if not bid or f.get('批次ID', '') == bid]
+        if not rows and not files:
             return jsonify({"success": False, "message": "暂无检测结果可导出"})
         filename = f"检测报表_{_export_root_name(batch_id=bid)}_{datetime.datetime.now().strftime('%Y%m%d')}.xlsx"
         filepath = os.path.join(RESULTS_FOLDER, filename)
-        _build_report_excel(filepath, rows)
-        return jsonify({"success": True, "download_url": f"/api/results/{filename}"})
+        _build_report_excel(filepath, rows, files)
+        return jsonify({"success": True, "download_url": f"/api/results/{filename}",
+                        "files": len(files), "rows": len(rows)})
     except Exception as e:
         print(f"[ERROR] export_report failed: {e}")
         traceback.print_exc()
@@ -1196,7 +1423,7 @@ def api_detect_start():
     """启动路径直读后台检测任务（groups 缺省=全部；resume=续检上次中断任务）"""
     data = request.get_json(force=True, silent=True) or {}
     raw = (data.get('path') or '').strip().strip('"').strip("'")
-    conf = float(data.get('conf', CONF_DEFAULT))
+    conf = parse_conf(data.get('conf'), CONF_DEFAULT)
     sel = data.get('groups')
     resume = bool(data.get('resume'))
     if not raw:
@@ -1275,11 +1502,22 @@ def _detect_worker(task_id, root, jobs, conf, skip, batch_id):
                 except Exception as e:
                     print(f"[Skip] 读图失败 {ap}: {e}")
                     task['errors'] += 1
+                    # #3/#6：读图失败也进台账，报表里的分母才等于实际扫过的文件数
+                    add_file_record(batch_id, rel, STATUS_FAILED, 0, conf,
+                                    full_path=ap, error='读图失败: %s' % e)
             if imgs:
-                results = model(imgs, imgsz=INFER_SIZE, half=USE_FP16, device=DEVICE,
-                                max_det=MAX_DET, verbose=False, conf=0.25)
+                try:
+                    results = model(imgs, imgsz=INFER_SIZE, half=USE_FP16, device=DEVICE,
+                                    max_det=MAX_DET, verbose=False, conf=conf)
+                except Exception as e:
+                    print(f"[ERROR] 批量推理失败（本块 {len(imgs)} 张记为失败）: {e}")
+                    traceback.print_exc()
+                    task['errors'] += len(imgs)
+                    for ap, rel in zip(aps, rels):
+                        add_file_record(batch_id, rel, STATUS_FAILED, 0, conf,
+                                        full_path=ap, error='推理失败: %s' % e)
+                    results = []
                 for img, ap, rel, res in zip(imgs, aps, rels, results):
-                    res = result_guolv_yolov8(res, conf)
                     boxes = res.boxes
                     has = boxes is not None and len(boxes) > 0
                     if has:
@@ -1293,6 +1531,7 @@ def _detect_worker(task_id, root, jobs, conf, skip, batch_id):
                         task['defects'] += len(boxes)
                         task['items'].append({
                             "filename": rel,
+                            "status": STATUS_OK_DEFECT,
                             "locations": [list(map(int, e)) for e in boxes.xyxy.tolist()],
                             "classes": classes,
                             "confs": ['%.2f %%' % (c * 100) for c in boxes.conf.tolist()],
@@ -1301,6 +1540,10 @@ def _detect_worker(task_id, root, jobs, conf, skip, batch_id):
                             "batch_id": batch_id,
                             "time": datetime.datetime.now().strftime("%H:%M:%S"),
                         })
+                        add_file_record(batch_id, rel, STATUS_OK_DEFECT, len(boxes), conf,
+                                        full_path=ap)
+                    else:
+                        add_file_record(batch_id, rel, STATUS_OK_CLEAN, 0, conf, full_path=ap)
             processed += len(chunk)
             task['done'] = skip + processed
             task['current'] = rels[-1] if rels else ''
@@ -1366,10 +1609,24 @@ def api_state():
             active = {'task_id': tid, 'done': t['done'], 'total': t['total'],
                       'items_count': len(t['items']), 'batch_id': t.get('batch_id', '')}
             break
+    # 每批的文件级计数：只靠 detection_results 无法区分"全干净"和"全失败"（两者都没有行）
+    batch_stats = {}
+    for f in file_records:
+        b = f.get('批次ID') or ''
+        s = batch_stats.setdefault(b, {'total': 0, 'defect': 0, 'clean': 0, 'failed': 0})
+        s['total'] += 1
+        st = f.get('状态')
+        if st == STATUS_OK_DEFECT:
+            s['defect'] += 1
+        elif st == STATUS_OK_CLEAN:
+            s['clean'] += 1
+        elif st == STATUS_FAILED:
+            s['failed'] += 1
     return jsonify({"success": True,
                     "detection_results": detection_results,
                     "problem_images": problem_images,
                     "batch_info": batch_info,
+                    "batch_stats": batch_stats,
                     "active_task": active,
                     "interrupted_task": _interrupted_task()})
 
@@ -1388,6 +1645,15 @@ def api_state_delete_image():
                          if not ((r.get('文件路径') or '').replace('\\', '/').strip('/') == rel
                                  and (not bid or r.get('批次ID', '') == bid))]
     removed_rows = before - len(detection_results)
+    # 台账同步删：否则报表里"检测文件数"还留着这张已经删掉的图
+    kept = []
+    for f in file_records:
+        if ((f.get('文件路径') or '').replace('\\', '/').strip('/') == rel
+                and (not bid or f.get('批次ID', '') == bid)):
+            continue
+        kept.append(f)
+    removed_files_rec = len(file_records) - len(kept)
+    file_records[:] = kept
     files = []
     keep = []
     for p in problem_images:
@@ -1406,7 +1672,8 @@ def api_state_delete_image():
             except OSError:
                 pass
     save_state()
-    return jsonify({"success": True, "removed_rows": removed_rows, "removed_files": removed_files})
+    return jsonify({"success": True, "removed_rows": removed_rows,
+                    "removed_files": removed_files, "removed_records": removed_files_rec})
 
 
 @app.route('/api/state/delete_batch', methods=['POST'])
@@ -1420,6 +1687,9 @@ def api_state_delete_batch():
     before = len(detection_results)
     detection_results = [r for r in detection_results if r.get('批次ID', '') != bid]
     removed_rows = before - len(detection_results)
+    before_rec = len(file_records)
+    file_records[:] = [f for f in file_records if f.get('批次ID', '') != bid]
+    removed_records = before_rec - len(file_records)
     files = []
     keep = []
     for p in problem_images:
@@ -1437,16 +1707,22 @@ def api_state_delete_batch():
             except OSError:
                 pass
     save_state()
-    return jsonify({"success": True, "removed_rows": removed_rows, "removed_imgs": removed_imgs})
+    return jsonify({"success": True, "removed_rows": removed_rows, "removed_imgs": removed_imgs,
+                    "removed_records": removed_records})
 
 
 @app.route('/api/batch/<bid>')
 def api_batch(bid):
-    """单批次的检测结果与问题图（历史结果点进主界面查看用）"""
+    """单批次的检测结果与问题图（历史结果点进主界面查看用）
+
+    file_records 一并发给前端：历史批次里的"检测失败"文件不在 detection_results 里
+    （那里只有框），必须靠台账才能把失败行也补回表格。
+    """
     rows = [r for r in detection_results if r.get('批次ID', '') == bid]
     pims = [p for p in problem_images if p.get('批次ID', '') == bid]
+    frecs = [f for f in file_records if f.get('批次ID', '') == bid]
     return jsonify({"success": True, "detection_results": rows, "problem_images": pims,
-                    "info": batch_info.get(bid, {})})
+                    "file_records": frecs, "info": batch_info.get(bid, {})})
 
 
 @app.route('/api/clear', methods=['POST'])
@@ -1455,6 +1731,7 @@ def clear_results():
     try:
         global detection_results
         detection_results = []
+        file_records.clear()
         problem_images.clear()
         batch_info.clear()
         try:

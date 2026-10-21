@@ -4,9 +4,10 @@
 - 保护微弱亮/暗斑：亮度 ±10%、伽马 0.9~1.15、噪声 σ≤5，不做模糊、不做强预处理
 - 正样本：原图 + 4 个变体；负样本：原图 + 1 个左右翻转
 - 输出：datasets\\CT_DATASET_FINAL_AUG（已存在则拒绝覆盖）
+- 产物带 _aug_meta.json（记录旋转实现版本）；版本不符时拒绝 AUG_RESUME 续跑
 用法：runtime\\python.exe scripts\\augment_final.py
 """
-import os, sys, shutil, random
+import os, sys, shutil, random, json
 import cv2
 import numpy as np
 
@@ -57,27 +58,45 @@ def noise(img): # 轻噪声
     n = np.random.normal(0, s, img.shape).astype(np.float32)
     return np.clip(img.astype(float) + n, 0, 255).astype(np.uint8)
 
+ROT_IMPL = 'v3_transform_replicate'   # 2026-10-21 修复：旧实现框反向旋转（v1_manual），产物必须重建
+
 def rot(img, boxes, angle):
+    """绕图像中心旋转，框与像素用同一个仿射矩阵（cv2.transform），保证边界框跟着像素走。
+
+    旧实现（v1_manual）手工套 [[cos,-sin],[sin,cos]]，与 OpenCV 的
+    [[cos,sin],[-sin,cos]] 方向相反，等效把框转了 -angle；距中心 640px、3° 时
+    双向偏差 2*640*sin3° ≈ 67px，足以让标签整体滑出缺陷。
+
+    边界模式用 REPLICATE 而非 REFLECT：REFLECT 会把图内缺陷镜像到画布另一侧，
+    生成一块没有标签的"假缺陷"（实测 15° 时右侧边缘出现一整条镜像白块），
+    REPLICATE 只延展边缘像素，不复制内容。
+    """
     h, w = img.shape[:2]
     M = cv2.getRotationMatrix2D((w / 2, h / 2), angle, 1.0)
-    img2 = cv2.warpAffine(img, M, (w, h), borderMode=cv2.BORDER_REFLECT)
-    import math
-    rad = math.radians(angle); cx, cy = w / 2, h / 2
-    sa, ca = math.sin(rad), math.cos(rad)
+    img2 = cv2.warpAffine(img, M, (w, h), borderMode=cv2.BORDER_REPLICATE)
     out = []
     for c, x, y, bw, bh in boxes:
         x1, y1 = (x - bw / 2) * w, (y - bh / 2) * h
         x2, y2 = (x + bw / 2) * w, (y + bh / 2) * h
-        pts = [(x1, y1), (x2, y1), (x2, y2), (x1, y2)]
-        npts = [((px - cx) * ca - (py - cy) * sa + cx,
-                 (px - cx) * sa + (py - cy) * ca + cy) for px, py in pts]
-        xs = [p[0] for p in npts]; ys = [p[1] for p in npts]
-        nx1, ny1 = max(0, min(xs)), max(0, min(ys))
-        nx2, ny2 = min(w, max(xs)), min(h, max(ys))
-        if nx2 - nx1 < 2 or ny2 - ny1 < 2:
+        # 四个角整体过同一个 M，取外接矩形（旋转后仍是轴对齐框，面积略增是正常的）
+        pts = cv2.transform(
+            np.array([[[x1, y1]], [[x2, y1]], [[x2, y2]], [[x1, y2]]], np.float32), M
+        ).reshape(-1, 2)
+        nx1, ny1 = float(pts[:, 0].min()), float(pts[:, 1].min())
+        nx2, ny2 = float(pts[:, 0].max()), float(pts[:, 1].max())
+        # 先判整框是否已完全出画，再统一裁剪；逐点裁剪会把越界框拉成贴边假框
+        if nx2 <= 0 or ny2 <= 0 or nx1 >= w or ny1 >= h:
             continue
-        out.append([c, (nx1 + nx2) / 2 / w, (ny1 + ny2) / 2 / h,
-                    (nx2 - nx1) / w, (ny2 - ny1) / h])
+        area0 = (x2 - x1) * (y2 - y1)
+        cx1, cy1 = max(0.0, nx1), max(0.0, ny1)
+        cx2, cy2 = min(float(w), nx2), min(float(h), ny2)
+        if cx2 - cx1 < 2 or cy2 - cy1 < 2:
+            continue
+        # 裁掉超过 40% 面积的框直接丢：剩下的"半个缺陷"比没有框更伤回归
+        if area0 > 0 and (cx2 - cx1) * (cy2 - cy1) < 0.6 * area0:
+            continue
+        out.append([c, (cx1 + cx2) / 2 / w, (cy1 + cy2) / 2 / h,
+                    (cx2 - cx1) / w, (cy2 - cy1) / h])
     return img2, out
 
 # 正样本变体（温和）
@@ -89,8 +108,21 @@ POS_VARIANTS = [
 ]
 
 def main():
-    if os.path.exists(os.path.dirname(OUT)) and not os.environ.get('AUG_RESUME'):
-        print("已存在 %s，如需重建请先手动删除（续跑请设 AUG_RESUME=1）。" % os.path.dirname(OUT)); sys.exit(1)
+    out_root = os.path.join(ROOT, "datasets", OUT_NAME)
+    meta_path = os.path.join(out_root, "_aug_meta.json")
+    if os.path.exists(out_root):
+        if not os.environ.get('AUG_RESUME'):
+            print("已存在 %s，如需重建请先手动删除（续跑请设 AUG_RESUME=1）。" % out_root); sys.exit(1)
+        # 续跑前校验产物是用哪版旋转生成的：v1 的标签是反的，绝不能"续"成半新半旧
+        try:
+            old_impl = json.load(open(meta_path, encoding='utf-8')).get('rot_impl')
+        except Exception:
+            old_impl = None
+        if old_impl != ROT_IMPL:
+            print("[拒绝续跑] %s 的旋转实现是 %s，当前是 %s。\n"
+                  "  旧产物的旋转标签有系统性错误，续跑会得到新旧混杂的数据集，必须整个删掉重建。"
+                  % (out_root, old_impl or '未标记(≤v1)', ROT_IMPL))
+            sys.exit(2)
     os.makedirs(os.path.join(OUT, "images"), exist_ok=True)
     os.makedirs(os.path.join(OUT, "labels"), exist_ok=True)
 
@@ -144,6 +176,13 @@ def main():
         f.write("path: %s\n" % out_root.replace("\\", "/"))
         f.write("train: train/images\nval: val/images\n\nnc: 3\n")
         f.write("names:\n  0: damage\n  1: dark\n  2: light\n")
+
+    # 产物标记：记录增强实现版本，供续跑校验（见 main() 顶部）
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump({"rot_impl": ROT_IMPL, "in_name": IN_NAME, "out_name": OUT_NAME,
+                   "preprocess": bool(PREPROCESS), "n_in": n_in, "n_out": n_out,
+                   "time": __import__("time").strftime("%Y-%m-%d %H:%M:%S")},
+                  f, ensure_ascii=False, indent=1)
 
     n_val = len(os.listdir(os.path.join(out_root, "val", "images")))
     print("[完成] train: %d 张原图 -> %d 张（含变体） | val: %d 张（原图未动）" % (n_in, n_out, n_val))
