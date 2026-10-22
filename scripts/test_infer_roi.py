@@ -13,6 +13,7 @@
 """
 import os
 import sys
+from dataclasses import replace
 
 os.environ["CUDA_VISIBLE_DEVICES"] = ""          # 强制 CPU：训练正在用 GPU
 os.environ.setdefault("PROCESSOR_ARCHITECTURE", os.environ.get("PROCESSOR_ARCHITECTURE", "AMD64"))
@@ -46,7 +47,7 @@ def main():
         _im = read_cn(os.path.join(ROOT, c["src_path"]))
         if _im is None:
             continue
-        _rr = W.current_model(_im, imgsz=1920, half=False, device=W.DEVICE,
+        _rr = W.snapshot_model().model(_im, imgsz=1920, half=False, device=W.DEVICE,
                               max_det=300, verbose=False, conf=0.05)[0]
         if _rr.boxes is not None and len(_rr.boxes) > 0:
             r, img = c, _im
@@ -58,14 +59,12 @@ def main():
     H, W0 = img.shape[:2]
     print("测试图 %s %dx%d，标注 %s 框" % (r["name"], W0, H, r["n_boxes"]))
 
-    mid = W.current_model_id
-    info = W.MODEL_REGISTRY[mid]
-    spec = info.get("spec") or W._load_model_spec(info["path"])
-    print("当前模型 %s -> spec=%s" % (mid, spec))
+    bundle = W.snapshot_model()
+    print("当前模型 %s -> spec=%s" % (bundle.model_id, bundle.spec))
 
     # ---------- 1) 旧口径（roi=False） ----------
-    info["spec"] = {"imgsz": 1920, "roi": False, "source": "test"}
-    res1, draw1 = W.infer_one(W.current_model, img, 0.05)
+    full_bundle = replace(bundle, spec=W.InferenceSpec(1920, False, 0.0, "test"))
+    res1, draw1 = W.infer_one(full_bundle, img, 0.05)
     b1 = res1.boxes.xyxy.cpu().numpy() if res1.boxes is not None and len(res1.boxes) else np.zeros((0, 4))
     print("\n[1] roi=False: 框 %d 个 | draw %s | 原图 %sx%s"
           % (len(b1), draw1.shape[:2], H, W0))
@@ -74,8 +73,8 @@ def main():
         assert b1[:, 0].max() <= W0 + 1 and b1[:, 1].max() <= H + 1, "框坐标应落在原图内"
 
     # ---------- 2) ROI 口径 ----------
-    info["spec"] = {"imgsz": 1536, "roi": True, "source": "test"}
-    res2, draw2 = W.infer_one(W.current_model, img, 0.01)
+    roi_bundle = replace(bundle, spec=W.InferenceSpec(1536, True, 0.0, "test"))
+    res2, draw2 = W.infer_one(roi_bundle, img, 0.01)
     b2 = res2.boxes.xyxy.cpu().numpy() if res2.boxes is not None and len(res2.boxes) else np.zeros((0, 4))
     x0, y0, x1, y1 = R.roi_box(W0, H)
     print("[2] roi=True : 框 %d 个 | draw %s | ROI=(%d,%d,%d,%d)" % (len(b2), draw2.shape[:2], x0, y0, x1, y1))
@@ -98,7 +97,7 @@ def main():
     assert not ok_blank and ok_real, "有效性检查判据失效"
 
     # ---------- 4) 批量接口一致性 ----------
-    res_b, draw_b = W.infer_batch(W.current_model, [img, img], 0.05)
+    res_b, draw_b = W.infer_batch(roi_bundle, [img, img], 0.05)
     nb = [len(x.boxes) if x.boxes is not None else 0 for x in res_b]
     print("[4] infer_batch: 两张图框数 %s | draw 尺寸 %s" % (nb, [d.shape[:2] for d in draw_b]))
     assert len(res_b) == 2 and all(d.shape[:2] == (H, W0) for d in draw_b)
@@ -124,8 +123,7 @@ def main():
     assert fr.boxes.data[0].tolist() == [693.0, 161.0, 733.0, 201.0], fr.boxes.data
     print("    _restore_boxes 就地映射正确")
 
-    # 恢复原始 spec，避免污染进程状态
-    info["spec"] = spec
+    # 测试只构造独立快照，不改全局当前模型或可变注册表。
     print("\n全部断言通过 ✓")
     return 0
 

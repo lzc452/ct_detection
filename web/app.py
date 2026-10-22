@@ -31,6 +31,8 @@ import zipfile
 from io import BytesIO
 import json
 import traceback
+import hashlib
+from dataclasses import dataclass, asdict
 
 from flask import Flask, render_template, request, jsonify, send_file
 import torch
@@ -138,79 +140,87 @@ def scan_models():
 scan_models()
 
 # ==================== 模型加载管理 ====================
-current_model = None
-current_model_id = None
+@dataclass(frozen=True)
+class InferenceSpec:
+    """与权重一起冻结的推理规格；不从可变注册表读取。"""
+    imgsz: int = INFER_SIZE
+    roi: bool = False
+    roi_k: float = 0.0
+    source: str = 'default'
+
+
+@dataclass(frozen=True)
+class ModelBundle:
+    """一次任务持有一个完整快照。模型对象本身的调用由 _MODEL_LOCK 串行保护。"""
+    model: object
+    model_id: str
+    model_sha256: str
+    spec: InferenceSpec
+
+
+# 同时保护发布、预热、预测器和 ROI 模块级 k。
+# 不持锁做读盘/写盘；长任务保留旧快照，切换只影响后续任务。
+_MODEL_LOCK = threading.RLock()
+current_bundle = None
+
+
+def snapshot_model():
+    """一次读出已成功加载的模型和规格；调用方不可分开读 ID/模型/注册表。"""
+    with _MODEL_LOCK:
+        if current_bundle is None:
+            raise RuntimeError('没有可用模型')
+        return current_bundle
 
 
 def _load_model_spec(pt_path):
-    """读模型同目录的 _train_meta.json，得到推理口径（imgsz + 是否 ROI 裁剪）。
-
-    没有 meta 的旧模型（V3/V4 等）回退到全图 INFER_SIZE，行为与改造前完全一致。
-    """
-    spec = {'imgsz': INFER_SIZE, 'roi': False, 'roi_k': 0.0, 'source': 'default'}
-    # meta 默认在 run 根目录（weights/ 的上一层）；早期的 models/启用/<ver>/ 布局与 .pt 同级。
-    # 两处都要找，否则 ultralytics 直接产出的 best.pt 永远读不到口径。
+    """旧模型无 meta 时显式用全图1920；存在但损坏的 meta 拒绝切换。"""
     d = os.path.dirname(pt_path)
     for meta_path in (os.path.join(d, '_train_meta.json'),
                       os.path.join(os.path.dirname(d), '_train_meta.json')):
         if os.path.exists(meta_path):
             break
     else:
-        return spec
-    try:
-        with open(meta_path, encoding='utf-8') as f:
-            m = json.load(f)
-        hp = m.get('hyperparams') or {}
-        if hp.get('imgsz'):
-            spec['imgsz'] = int(hp['imgsz'])
-        spec['roi'] = bool(m.get('roi'))
-        # 带余量 ROI（P0-2）：只写 roi=True 不写 roi_k，会让部署端用原始边界去裁
-        # 一个在宽视野上训练的模型 —— 框系统性偏小，且不报错。
-        spec['roi_k'] = float(m.get('roi_k') or 0.0)
-        spec['source'] = meta_path
-    except Exception as e:
-        print(f"[Model Spec] 读取 {meta_path} 失败，回退默认口径: {e}")
-    return spec
+        return InferenceSpec()
+    with open(meta_path, encoding='utf-8') as f:
+        meta = json.load(f)
+    if not isinstance(meta, dict) or not isinstance(meta.get('hyperparams'), dict):
+        raise ValueError(f'meta缺少hyperparams对象: {meta_path}')
+    hp = meta['hyperparams']
+    size = hp.get('imgsz')
+    use_roi = meta.get('roi')
+    if use_roi is True and 'roi_k' not in meta:
+        raise ValueError(f'ROI meta缺少roi_k，请核对训练口径后补齐: {meta_path}')
+    k = meta.get('roi_k', 0.0)
+    if type(size) is not int or size <= 0 or size % 32:
+        raise ValueError(f'meta imgsz 必须是32对齐的正整数: {meta_path}')
+    if type(use_roi) is not bool:
+        raise ValueError(f'meta roi 必须是布尔值: {meta_path}')
+    if isinstance(k, bool) or not isinstance(k, (float, int)) or not math.isfinite(k) or k < 0:
+        raise ValueError(f'meta roi_k 必须是非负有限数: {meta_path}')
+    return InferenceSpec(size, use_roi, float(k), meta_path)
 
 
-_roi_warn = [0]
-
-
-def _infer_spec():
-    """当前模型的 (imgsz, 是否 ROI, ROI 余量 k)"""
-    info = MODEL_REGISTRY.get(current_model_id) or {}
-    spec = info.get('spec') or {}
-    return (spec.get('imgsz', INFER_SIZE), bool(spec.get('roi')),
-            float(spec.get('roi_k') or 0.0))
-
-
-def _prep_infer(img):
-    """按当前模型口径裁出送入模型的图；返回 (输入图, offset 或 None)"""
-    _, use_roi, roi_k = _infer_spec()
-    if not use_roi:
+def _prep_infer(img, bundle):
+    """规格来自任务快照；set_margin_k 与实际裁剪在同一临界区。"""
+    if not bundle.spec.roi:
         return img, None
-    roi_mod.set_margin_k(roi_k)          # 必须与训练时的 k 一致
-    roi_img, box = roi_mod.crop_roi(img)
-    if not roi_mod.roi_looks_valid(roi_img):
-        _roi_warn[0] += 1
-        if _roi_warn[0] <= 5:
-            print(f"[ROI] 警告 #{_roi_warn[0]}：ROI 内灰度标准差过低，成像布局可能已变化，"
-                  f"裁剪可能不含电芯，请人工检查 core/roi.py 的边界")
-    return roi_img, box
+    with _MODEL_LOCK:
+        roi_mod.set_margin_k(bundle.spec.roi_k)
+        roi_img, box = roi_mod.crop_roi(img)
+        if not roi_mod.roi_looks_valid(roi_img):
+            raise ValueError('ROI有效性检查失败：请复核成像布局，不能判为无缺陷')
+        return roi_img, box
 
 
 def _restore_boxes(res, box):
     """ROI 坐标 -> 原图坐标（就地修改 res.boxes）"""
     if box is None:
         return
-    try:
-        if res.boxes is not None and len(res.boxes):
-            res.boxes.data[:, 0] += box[0]
-            res.boxes.data[:, 2] += box[0]
-            res.boxes.data[:, 1] += box[1]
-            res.boxes.data[:, 3] += box[1]
-    except Exception as e:
-        print(f"[ROI] 坐标映射失败: {e}")
+    if res.boxes is not None and len(res.boxes):
+        res.boxes.data[:, 0] += box[0]
+        res.boxes.data[:, 2] += box[0]
+        res.boxes.data[:, 1] += box[1]
+        res.boxes.data[:, 3] += box[1]
 
 
 def _plot_after_infer(res, orig_img, box):
@@ -227,70 +237,70 @@ def _plot_after_infer(res, orig_img, box):
     return draw
 
 
-def infer_one(model, img, conf, imgsz=None):
-    """单图推理 + 画图，自动处理 ROI。返回 (results, draw_img)"""
-    size = imgsz or _infer_spec()[0]
-    inp, box = _prep_infer(img)
-    res = model(inp, imgsz=size, half=USE_FP16, device=DEVICE,
-                max_det=MAX_DET, verbose=False, conf=conf)[0]
+def _predict_inputs(bundle, inputs, conf):
+    """只允许一个模型调用占用推理设备；生成器必须在锁内消费完。"""
+    with _MODEL_LOCK:
+        results = list(bundle.model(
+            inputs, imgsz=bundle.spec.imgsz, half=USE_FP16, device=DEVICE,
+            max_det=MAX_DET, verbose=False, conf=conf))
+        if len(results) != len(inputs):
+            raise RuntimeError(f'模型返回数量不符: {len(results)}/{len(inputs)}')
+        return results
+
+
+def infer_one(bundle, img, conf):
+    """单图推理和坐标恢复；权重、规格、余量均绑定到同一快照。"""
+    inp, box = _prep_infer(img, bundle)
+    res = _predict_inputs(bundle, [inp], conf)[0]
     draw = _plot_after_infer(res, img, box)
     _restore_boxes(res, box)
     return res, draw
 
 
-def infer_batch(model, imgs, conf, imgsz=None):
-    """批量推理 + 画图，自动处理 ROI。返回 (results_list, draws_list)"""
-    size = imgsz or _infer_spec()[0]
-    inputs, boxes = [], []
-    for im in imgs:
-        inp, box = _prep_infer(im)
-        inputs.append(inp)
-        boxes.append(box)
-    results = list(model(inputs, imgsz=size, half=USE_FP16, device=DEVICE,
-                         max_det=MAX_DET, verbose=False, conf=conf))
+def infer_batch(bundle, imgs, conf):
+    """批量辅助入口；任一坏输入直接报错，路由另按文件隔离坏ROI。"""
+    prepared = [_prep_infer(im, bundle) for im in imgs]
+    results = _predict_inputs(bundle, [p[0] for p in prepared], conf)
     draws = []
-    for res, im, box in zip(results, imgs, boxes):
+    for res, im, (_, box) in zip(results, imgs, prepared):
         draws.append(_plot_after_infer(res, im, box))
         _restore_boxes(res, box)
     return results, draws
 
 
+def _weight_sha256(path):
+    digest = hashlib.sha256()
+    with open(path, 'rb') as f:
+        for block in iter(lambda: f.read(1024 * 1024), b''):
+            digest.update(block)
+    return digest.hexdigest()
+
+
 def load_model(model_id, warmup=True):
-    """
-    加载指定模型，自动卸载旧模型释放显存
-    """
-    global current_model, current_model_id
-    if model_id not in MODEL_REGISTRY:
-        raise ValueError(f"Model '{model_id}' not found in registry")
-    if current_model_id == model_id and current_model is not None:
-        print(f"[Model] Already loaded: {model_id}")
-        return current_model
-    # 卸载旧模型
-    if current_model is not None:
-        print(f"[Model] Unloading old model: {current_model_id}")
-        del current_model
-        current_model = None
-        current_model_id = None
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-    # 加载新模型
-    model_info = MODEL_REGISTRY[model_id]
-    if 'spec' not in model_info:
-        model_info['spec'] = _load_model_spec(model_info['path'])
-    spec = model_info['spec']
-    model_path = model_info['path']
-    print(f"[Model] Loading: {model_id} ({model_path})")
-    print(f"[Model] Spec: imgsz={spec['imgsz']} roi={spec['roi']} (来源 {spec['source']})")
-    new_model = YOLO(model_path, task='detect')
-    current_model = new_model
-    current_model_id = model_id
-    # 预热（用该模型自己的 imgsz，不能再用全局 INFER_SIZE）
-    if warmup:
-        _sz = spec['imgsz']
-        _warmup_imgs = [np.zeros((_sz, _sz, 3), dtype=np.uint8)] * BATCH_SIZE
-        new_model(_warmup_imgs, imgsz=_sz, half=USE_FP16, device=DEVICE, verbose=False)
-        print(f"[Model] Warmup done for {model_id} (imgsz={_sz})")
-    return new_model
+    """先加载/预热候选，成功后原子发布；失败保持旧快照可用。"""
+    global current_bundle
+    with _MODEL_LOCK:
+        if model_id not in MODEL_REGISTRY:
+            raise ValueError(f"Model '{model_id}' not found in registry")
+        if current_bundle is not None and current_bundle.model_id == model_id:
+            return current_bundle
+        model_path = MODEL_REGISTRY[model_id]['path']
+        spec = _load_model_spec(model_path)
+        weight_hash = _weight_sha256(model_path)
+        print(f"[Model] Loading: {model_id} ({model_path})")
+        print(f"[Model] Spec: {asdict(spec)}")
+        new_model = YOLO(model_path, task='detect')
+        if warmup:
+            warmup_imgs = [np.zeros((spec.imgsz, spec.imgsz, 3), dtype=np.uint8)] * BATCH_SIZE
+            new_model(warmup_imgs, imgsz=spec.imgsz, half=USE_FP16, device=DEVICE, verbose=False)
+        # 发布前确认加载期间权重未被替换，避免账本哈希与实际模型不一致。
+        if weight_hash != _weight_sha256(model_path):
+            raise RuntimeError('加载期间权重发生变化，请重试')
+        bundle = ModelBundle(new_model, model_id, weight_hash, spec)
+        current_bundle = bundle
+        print(f"[Model] Ready: {model_id}")
+        return bundle
+
 
 # 加载默认模型：优先 V4（2026-10-19 清洗考卷 mAP50 93.3%，生产口径三类召回 95.8/96.6/90.3，全面优于 V3）
 if MODEL_REGISTRY:
@@ -308,8 +318,40 @@ video_tasks = {}
 problem_images = []   # 有检出的图：{文件名, 组别, 原图文件, 标注图文件}，供导出打包
 export_tasks = {}     # 导出任务进度：{task_id: {status, done, total, url, message}}
 batch_info = {}       # 批次元信息：{批次ID: {root, groups, mode, time}}，历史结果展示用
+_BATCH_MODEL_LOCK = threading.Lock()
+_TASK_START_LOCK = threading.Lock()
 
 STATE_FILE = os.path.join(RESULTS_FOLDER, '_state.json')
+_STATE_SAVE_LOCK = threading.Lock()
+
+
+def _model_contract(bundle):
+    return dict(model_id=bundle.model_id, model_sha256=bundle.model_sha256,
+                infer_spec=asdict(bundle.spec), half=USE_FP16, device=str(DEVICE))
+
+
+def _bind_batch_model(batch_id, bundle, default_info):
+    """跨HTTP分块也不得在同一批次静默混用模型；旧无来源批次只供回看。"""
+    contract = _model_contract(bundle)
+    with _BATCH_MODEL_LOCK:
+        info = batch_info.setdefault(batch_id, default_info)
+        previous = info.get('model_contract')
+        if previous is None:
+            if any(r.get('批次ID') == batch_id for r in file_records):
+                return False
+            info['model_contract'] = contract
+            return True
+        return previous == contract
+
+
+def _jobs_fingerprint(jobs):
+    """对用户提交的已扫描文件清单签名；不读图片，不递归扫描目录。"""
+    digest = hashlib.sha256()
+    for ap, rel in jobs:
+        stat = os.stat(ap)
+        item = [os.path.normcase(os.path.abspath(ap)), rel, stat.st_size, stat.st_mtime_ns]
+        digest.update(json.dumps(item, ensure_ascii=False).encode('utf-8') + b'\n')
+    return digest.hexdigest()
 
 
 # ---------- 逐文件状态（#3）：失败不再伪装成"未检出" ----------
@@ -320,13 +362,14 @@ STATUS_TEXT = {STATUS_OK_DEFECT: '有缺陷', STATUS_OK_CLEAN: '无缺陷', STAT
 
 
 def add_file_record(batch_id, path, status, n_boxes=0, conf=None, model_id=None,
-                    full_path='', error='', extra=None):
+                    full_path='', error='', extra=None, bundle=None):
     """文件级台账：每个输入文件恰好一条，无论成功/干净/失败。
 
     这是 #6（Excel 统计错误）与 #3（失败态）共用的数据底座：
     - 以前 `检测文件数` 用 len(set(文件全路径)) 统计，上传模式下全路径恒为 ''，永远是 1；
     - 以前无缺陷图根本不进 detection_results，没有可用的分母。
     """
+    bundle = bundle or snapshot_model()
     rec = {
         "批次ID": batch_id,
         "文件路径": path,
@@ -334,7 +377,11 @@ def add_file_record(batch_id, path, status, n_boxes=0, conf=None, model_id=None,
         "组别": extract_group(path or ''),
         "状态": status,
         "缺陷数": int(n_boxes or 0),
-        "模型": model_id or (current_model_id or ''),
+        "模型": model_id or bundle.model_id,
+        "模型SHA256": bundle.model_sha256,
+        "推理规格": asdict(bundle.spec),
+        "半精度": USE_FP16,
+        "设备": str(DEVICE),
         "阈值": conf if conf is not None else CONF_DEFAULT,
         "检测时间": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "备注": error or '',
@@ -352,15 +399,23 @@ def new_batch_id():
 
 
 def save_state():
-    """检测结果落盘：刷新页面/重启服务后可恢复（致命数据不再丢）"""
-    try:
-        with open(STATE_FILE, 'w', encoding='utf-8') as f:
-            json.dump({'detection_results': detection_results,
-                       'file_records': file_records,
-                       'problem_images': problem_images,
-                       'batch_info': batch_info}, f, ensure_ascii=False)
-    except Exception as e:
-        print(f"[WARN] save_state failed: {e}")
+    """串行、原子落盘，避免并发写同一JSON导致重启时无法恢复。"""
+    with _STATE_SAVE_LOCK:
+        temp_path = STATE_FILE + '.' + uuid.uuid4().hex + '.tmp'
+        try:
+            with open(temp_path, 'x', encoding='utf-8') as f:
+                json.dump({'detection_results': detection_results,
+                           'file_records': file_records,
+                           'problem_images': problem_images,
+                           'batch_info': batch_info}, f, ensure_ascii=False)
+            os.replace(temp_path, STATE_FILE)
+        except Exception as e:
+            print(f"[WARN] save_state failed: {e}")
+        finally:
+            try:
+                os.remove(temp_path)
+            except OSError:
+                pass
 
 
 def _migrate_legacy_batches():
@@ -573,16 +628,19 @@ def index():
 @app.route('/api/models')
 def list_models():
     """返回可用模型列表"""
+    bundle = snapshot_model()
     return jsonify({
         "success": True,
-        "current": current_model_id,
+        "current": bundle.model_id,
+        "current_sha256": bundle.model_sha256,
+        "current_spec": asdict(bundle.spec),
         "models": [
             {
                 "id": mid,
                 "name": info["name"],
                 "label": info["label"],
                 "path": info["rel_path"],
-                "active": mid == current_model_id
+                "active": mid == bundle.model_id
             }
             for mid, info in MODEL_REGISTRY.items()
         ]
@@ -616,18 +674,19 @@ def switch_model():
         return jsonify({"success": False, "message": str(e)}), 500
 
 
-def _failed_payload(idx, filename, batch_id, conf, error, log=True):
+def _failed_payload(idx, filename, batch_id, conf, error, log=True, bundle=None):
     """失败文件的统一记录：同时写进文件台账与响应体。
 
     这是 #3 的核心：失败必须先成为一条显式记录（带 index），前端才能把它渲染成
     "检测失败"而不是"未检出目标"，也才能用 index 取到正确的缩略图。
     """
     if log:
-        add_file_record(batch_id, filename, STATUS_FAILED, 0, conf, error=error)
+        add_file_record(batch_id, filename, STATUS_FAILED, 0, conf, error=error, bundle=bundle)
     return {"index": idx, "filename": filename, "status": STATUS_FAILED,
             "target_nums": 0, "locations": [], "classes": [], "confs": [],
             "image_url": None, "orig_url": None, "batch_id": batch_id,
-            "conf": conf, "error": error}
+            "conf": conf, "error": error,
+            "model_id": (bundle or snapshot_model()).model_id}
 
 
 @app.route('/api/detect/image', methods=['POST'])
@@ -635,15 +694,17 @@ def detect_image():
     """单图检测（文件上传方式）"""
     try:
         global detection_results
+        bundle = snapshot_model()
         file = request.files.get('file')
         if not file:
             return jsonify({"success": False, "message": "未收到文件"})
 
         conf_threshold = parse_conf(request.form.get('conf'), CONF_DEFAULT)
         batch_id = request.form.get('batch_id') or new_batch_id()
-        if batch_id not in batch_info:
-            batch_info[batch_id] = {'root': '', 'groups': [], 'mode': 'single',
-                                    'time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        default_info = {'root': '', 'groups': [], 'mode': 'single',
+                        'time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        if not _bind_batch_model(batch_id, bundle, default_info):
+            return jsonify(success=False, message='此批次模型来源已改变或缺失，请新建批次'), 409
         file_paths = json.loads(request.form.get('file_paths', '[]'))
         filename = file_paths[0] if file_paths else file.filename
 
@@ -653,7 +714,7 @@ def detect_image():
             # PIL 对象直接喂模型有兼容问题（可能静默漏检），统一转 numpy RGB
             img = np.array(Image.open(file.stream).convert('RGB'))
         except Exception as e:
-            add_file_record(batch_id, filename, STATUS_FAILED, 0, conf_threshold,
+            add_file_record(batch_id, filename, STATUS_FAILED, 0, conf_threshold, bundle=bundle,
                             error='读图失败: %s' % e)
             save_state()
             return jsonify({"success": False, "status": STATUS_FAILED,
@@ -663,7 +724,7 @@ def detect_image():
         # --- 计时：模型推理（阈值直传，#8）---
         t1 = time.time()
         # ROI 模式下 infer_one 内部顺序：裁剪 → 推理 → 在 ROI 上画 → 坐标映射回原图
-        results, draw_img = infer_one(current_model, img, conf_threshold)
+        results, draw_img = infer_one(bundle, img, conf_threshold)
         t2 = time.time()
         t_infer = t2 - t1
         t_plot = 0.0    # 画图已合并进 infer_one（必须先画后映射，不能拆开）
@@ -681,7 +742,7 @@ def detect_image():
         result_filename = save_annotated_image(draw_img, filename)
         t_save = time.time() - t5
         if not result_filename:
-            add_file_record(batch_id, filename, STATUS_FAILED, 0, conf_threshold,
+            add_file_record(batch_id, filename, STATUS_FAILED, 0, conf_threshold, bundle=bundle,
                             error='结果图保存失败（检查 results 目录权限）')
             save_state()
             return jsonify({"success": False, "status": STATUS_FAILED,
@@ -700,7 +761,7 @@ def detect_image():
             register_problem_image(filename, orig_file, result_filename, classes, batch_id)
 
         status = STATUS_OK_DEFECT if has_det else STATUS_OK_CLEAN
-        add_file_record(batch_id, filename, status, len(classes), conf_threshold)
+        add_file_record(batch_id, filename, status, len(classes), conf_threshold, bundle=bundle)
         save_state()
 
         # 统计各类别数量
@@ -725,12 +786,18 @@ def detect_image():
             "image_url": f"/api/results/{result_filename}",
             "orig_url": f"/api/results/{orig_file}" if orig_file else None,
             "batch_id": batch_id,
-            "filename": filename
+            "filename": filename,
+            "model_id": bundle.model_id
         })
     except Exception as e:
         print(f"[ERROR] detect_image failed: {e}")
         traceback.print_exc()
-        return jsonify({"success": False, "message": f"检测失败: {type(e).__name__}: {str(e)}"}), 500
+        if 'batch_id' in locals() and 'filename' in locals():
+            add_file_record(batch_id, filename, STATUS_FAILED, 0, conf_threshold,
+                            error='推理或结果处理失败: %s' % e, bundle=bundle)
+            save_state()
+        return jsonify({"success": False, "status": STATUS_FAILED,
+                        "message": f"检测失败: {type(e).__name__}: {str(e)}"}), 500
 
 
 @app.route('/api/detect/batch', methods=['POST'])
@@ -742,6 +809,7 @@ def detect_batch():
     `data.results[k]` 与 `chunk[k]` 会错位，出现"文件名 A、缩略图 B"的张冠李戴。
     """
     try:
+        bundle = snapshot_model()
         files = request.files.getlist('files')
         if not files:
             return jsonify({"success": False, "message": "未收到文件"})
@@ -749,13 +817,14 @@ def detect_batch():
         conf_threshold = parse_conf(request.form.get('conf'), CONF_DEFAULT)
         batch_id = request.form.get('batch_id') or new_batch_id()
         file_paths = json.loads(request.form.get('file_paths', '[]'))
-        if batch_id not in batch_info:
-            root0 = ''
-            if file_paths:
-                parts0 = [p for p in file_paths[0].replace('\\', '/').split('/') if p]
-                root0 = parts0[0] if len(parts0) > 1 else ''
-            batch_info[batch_id] = {'root': root0, 'groups': [], 'mode': 'upload',
-                                    'time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        root0 = ''
+        if file_paths:
+            parts0 = [p for p in file_paths[0].replace('\\', '/').split('/') if p]
+            root0 = parts0[0] if len(parts0) > 1 else ''
+        default_info = {'root': root0, 'groups': [], 'mode': 'upload',
+                        'time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        if not _bind_batch_model(batch_id, bundle, default_info):
+            return jsonify(success=False, message='此批次模型来源已改变或缺失，请新建批次'), 409
 
         t_start = time.time()
         total_files = len(files)
@@ -771,6 +840,7 @@ def detect_batch():
             chunk_files = files[i:i + BATCH_SIZE]
             chunk_imgs = []
             chunk_idx = []
+            _ins, _offs = [], []
 
             # 读取计时
             t_read0 = time.time()
@@ -780,12 +850,15 @@ def detect_batch():
                 try:
                     # PIL 对象直接喂模型有兼容问题（可能静默漏检），统一转 numpy RGB
                     img = np.array(Image.open(f.stream).convert('RGB'))
+                    inp, off = _prep_infer(img, bundle)
                     chunk_imgs.append(img)
                     chunk_idx.append(idx)
+                    _ins.append(inp)
+                    _offs.append(off)
                 except Exception as e:
                     print(f"[Skip] Cannot read {nm}: {e}")
                     records[idx] = _failed_payload(idx, nm, batch_id, conf_threshold,
-                                                   '读图失败: %s' % e)
+                                                   '读图/预处理失败: %s' % e, bundle=bundle)
                     n_failed += 1
             t_read = time.time() - t_read0
 
@@ -795,28 +868,14 @@ def detect_batch():
             # 推理计时（阈值直传，#8）
             t_infer0 = time.time()
             try:
-                # ROI 模式下先把每张裁成模型口径的输入，偏移量留着做坐标映射
-                _ins, _offs = [], []
-                for _im in chunk_imgs:
-                    _i, _b = _prep_infer(_im)
-                    _ins.append(_i)
-                    _offs.append(_b)
-                results = current_model(
-                    _ins,
-                    imgsz=_infer_spec()[0],
-                    half=USE_FP16,
-                    device=DEVICE,
-                    max_det=MAX_DET,
-                    verbose=False,
-                    conf=conf_threshold
-                )
+                results = _predict_inputs(bundle, _ins, conf_threshold)
             except Exception as e:
                 # 整块推理失败：本块每个文件都记 failed，然后继续下一块（不丢掉已检出的结果）
                 print(f"[ERROR] model() batch inference failed: {e}")
                 traceback.print_exc()
                 for idx in chunk_idx:
                     records[idx] = _failed_payload(idx, name_of(idx), batch_id, conf_threshold,
-                                                   '模型推理失败: %s' % e)
+                                                   '模型推理失败: %s' % e, bundle=bundle)
                     n_failed += 1
                 continue
             t_infer = time.time() - t_infer0
@@ -873,7 +932,7 @@ def detect_batch():
                         chunk_defects += len(classes)
                     else:
                         chunk_clean_imgs += 1
-                    add_file_record(batch_id, filename, status, len(classes), conf_threshold,
+                    add_file_record(batch_id, filename, status, len(classes), conf_threshold, bundle=bundle,
                                     error='' if result_filename or not has_det
                                     else '标注图保存失败')
 
@@ -889,6 +948,7 @@ def detect_batch():
                         "orig_url": f"/api/results/{orig_file}" if orig_file else None,
                         "batch_id": batch_id,
                         "conf": conf_threshold,
+                        "model_id": bundle.model_id,
                         "error": ''
                     }
                 except Exception as e:
@@ -896,7 +956,7 @@ def detect_batch():
                     traceback.print_exc()
                     records[idx] = _failed_payload(idx, filename, batch_id, conf_threshold,
                                                    '结果处理失败: %s' % e,
-                                                   log=(idx not in records))
+                                                   log=(idx not in records), bundle=bundle)
                     n_failed += 1
 
             n_defect += chunk_defect_imgs
@@ -911,7 +971,7 @@ def detect_batch():
         for idx in range(total_files):
             if idx not in records:
                 records[idx] = _failed_payload(idx, name_of(idx), batch_id, conf_threshold,
-                                               '未处理（内部错误）')
+                                               '未处理（内部错误）', bundle=bundle)
                 n_failed += 1
         response = [records[k] for k in sorted(records)]
         failed_files = [r["filename"] for r in response if r["status"] == STATUS_FAILED]
@@ -968,7 +1028,7 @@ def detect_video():
 
         thread = threading.Thread(
             target=process_video_task,
-            args=(task_id, temp_path, conf_threshold, file.filename)
+            args=(task_id, temp_path, conf_threshold, file.filename, snapshot_model())
         )
         thread.start()
 
@@ -979,7 +1039,7 @@ def detect_video():
         return jsonify({"success": False, "message": f"视频提交失败: {type(e).__name__}: {str(e)}"}), 500
 
 
-def process_video_task(task_id, temp_path, conf_threshold, original_filename):
+def process_video_task(task_id, temp_path, conf_threshold, original_filename, bundle=None):
     """后台线程处理视频
 
     #3：视频侧的"静默成功"更危险——打不开的视频、写不出的 writer 以前都会走到
@@ -987,6 +1047,9 @@ def process_video_task(task_id, temp_path, conf_threshold, original_filename):
     error（整体失败）/ done_with_errors（部分帧推理失败，已用原帧填充）。
     """
     try:
+        bundle = bundle or snapshot_model()
+        video_tasks[task_id].update(model_id=bundle.model_id, model_sha256=bundle.model_sha256,
+                                    infer_spec=asdict(bundle.spec))
         cap = cv2.VideoCapture(temp_path)
         if not cap.isOpened():
             video_tasks[task_id].update(status='error',
@@ -1037,7 +1100,7 @@ def process_video_task(task_id, temp_path, conf_threshold, original_filename):
             try:
                 t_i0 = time.time()
                 # ROI 模式：裁剪 → 推理 → 在 ROI 上画 → 坐标映射回原图（顺序不能拆）
-                results, _drawf = infer_one(current_model, frame, conf_threshold)
+                results, _drawf = infer_one(bundle, frame, conf_threshold)
                 t_total_infer += (time.time() - t_i0)
 
                 has_det = results.boxes is not None and len(results.boxes) > 0
@@ -1473,11 +1536,18 @@ def backup_original_file(abs_path):
 
 
 def _write_task_file(info):
+    temp_path = TASK_FILE + '.' + uuid.uuid4().hex + '.tmp'
     try:
-        with open(TASK_FILE, 'w', encoding='utf-8') as f:
+        with open(temp_path, 'x', encoding='utf-8') as f:
             json.dump(info, f, ensure_ascii=False)
+        os.replace(temp_path, TASK_FILE)
     except Exception as e:
         print(f"[WARN] write task file failed: {e}")
+    finally:
+        try:
+            os.remove(temp_path)
+        except OSError:
+            pass
 
 
 def _interrupted_task():
@@ -1535,7 +1605,14 @@ def api_scan_path():
 
 @app.route('/api/detect/start', methods=['POST'])
 def api_detect_start():
+    """串行提交，检查进行中任务和创建任务之间不留竞态。"""
+    with _TASK_START_LOCK:
+        return _start_path_task()
+
+
+def _start_path_task():
     """启动路径直读后台检测任务（groups 缺省=全部；resume=续检上次中断任务）"""
+    bundle = snapshot_model()
     data = request.get_json(force=True, silent=True) or {}
     raw = (data.get('path') or '').strip().strip('"').strip("'")
     conf = parse_conf(data.get('conf'), CONF_DEFAULT)
@@ -1566,57 +1643,66 @@ def api_detect_start():
             ap = os.path.join(g['dir'], fn)
             jobs.append((ap, os.path.relpath(ap, parent).replace('\\', '/')))
 
+    jobs_hash = _jobs_fingerprint(jobs)
     skip = 0
     batch_id = new_batch_id()
     if resume:
         prev = _interrupted_task()
-        if prev and os.path.normpath(prev.get('root', '')) == root:
-            skip = min(int(prev.get('done', 0)), len(jobs))  # 顺序由扫描排序保证一致
-            batch_id = prev.get('batch_id') or batch_id      # 续检沿用原批次：一次任务仍是一批
+        if not prev or os.path.normpath(prev.get('root', '')) != root:
+            return jsonify(success=False, message='没有与此目录匹配的中断任务，请新建检测'), 409
+        if (prev.get('model_contract') != _model_contract(bundle)
+                or prev.get('conf') != conf or prev.get('jobs_fingerprint') != jobs_hash):
+            return jsonify(success=False, message='续检模型、阈值或文件清单已变，或旧任务缺少来源，请新建检测'), 409
+        skip = min(int(prev.get('done', 0)), len(jobs))
+        batch_id = prev.get('batch_id') or batch_id
     if skip:
         jobs = jobs[skip:]
 
+    default_info = {'root': root, 'mode': mode,
+                    'groups': [g['name'] or (os.path.basename(root.rstrip('\\/')) or root) for g in groups],
+                    'time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+    if not _bind_batch_model(batch_id, bundle, default_info):
+        return jsonify(success=False, message='原批次模型来源已改变或缺失，请新建检测'), 409
     task_id = uuid.uuid4().hex[:12]
     detect_tasks[task_id] = {
         'status': 'running', 'done': skip, 'total': skip + len(jobs),
         'defect_imgs': 0, 'defects': 0, 'errors': 0,
         'speed': 0.0, 'eta_s': -1, 'current': '', 'message': '',
         'items': [], 'stop': False, 'batch_id': batch_id,
+        'jobs_fingerprint': jobs_hash,
     }
-    if batch_id not in batch_info:   # 续检沿用原批次信息
-        batch_info[batch_id] = {
-            'root': root, 'mode': mode,
-            'groups': [g['name'] or (os.path.basename(root.rstrip('\\/')) or root) for g in groups],
-            'time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        }
     threading.Thread(target=_detect_worker,
-                     args=(task_id, root, jobs, conf, skip, batch_id),
+                     args=(task_id, root, jobs, conf, skip, batch_id, bundle),
                      daemon=True).start()
     return jsonify({"success": True, "task_id": task_id, "batch_id": batch_id,
                     "total": skip + len(jobs), "skipped": skip})
 
 
-def _detect_worker(task_id, root, jobs, conf, skip, batch_id):
+def _detect_worker(task_id, root, jobs, conf, skip, batch_id, bundle=None):
     """后台检测线程：batch 读盘推理，问题图即存备份，逐批落盘可续检"""
     task = detect_tasks[task_id]
-    model = current_model          # 捕获引用：任务中途切换模型不影响本任务
-    # 推理口径也在任务开始时锁定（imgsz + 是否 ROI），与 model 一起冻结
-    _spec = (MODEL_REGISTRY.get(current_model_id) or {}).get('spec') or {}
-    _task_sz = int(_spec.get('imgsz', INFER_SIZE))
-    _task_roi = bool(_spec.get('roi'))
-    _task_k = float(_spec.get('roi_k') or 0.0)
+    bundle = bundle or snapshot_model()
+    task.update(model_id=bundle.model_id, model_sha256=bundle.model_sha256,
+                infer_spec=asdict(bundle.spec))
     t0 = time.time()
     processed = 0
     try:
+        if 'jobs_fingerprint' not in task:
+            task['jobs_fingerprint'] = _jobs_fingerprint(jobs)
         for i in range(0, len(jobs), BATCH_SIZE):
             if task.get('stop'):
                 task['status'] = 'stopped'
                 break
             chunk = jobs[i:i + BATCH_SIZE]
             imgs, aps, rels = [], [], []
+            _ins, _offs = [], []
             for ap, rel in chunk:
                 try:
-                    imgs.append(read_rgb_disk(ap))
+                    img = read_rgb_disk(ap)
+                    inp, off = _prep_infer(img, bundle)
+                    imgs.append(img)
+                    _ins.append(inp)
+                    _offs.append(off)
                     aps.append(ap)
                     rels.append(rel)
                 except Exception as e:
@@ -1624,63 +1710,53 @@ def _detect_worker(task_id, root, jobs, conf, skip, batch_id):
                     task['errors'] += 1
                     # #3/#6：读图失败也进台账，报表里的分母才等于实际扫过的文件数
                     add_file_record(batch_id, rel, STATUS_FAILED, 0, conf,
-                                    full_path=ap, error='读图失败: %s' % e)
+                                    full_path=ap, error='读图/预处理失败: %s' % e, bundle=bundle)
             if imgs:
                 try:
-                    _ins, _offs = [], []
-                    for _im in imgs:
-                        if _task_roi:
-                            roi_mod.set_margin_k(_task_k)
-                            _i, _b = roi_mod.crop_roi(_im)
-                            if not roi_mod.roi_looks_valid(_i) and _roi_warn[0] < 5:
-                                _roi_warn[0] += 1
-                                print(f"[ROI] 警告 #{_roi_warn[0]}：扫描任务中 ROI 有效性检查失败，"
-                                      f"请人工确认成像布局")
-                            _ins.append(_i)
-                            _offs.append(_b)
-                        else:
-                            _ins.append(_im)
-                            _offs.append(None)
-                    results = model(_ins, imgsz=_task_sz, half=USE_FP16, device=DEVICE,
-                                    max_det=MAX_DET, verbose=False, conf=conf)
+                    results = _predict_inputs(bundle, _ins, conf)
                 except Exception as e:
                     print(f"[ERROR] 批量推理失败（本块 {len(imgs)} 张记为失败）: {e}")
                     traceback.print_exc()
                     task['errors'] += len(imgs)
                     for ap, rel in zip(aps, rels):
                         add_file_record(batch_id, rel, STATUS_FAILED, 0, conf,
-                                        full_path=ap, error='推理失败: %s' % e)
+                                        full_path=ap, error='推理失败: %s' % e, bundle=bundle)
                     results, _offs = [], []
                 for img, ap, rel, res, _off in zip(imgs, aps, rels, results, _offs):
-                    boxes = res.boxes
-                    has = boxes is not None and len(boxes) > 0
-                    draw = None
-                    if has:
-                        draw = _plot_after_infer(res, img, _off)   # 先画（ROI 坐标）
-                    _restore_boxes(res, _off)                       # 再映射回原图坐标
-                    if has:
-                        parse_results_to_global(res, rel, ap, batch_id)
-                        ann = save_annotated_image(draw, rel)
-                        orig = backup_original_file(ap)
-                        classes = [int(c) for c in boxes.cls.tolist()]
-                        register_problem_image(rel, orig, ann, classes, batch_id)
-                        task['defect_imgs'] += 1
-                        task['defects'] += len(boxes)
-                        task['items'].append({
-                            "filename": rel,
-                            "status": STATUS_OK_DEFECT,
-                            "locations": [list(map(int, e)) for e in boxes.xyxy.tolist()],
-                            "classes": classes,
-                            "confs": ['%.2f %%' % (c * 100) for c in boxes.conf.tolist()],
-                            "image_url": f"/api/results/{ann}" if ann else None,
-                            "orig_url": f"/api/results/{orig}" if orig else None,
-                            "batch_id": batch_id,
-                            "time": datetime.datetime.now().strftime("%H:%M:%S"),
-                        })
-                        add_file_record(batch_id, rel, STATUS_OK_DEFECT, len(boxes), conf,
-                                        full_path=ap)
-                    else:
-                        add_file_record(batch_id, rel, STATUS_OK_CLEAN, 0, conf, full_path=ap)
+                    try:
+                        boxes = res.boxes
+                        has = boxes is not None and len(boxes) > 0
+                        draw = None
+                        if has:
+                            draw = _plot_after_infer(res, img, _off)   # 先画（ROI 坐标）
+                        _restore_boxes(res, _off)                       # 再映射回原图坐标
+                        if has:
+                            parse_results_to_global(res, rel, ap, batch_id)
+                            ann = save_annotated_image(draw, rel)
+                            orig = backup_original_file(ap)
+                            classes = [int(c) for c in boxes.cls.tolist()]
+                            register_problem_image(rel, orig, ann, classes, batch_id)
+                            task['defect_imgs'] += 1
+                            task['defects'] += len(boxes)
+                            task['items'].append({
+                                "filename": rel,
+                                "status": STATUS_OK_DEFECT,
+                                "locations": [list(map(int, e)) for e in boxes.xyxy.tolist()],
+                                "classes": classes,
+                                "confs": ['%.2f %%' % (c * 100) for c in boxes.conf.tolist()],
+                                "image_url": f"/api/results/{ann}" if ann else None,
+                                "orig_url": f"/api/results/{orig}" if orig else None,
+                                "batch_id": batch_id,
+                                "time": datetime.datetime.now().strftime("%H:%M:%S"),
+                            })
+                            add_file_record(batch_id, rel, STATUS_OK_DEFECT, len(boxes), conf,
+                                            full_path=ap, bundle=bundle)
+                        else:
+                            add_file_record(batch_id, rel, STATUS_OK_CLEAN, 0, conf, full_path=ap, bundle=bundle)
+                    except Exception as e:
+                        task['errors'] += 1
+                        add_file_record(batch_id, rel, STATUS_FAILED, 0, conf,
+                                        full_path=ap, error='结果处理失败: %s' % e, bundle=bundle)
             processed += len(chunk)
             task['done'] = skip + processed
             task['current'] = rels[-1] if rels else ''
@@ -1692,7 +1768,8 @@ def _detect_worker(task_id, root, jobs, conf, skip, batch_id):
             save_state()
             _write_task_file({'root': root, 'conf': conf, 'total': task['total'],
                               'done': task['done'], 'status': task['status'],
-                              'batch_id': batch_id,
+                              'batch_id': batch_id, 'model_contract': _model_contract(bundle),
+                              'jobs_fingerprint': task['jobs_fingerprint'],
                               'updated': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
             print(f"[DetectTask] {task['done']}/{task['total']} | 缺陷图 {task['defect_imgs']} | {task['speed']}张/s")
         else:
@@ -1700,7 +1777,8 @@ def _detect_worker(task_id, root, jobs, conf, skip, batch_id):
         save_state()
         _write_task_file({'root': root, 'conf': conf, 'total': task['total'],
                           'done': task['done'], 'status': task['status'],
-                          'batch_id': batch_id,
+                          'batch_id': batch_id, 'model_contract': _model_contract(bundle),
+                          'jobs_fingerprint': task['jobs_fingerprint'],
                           'updated': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
         print(f"[DetectTask Done] {task['done']}/{task['total']} | 缺陷图 {task['defect_imgs']} | 缺陷 {task['defects']} | 状态 {task['status']}")
     except Exception as e:

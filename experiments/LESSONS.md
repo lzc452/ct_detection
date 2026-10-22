@@ -247,6 +247,15 @@
 - **证据**：`core/roi.py`，4592 张全量标定（真实图 std ≥ 21.94，纯填充区 9.7~18.8）
 - **首次**：2026-10-21
 
+### L-025 模型引用与推理规格必须一起冻结，失败ROI不能记正常
+- **标签**：部署
+- **现象**：旧Web模型引用与全局规格分开读取；候选预热失败会丢失旧模型；无效ROI只警告后仍可写ok_clean
+- **根因**：切换逐项更新可变全局状态，裁剪k与预测器跨线程共享；质量检查未进入失败状态机
+- **解法**：web/app.py用冻结ModelBundle与InferenceSpec；RLock串行保护加载/预热/预测及set_margin_k+crop；候选成功再发布；坏ROI逐文件failed，视频计失败帧
+- **证据**：scripts/test_web_model_state.py 18项故障注入通过；docs/ct_audit_stage3_20261023.md；基线8ed2187:web/app.py:179-199,258-293,1630-1645
+- **首次**：2026-10-23
+
+
 ## 2026-10-23 系统审阅复核
 
 原条目保留历史记录；L-011的“增强无收益”受到cls_pw同时改变的混杂，L-014忽略BaseDataset.load_image前置上采样，两者不能继续作为已确证机制引用。详见docs/ct_system_audit_20261023.md §4与reports/system_audit/evidence.json。

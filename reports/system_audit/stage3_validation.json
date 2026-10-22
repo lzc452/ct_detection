@@ -1,0 +1,113 @@
+{
+  "schema": "ct-web-state-validation/1",
+  "date": "2026-10-23",
+  "baseline_commit": "8ed21879925375eb0c7fc8cfa6555977dece128f",
+  "closure_dependency": "compute",
+  "checks": [
+    {
+      "name": "model_state",
+      "tests": 18,
+      "status": "passed",
+      "duration_seconds": 4.756
+    },
+    {
+      "name": "precision",
+      "tests": 4,
+      "status": "passed"
+    },
+    {
+      "name": "ledger",
+      "status": "passed"
+    },
+    {
+      "name": "kb",
+      "status": "passed",
+      "lessons": 25,
+      "findings": 30,
+      "refuted": 4,
+      "decisions": 11
+    },
+    {
+      "name": "ast",
+      "status": "passed"
+    }
+  ],
+  "tests": [
+    "test_bad_metadata_never_falls_back_to_clean_default",
+    "test_concurrent_scan_submission_creates_only_one_worker",
+    "test_coordinate_restore_failure_is_not_suppressed",
+    "test_failed_warmup_keeps_old_model_available",
+    "test_forward_and_switch_warmup_are_serialized",
+    "test_frozen_snapshot_survives_switch_and_registry_mutation",
+    "test_invalid_roi_batch_does_not_poison_neighbors",
+    "test_invalid_roi_single_is_failed_with_no_forward",
+    "test_invalid_roi_video_counts_failed_frames",
+    "test_invalid_roi_worker_retains_task_snapshot_and_ledger",
+    "test_isolated_http_server",
+    "test_partial_concurrent_state_write_is_not_visible_to_readers",
+    "test_result_count_mismatch_is_failed_for_upload_and_worker",
+    "test_resume_checks_model_threshold_and_file_manifest",
+    "test_state_file_replacement_failure_preserves_previous_json",
+    "test_two_roi_margins_cannot_interleave_set_and_crop",
+    "test_upload_chunks_reject_model_change_in_same_batch",
+    "test_upload_routes_keep_snapshot_when_switch_occurs_during_decode"
+  ],
+  "code": [
+    {
+      "path": "web/app.py",
+      "sha256": "7f6dc2df418f55ffb52c5cdee3e038385485cdf59c489c3f1f8222e2c4060ff2"
+    },
+    {
+      "path": "scripts/test_web_model_state.py",
+      "sha256": "68036ef2aec17d33a4008999c2c447fddbb84ea993f0170cd540b45e48669d70"
+    },
+    {
+      "path": "scripts/test_infer_roi.py",
+      "sha256": "897ceb49a0f21b536020b631fbc8e2ca6ee94706510674f7acbeef31c395ba12"
+    }
+  ],
+  "live": {
+    "models": {
+      "current": "models/启用/20261019_V4/best",
+      "models": [
+        {
+          "active": false,
+          "id": "models/启用/20261014_v2mild/best",
+          "label": "20261014_v2mild/best",
+          "name": "best",
+          "path": "models/启用/20261014_v2mild/best.pt"
+        },
+        {
+          "active": false,
+          "id": "models/启用/20261016_V3/best",
+          "label": "20261016_V3/best",
+          "name": "best",
+          "path": "models/启用/20261016_V3/best.pt"
+        },
+        {
+          "active": true,
+          "id": "models/启用/20261019_V4/best",
+          "label": "20261019_V4/best",
+          "name": "best",
+          "path": "models/启用/20261019_V4/best.pt"
+        }
+      ],
+      "success": true
+    },
+    "processes": {
+      "ProcessId": 26316,
+      "CommandLine": "runtime\\python.exe  web\\app.py"
+    }
+  },
+  "production_restarted": false,
+  "new_training": false,
+  "raw_images_or_labels_changed": false,
+  "gpu_quality_or_latency_claim": false,
+  "limits": [
+    "fake models and synthetic images only",
+    "old model snapshots may coexist in memory with candidate; GPU OOM not injected",
+    "global ROI module is safe here only because every Web set+crop passes the same lock",
+    "state-file writes are atomic JSON replacement, not a transactional multi-user database",
+    "cross-request chunks reject model drift; interrupted resume checks model/precision/conf and ordered path-size-mtime_ns fingerprint, not content hashes"
+  ]
+}
