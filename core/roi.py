@@ -88,10 +88,82 @@ def roi_box(W, H):
     return x0, y0, x1, y1
 
 
+# ======================= 带余量 ROI（P0-2，2026-10-23 新增）=======================
+# 为什么需要：roi_box 是「包含式约束」——只保证标注框落在画面内，不保证框周边
+# 有足够参照物。实测损伤框到最近 ROI 边界 < 自身半长边的比例 9.7%（暗斑 0.1%、
+# 亮斑 0.0%），即那 9.7% 的划痕有一侧的画面被切掉了，模型看不到「正常的极片
+# 表面长什么样」，收笔位置只能靠猜。详见 docs/v52_why_worse_20261022.md。
+#
+# 为什么用「损伤长边 × k」而不是固定百分比：需要的可见范围与目标尺寸成正比，
+# 固定百分比对小目标给太少、对大目标给太多。
+DAMAGE_LONG_SIDE_PX = 64.6   # 损伤框长边中位数（ROI 坐标，2129x1198 原生图实测）
+REF_WIDTH = 2129.0           # 上式的测量基准宽度，用于按图宽等比换算
+
+# 当前进程生效的余量。**唯一可信来源是模型 meta 的 roi_k**，由 set_margin_k 设置。
+# 用模块级变量而不是给每个函数加参数，是因为「裁图用的框」和「算 GT 用的框」必须
+# 是同一个——分成两个参数传，只要有一处漏传就是 L-012 那类静默错位（图按一种裁法、
+# 标签按另一种算，指标全错但不报错）。
+_MARGIN_K = 0.0
+
+
+def set_margin_k(k):
+    """设置本进程生效的 ROI 余量系数（0 = 原始 roi_box，行为与历史完全一致）"""
+    global _MARGIN_K
+    _MARGIN_K = float(k or 0.0)
+    return _MARGIN_K
+
+
+def get_margin_k():
+    return _MARGIN_K
+
+
+def roi_box_padded(W, H, k=1.5):
+    """带上下文的 ROI：在 roi_box 基础上各向外扩 k × 损伤长边。
+
+    与 roi_box 的区别只是约束类型：
+        roi_box         —— 包含式（保证框在画面内）
+        roi_box_padded  —— 距离式（保证框周边至少有 k×长边 的可见范围）
+
+    注意 ROI 在 y 方向本来就接近满高（0.1181~0.9446 占 83%），外扩会被图边界截断，
+    所以实际增益主要来自 x 方向（0.32~0.62 只占 30% 宽）。
+    """
+    x0, y0, x1, y1 = roi_box(W, H)
+    if not k or k <= 0:
+        return (x0, y0, x1, y1)
+    pad = int(round(float(k) * DAMAGE_LONG_SIDE_PX * W / REF_WIDTH))
+    return (max(0, x0 - pad), max(0, y0 - pad),
+            min(W, x1 + pad), min(H, y1 + pad))
+
+
+def active_box(W, H):
+    """当前生效的 ROI 边界。k=0 时与 roi_box **逐位相同**（历史结果可复现）。"""
+    k = _MARGIN_K
+    return roi_box(W, H) if k <= 0 else roi_box_padded(W, H, k)
+
+
+def margin_k_of_weights(pt_path):
+    """从模型同目录的 _train_meta.json 读 roi_k；读不到返回 0.0。
+
+    meta 是推理口径的唯一来源（imgsz 和 roi 都是这么做的），roi_k 也必须如此，
+    否则同一个权重在不同脚本里会用不同裁剪，指标互相矛盾。
+    """
+    d = os.path.dirname(os.path.abspath(pt_path))
+    cand = [os.path.join(d, "_train_meta.json"),
+            os.path.join(os.path.dirname(d), "_train_meta.json")]
+    for p in cand:
+        if os.path.exists(p):
+            try:
+                with open(p, encoding="utf-8") as f:
+                    return float((json.load(f) or {}).get("roi_k") or 0.0)
+            except Exception:
+                return 0.0
+    return 0.0
+
+
 def crop_roi(img):
-    """裁剪 ROI，返回 (roi_img, (x0,y0,x1,y1))"""
+    """裁剪 ROI，返回 (roi_img, (x0,y0,x1,y1))。受 set_margin_k 影响。"""
     H, W = img.shape[:2]
-    box = roi_box(W, H)
+    box = active_box(W, H)
     x0, y0, x1, y1 = box
     return img[y0:y1, x0:x1], box
 

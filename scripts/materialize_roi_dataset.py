@@ -60,6 +60,9 @@ def main():
     ap.add_argument("--root", default="datasets_v51")
     ap.add_argument("--splits", default="train,val")
     ap.add_argument("--quality", type=int, default=95)
+    ap.add_argument("--margin-k", type=float, default=0.0,
+                    help="ROI 外扩系数：各向外扩 k×损伤长边（单位 px 换算见图宽）。"
+                         "0 = 原始 roi_box（历史行为）；1.5 = P0-2 带余量裁剪")
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--verify-only", action="store_true",
                     help="只统计（不写图），用于确认边界是否安全")
@@ -68,6 +71,10 @@ def main():
     rows = ds.load_manifest(args.manifest)
     wants = [s.strip() for s in args.splits.split(",") if s.strip()]
     out = os.path.join(ROOT, args.root, args.name)
+    # 必须在任何 crop_roi 之前设置：crop_roi 与 labelme_boxes_in_roi 共用这同一个 k，
+    # 否则会出现「图按一种裁法、标签按另一种算」的静默错位（L-012）。
+    R.set_margin_k(args.margin_k)
+    print("ROI 余量 k=%s（0 = 原始 roi_box）" % args.margin_k)
 
     if not args.verify_only:
         if os.path.isdir(out) and args.force:
@@ -131,6 +138,8 @@ def main():
         f.write("# 由 scripts/materialize_roi_dataset.py 生成（母本只读，本目录为 ROI 裁剪副本）\n")
         f.write("# ROI 边界: x[%.4f, %.4f] y[%.4f, %.4f]（来自 core/roi.py）\n" % (
             R.ROI_X0, R.ROI_X1, R.ROI_Y0, R.ROI_Y1))
+        f.write("# 余量 k=%s（各向外扩 %.1fpx @2129 宽；0 = 原始 ROI）\n" % (
+            args.margin_k, args.margin_k * R.DAMAGE_LONG_SIDE_PX))
         f.write("# 冻结清单：%s\n" % args.manifest.replace("\\", "/"))
         f.write("path: %s\n" % out.replace("\\", "/"))
         f.write("train: train/images\nval: val/images\n\n")

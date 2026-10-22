@@ -47,12 +47,21 @@ def main():
     ap.add_argument("--split", default="test")
     ap.add_argument("--imgsz", default="1920")
     ap.add_argument("--roi", action="store_true")
+    ap.add_argument("--roi-k", type=float, default=None,
+                    help="ROI 余量系数；默认从权重 meta 的 roi_k 自动读取（0 = 原始 ROI）")
     ap.add_argument("--confs", default="0.05,0.10,0.15,0.20,0.25,0.30,0.35,0.40,0.50")
     ap.add_argument("--iou", type=float, default=0.5)
     ap.add_argument("--tag", default="")
     ap.add_argument("--device", default="0")
     ap.add_argument("--chunk", type=int, default=32)
     args = ap.parse_args()
+
+    # 余量必须在任何裁剪之前定下来（与 eval_report.py 同一规则：meta 为准）
+    if args.roi:
+        _k = args.roi_k if args.roi_k is not None else R.margin_k_of_weights(args.weights)
+        R.set_margin_k(_k)
+        if _k:
+            print("ROI 余量 k=%s（%s）" % (_k, "flag" if args.roi_k is not None else "来自权重 meta"))
 
     confs = sorted(float(x) for x in args.confs.split(","))
     rows = [r for r in ds.load_manifest(args.manifest) if r["split"] == args.split]

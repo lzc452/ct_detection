@@ -145,7 +145,7 @@ def _load_model_spec(pt_path):
 
     没有 meta 的旧模型（V3/V4 等）回退到全图 INFER_SIZE，行为与改造前完全一致。
     """
-    spec = {'imgsz': INFER_SIZE, 'roi': False, 'source': 'default'}
+    spec = {'imgsz': INFER_SIZE, 'roi': False, 'roi_k': 0.0, 'source': 'default'}
     # meta 默认在 run 根目录（weights/ 的上一层）；早期的 models/启用/<ver>/ 布局与 .pt 同级。
     # 两处都要找，否则 ultralytics 直接产出的 best.pt 永远读不到口径。
     d = os.path.dirname(pt_path)
@@ -162,6 +162,9 @@ def _load_model_spec(pt_path):
         if hp.get('imgsz'):
             spec['imgsz'] = int(hp['imgsz'])
         spec['roi'] = bool(m.get('roi'))
+        # 带余量 ROI（P0-2）：只写 roi=True 不写 roi_k，会让部署端用原始边界去裁
+        # 一个在宽视野上训练的模型 —— 框系统性偏小，且不报错。
+        spec['roi_k'] = float(m.get('roi_k') or 0.0)
         spec['source'] = meta_path
     except Exception as e:
         print(f"[Model Spec] 读取 {meta_path} 失败，回退默认口径: {e}")
@@ -172,17 +175,19 @@ _roi_warn = [0]
 
 
 def _infer_spec():
-    """当前模型的 (imgsz, 是否 ROI)"""
+    """当前模型的 (imgsz, 是否 ROI, ROI 余量 k)"""
     info = MODEL_REGISTRY.get(current_model_id) or {}
     spec = info.get('spec') or {}
-    return spec.get('imgsz', INFER_SIZE), bool(spec.get('roi'))
+    return (spec.get('imgsz', INFER_SIZE), bool(spec.get('roi')),
+            float(spec.get('roi_k') or 0.0))
 
 
 def _prep_infer(img):
     """按当前模型口径裁出送入模型的图；返回 (输入图, offset 或 None)"""
-    _, use_roi = _infer_spec()
+    _, use_roi, roi_k = _infer_spec()
     if not use_roi:
         return img, None
+    roi_mod.set_margin_k(roi_k)          # 必须与训练时的 k 一致
     roi_img, box = roi_mod.crop_roi(img)
     if not roi_mod.roi_looks_valid(roi_img):
         _roi_warn[0] += 1
@@ -1597,6 +1602,7 @@ def _detect_worker(task_id, root, jobs, conf, skip, batch_id):
     _spec = (MODEL_REGISTRY.get(current_model_id) or {}).get('spec') or {}
     _task_sz = int(_spec.get('imgsz', INFER_SIZE))
     _task_roi = bool(_spec.get('roi'))
+    _task_k = float(_spec.get('roi_k') or 0.0)
     t0 = time.time()
     processed = 0
     try:
@@ -1622,6 +1628,7 @@ def _detect_worker(task_id, root, jobs, conf, skip, batch_id):
                     _ins, _offs = [], []
                     for _im in imgs:
                         if _task_roi:
+                            roi_mod.set_margin_k(_task_k)
                             _i, _b = roi_mod.crop_roi(_im)
                             if not roi_mod.roi_looks_valid(_i) and _roi_warn[0] < 5:
                                 _roi_warn[0] += 1

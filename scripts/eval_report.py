@@ -31,6 +31,7 @@ os.chdir(ROOT)
 sys.path.insert(0, os.path.join(ROOT, "core"))
 
 import dataset_split as ds  # noqa: E402
+import roi as R  # noqa: E402
 from preprocess import resolve_imgsz  # noqa: E402
 from ultralytics.utils.checks import check_imgsz  # noqa: E402
 
@@ -199,7 +200,7 @@ def layer23_workpoint(weights, rows, imgsz, conf_wp, iou_wp, device, chunk=32, v
             if roi_dir:
                 # ROI 坐标系：GT 由 core.roi 变换，尺寸取 ROI 尺寸
                 W0, H0 = [int(x) for x in row["size"].split("x")]
-                box = R.roi_box(W0, H0)
+                box = R.active_box(W0, H0)
                 cw, ch = box[2] - box[0], box[3] - box[1]
                 if row["label_json"]:
                     lines, _, _ = R.labelme_boxes_in_roi(os.path.join(ROOT, row["label_json"]), box)
@@ -349,7 +350,17 @@ def main():
     ap.add_argument("--skip-layer1", action="store_true")
     ap.add_argument("--roi", action="store_true",
                     help="按 core/roi.py 的边界裁剪后再评估（必须与训练口径一致；不裁剪评估裁剪训练的模型等于测另一个分布）")
+    ap.add_argument("--roi-k", type=float, default=None,
+                    help="ROI 余量系数。默认从权重同目录 _train_meta.json 的 roi_k 自动读取，"
+                         "读不到则按 0（原始 ROI）。显式传入可覆盖——但传错比不传更危险")
     args = ap.parse_args()
+    # 余量必须在任何裁剪之前定下来：crop_roi 与 label_to_roi 共用同一个 k，
+    # 否则「图按一种裁法、GT 按另一种算」，指标全错但不报错（L-012）。
+    if args.roi:
+        _k = args.roi_k if args.roi_k is not None else R.margin_k_of_weights(args.weights)
+        R.set_margin_k(_k)
+        if _k:
+            print("ROI 余量 k=%s（%s）" % (_k, "flag" if args.roi_k is not None else "来自权重 meta"))
     # 关键：ultralytics 的 train/val 只接受方形 int，predict 才接受矩形。
     # 这里把"请求值"和"实际生效值"分开算，避免 JSON 里记录一个并未生效的画布。
     _sz_req = resolve_imgsz(args.imgsz, for_what="predict")
@@ -378,6 +389,7 @@ def main():
         "split": args.split,
         "n_images": len(rows),
         "roi": bool(args.roi),
+        "roi_k": float(R.get_margin_k()),
         "imgsz_requested": args.imgsz,
         "imgsz_layer1": imgsz_l1,
         "imgsz_predict": imgsz_pred,

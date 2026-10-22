@@ -217,6 +217,9 @@ def main():
                     help="标记本模型是在 ROI 裁剪数据上训练的；写入 _train_meta.json 供推理端读取。"
                          "不改训练行为（数据本身已裁好），只影响部署时的推理口径。"
                          "若不传但数据集目录名含 ROI，会自动置位")
+    ap.add_argument("--roi-k", type=float, default=None,
+                    help="ROI 余量系数（各向外扩 k×损伤长边）。不传则从数据集目录名的 "
+                         "_M15/_M20 后缀推断；写入 _train_meta.json，推理与评测都只认它")
     ap.add_argument("--no-archive", action="store_true",
                     help="训练结束不自动归档到 experiments/")
     args = ap.parse_args()
@@ -233,6 +236,22 @@ def main():
         _dn = os.path.basename(os.path.dirname(os.path.abspath(args.data))).upper()
         if "ROI" in _dn:
             roi_eff, roi_source = True, "dataset-name"
+
+    # ROI 余量：显式 --roi-k 优先，否则从数据集目录名的 `_M15` / `_M20` 后缀推断。
+    # 必须写进 meta —— 推理端和评测端都只认 meta，写错就会用错裁剪边界，
+    # 输出全废且不报错（L-003 同一类失败）。
+    roi_k = float(args.roi_k or 0.0)
+    roi_k_source = "flag" if args.roi_k is not None else "none"
+    if args.roi_k is None:
+        import re as _re
+        _m = _re.search(r"_M(\d+)", os.path.basename(os.path.dirname(os.path.abspath(args.data))).upper())
+        if _m:
+            roi_k = int(_m.group(1)) / 10.0
+            roi_k_source = "dataset-name"
+    if roi_k and not roi_eff:
+        print("[警告] 指定了 roi_k=%s 但 roi=False，已按带余量 ROI 处理" % roi_k)
+        roi_eff, roi_source = True, "roi-k"
+    roi_mod.set_margin_k(roi_k)
 
     imgsz_raw = args.imgsz
     args.imgsz = resolve_imgsz(args.imgsz, for_what="train")
@@ -327,6 +346,8 @@ def main():
         "classes": {0: "damage", 1: "dark", 2: "light"},
         "roi": roi_eff,
         "roi_source": roi_source,
+        "roi_k": roi_k,
+        "roi_k_source": roi_k_source,
         "roi_box": None if not roi_eff else {
             "x0": roi_mod.ROI_X0, "x1": roi_mod.ROI_X1,
             "y0": roi_mod.ROI_Y0, "y1": roi_mod.ROI_Y1},
