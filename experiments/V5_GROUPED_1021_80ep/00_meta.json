@@ -1,0 +1,37 @@
+{
+ "run": "V5_GROUPED_1021_80ep",
+ "archived_at": "2026-10-22 12:53:55",
+ "data": "datasets_v5/CT_DATASET_V5_GROUPED/data.yaml",
+ "model": "models/pretrained/yolov8n.pt",
+ "imgsz": 1920,
+ "roi": false,
+ "epochs_planned": 80,
+ "epochs_done": 80,
+ "best_epoch": 74,
+ "best_map50": 0.77542,
+ "best_map50_95": 0.41393,
+ "train_hours": 3.32,
+ "overfit_gap_pct": 5.4,
+ "evals": [
+  {
+   "tag": "V5_80ep_v5test",
+   "map50": 0.8027800856151973,
+   "map50_95": 0.4186068170558657,
+   "fp_per_1000": 88.8,
+   "group_miss": 0.2647,
+   "roi": null,
+   "imgsz": 1920,
+   "speed_ms": 13.394484911582394
+  },
+  {
+   "tag": "V5_at2112",
+   "map50": 0.7825621735467884,
+   "map50_95": 0.42375963957991025,
+   "fp_per_1000": 122.8,
+   "group_miss": 0.2471,
+   "roi": null,
+   "imgsz": 2112,
+   "speed_ms": 15.485828698987484
+  }
+ ]
+}

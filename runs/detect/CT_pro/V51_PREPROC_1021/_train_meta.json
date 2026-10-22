@@ -79,5 +79,8 @@
   },
   "elapsed_s": 19372.4,
   "best_pt": "D:\\CT Detection-yolo\\runs\\detect\\CT_pro\\V51_PREPROC_1021\\weights\\best.pt",
-  "best_pt_md5": "a82243d2e7ebc531911326ce524a1e6e"
+  "best_pt_md5": "a82243d2e7ebc531911326ce524a1e6e",
+  "roi": false,
+  "roi_source": "backfill:none",
+  "roi_box": null
 }

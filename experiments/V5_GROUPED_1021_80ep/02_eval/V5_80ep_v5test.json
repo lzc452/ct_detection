@@ -1,0 +1,105 @@
+{
+  "schema": "ct-eval-report/1",
+  "generated_at": "2026-10-21 17:23:03",
+  "weights": "runs/detect/CT_pro/V5_GROUPED_1021_80ep/weights/best.pt",
+  "weights_md5": "d8e6b3d6d8d640bd1555e2c1e3452b06",
+  "manifest": "reports/splits/v5_split_manifest.csv",
+  "manifest_md5": "7ebaab23b533a2ec8c3d98a72ee588ba",
+  "split": "test",
+  "n_images": 676,
+  "imgsz": 1920,
+  "layer1_coco": {
+    "mAP50": 0.8027800856151973,
+    "mAP50_95": 0.4186068170558657,
+    "mAP75": 0.40902011419241036,
+    "mean_precision": 0.8443859681817317,
+    "mean_recall": 0.7739770377388261,
+    "per_class": {
+      "damage": {
+        "ap50": 0.5867645425359234,
+        "ap": 0.23628887494046746,
+        "p": 0.6974015786363831,
+        "r": 0.5616438356164384
+      },
+      "dark": {
+        "ap50": 0.8780040576954204,
+        "ap": 0.5326271744589433,
+        "p": 0.8976422194314917,
+        "r": 0.8619784205401673
+      },
+      "light": {
+        "ap50": 0.9435716566142479,
+        "ap": 0.48690440176818656,
+        "p": 0.9381141064773203,
+        "r": 0.8983088570598725
+      }
+    },
+    "speed_ms": {
+      "preprocess": 3.1049773665337916,
+      "inference": 10.015346302055704,
+      "loss": 0.00036671549665945525,
+      "postprocess": 0.27416124299289824
+    }
+  },
+  "layer2_3_workpoint": {
+    "workpoint": {
+      "conf": 0.25,
+      "iou": 0.5,
+      "nms_iou": 0.7,
+      "matching": "同类 + IoU>=0.50 + conf 降序贪心一对一"
+    },
+    "per_class": {
+      "damage": {
+        "tp": 41,
+        "fp": 23,
+        "fn": 32,
+        "precision": 0.6406,
+        "recall": 0.5616
+      },
+      "dark": {
+        "tp": 199,
+        "fp": 27,
+        "fn": 35,
+        "precision": 0.8805,
+        "recall": 0.8504
+      },
+      "light": {
+        "tp": 121,
+        "fp": 10,
+        "fn": 14,
+        "precision": 0.9237,
+        "recall": 0.8963
+      }
+    },
+    "fp_per_1000img": 88.8,
+    "group_level": {
+      "n_defect_groups": 170,
+      "n_missed_groups": 45,
+      "miss_rate": 0.2647,
+      "cell_level_miss_rate": 0.2,
+      "cell_level_n": 10
+    },
+    "loose_reference": {
+      "note": "仅业务参考：IoU>=0.1 或中心互落；禁止与 IoU0.5 口径或 V3 数字并列比较",
+      "per_class": {
+        "damage": {
+          "tp": 49,
+          "fn": 24,
+          "recall": 0.6712
+        },
+        "dark": {
+          "tp": 207,
+          "fn": 27,
+          "recall": 0.8846
+        },
+        "light": {
+          "tp": 125,
+          "fn": 10,
+          "recall": 0.9259
+        }
+      }
+    },
+    "n_images": 676
+  },
+  "elapsed_s": 752.6
+}

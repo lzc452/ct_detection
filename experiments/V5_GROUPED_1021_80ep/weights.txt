@@ -1,0 +1,2 @@
+runs\detect\CT_pro\V5_GROUPED_1021_80ep\weights\best.pt  md5=d8e6b3d6d8d640bd1555e2c1e3452b06  6.47 MB
+runs\detect\CT_pro\V5_GROUPED_1021_80ep\weights\last.pt  md5=9859c616a82c8c14723198838705154a  6.47 MB

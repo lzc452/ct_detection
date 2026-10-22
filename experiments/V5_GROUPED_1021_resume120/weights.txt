@@ -1,0 +1,2 @@
+runs\detect\CT_pro\V5_GROUPED_1021_resume120\weights\best.pt  md5=5212167be71c5cf2b11f0f6f7b6cd1e5  6.47 MB
+runs\detect\CT_pro\V5_GROUPED_1021_resume120\weights\last.pt  md5=41fec87e3d3d382fb1173a0b42c9a5c4  6.47 MB

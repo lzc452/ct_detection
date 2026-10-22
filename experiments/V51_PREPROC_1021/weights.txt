@@ -1,0 +1,2 @@
+runs\detect\CT_pro\V51_PREPROC_1021\weights\best.pt  md5=a82243d2e7ebc531911326ce524a1e6e  6.52 MB
+runs\detect\CT_pro\V51_PREPROC_1021\weights\last.pt  md5=a701d57282d3361013d2883e33a23570  6.52 MB

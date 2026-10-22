@@ -79,5 +79,13 @@
   },
   "elapsed_s": 6847.6,
   "best_pt": "D:\\CT Detection-yolo\\runs\\detect\\CT_pro\\V51_ROI_1536\\weights\\best.pt",
-  "best_pt_md5": "38de3f281b5adfbb3c9527c1e9e82ab7"
+  "best_pt_md5": "38de3f281b5adfbb3c9527c1e9e82ab7",
+  "roi": true,
+  "roi_source": "backfill:dataset-name",
+  "roi_box": {
+    "x0": 0.3209,
+    "x1": 0.6248,
+    "y0": 0.1181,
+    "y1": 0.9446
+  }
 }

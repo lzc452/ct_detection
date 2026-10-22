@@ -1,0 +1,27 @@
+{
+ "run": "V5_GROUPED_1021_resume120",
+ "archived_at": "2026-10-22 12:53:56",
+ "data": "datasets_v5/CT_DATASET_V5_GROUPED/data.yaml",
+ "model": "runs/detect/CT_pro/V5_GROUPED_1021_80ep/weights/best.pt",
+ "imgsz": 1920,
+ "roi": false,
+ "epochs_planned": 120,
+ "epochs_done": 59,
+ "best_epoch": 29,
+ "best_map50": 0.76924,
+ "best_map50_95": 0.41537,
+ "train_hours": 2.4,
+ "overfit_gap_pct": 7.4,
+ "evals": [
+  {
+   "tag": "V5_resume120_v5test",
+   "map50": 0.7787284747766187,
+   "map50_95": 0.4165314212626687,
+   "fp_per_1000": 85.8,
+   "group_miss": 0.2882,
+   "roi": null,
+   "imgsz": 1920,
+   "speed_ms": 13.335739644023883
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "run": "V52_ROI_1536_REG",
+ "archived_at": "2026-10-22 12:53:55",
+ "data": "datasets_v51/CT_DATASET_V51_ROI/data.yaml",
+ "model": "models/pretrained/yolov8n.pt",
+ "imgsz": 1536,
+ "roi": true,
+ "epochs_planned": 80,
+ "epochs_done": 2,
+ "best_epoch": 1,
+ "best_map50": 0.45482,
+ "best_map50_95": 0.18428,
+ "train_hours": 0.06,
+ "overfit_gap_pct": -26.9,
+ "evals": []
+}

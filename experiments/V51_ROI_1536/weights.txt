@@ -1,0 +1,2 @@
+runs\detect\CT_pro\V51_ROI_1536\weights\best.pt  md5=38de3f281b5adfbb3c9527c1e9e82ab7  6.40 MB
+runs\detect\CT_pro\V51_ROI_1536\weights\last.pt  md5=d4c62eea95955cf6325fb07290ab3d77  6.40 MB

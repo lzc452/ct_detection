@@ -1,0 +1,27 @@
+{
+ "run": "V51_ROI_1536",
+ "archived_at": "2026-10-22 12:53:54",
+ "data": "datasets_v51/CT_DATASET_V51_ROI/data.yaml",
+ "model": "models/pretrained/yolov8n.pt",
+ "imgsz": 1536,
+ "roi": true,
+ "epochs_planned": 80,
+ "epochs_done": 68,
+ "best_epoch": 48,
+ "best_map50": 0.78291,
+ "best_map50_95": 0.40603,
+ "train_hours": 1.89,
+ "overfit_gap_pct": 21.0,
+ "evals": [
+  {
+   "tag": "V51_ROI_1536_v5test",
+   "map50": 0.7522009885820761,
+   "map50_95": 0.40154309082692713,
+   "fp_per_1000": 127.2,
+   "group_miss": 0.2824,
+   "roi": true,
+   "imgsz": 1536,
+   "speed_ms": 11.068659023789568
+  }
+ ]
+}

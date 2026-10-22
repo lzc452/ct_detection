@@ -1,0 +1,2 @@
+runs\detect\CT_pro\V3\weights\best.pt  md5=e6c6b5e8512fc59373f003726847d439  6.47 MB
+runs\detect\CT_pro\V3\weights\last.pt  md5=0450264f6e8505e32d5f07ed55f27f47  6.47 MB

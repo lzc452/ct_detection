@@ -22,5 +22,8 @@
   },
   "elapsed_s": 8693.5,
   "best_pt": "D:\\CT Detection-yolo\\runs\\detect\\CT_pro\\V5_GROUPED_1021_resume120\\weights\\best.pt",
-  "best_pt_md5": "5212167be71c5cf2b11f0f6f7b6cd1e5"
+  "best_pt_md5": "5212167be71c5cf2b11f0f6f7b6cd1e5",
+  "roi": false,
+  "roi_source": "backfill:none",
+  "roi_box": null
 }

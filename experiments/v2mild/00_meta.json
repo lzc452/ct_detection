@@ -1,0 +1,16 @@
+{
+ "run": "v2mild",
+ "archived_at": "2026-10-22 12:53:56",
+ "data": "datasets\\CT_DATASET_FINAL_V2_AUG\\data.yaml",
+ "model": "models/pretrained\\yolov8n.pt",
+ "imgsz": 1920,
+ "roi": false,
+ "epochs_planned": 300,
+ "epochs_done": 103,
+ "best_epoch": 73,
+ "best_map50": 0.81118,
+ "best_map50_95": 0.37616,
+ "train_hours": 4.51,
+ "overfit_gap_pct": -18.7,
+ "evals": []
+}

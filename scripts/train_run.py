@@ -215,11 +215,24 @@ def main():
                     help="类别权重幂次 0~1：0 关闭；1=完全逆频率。本项目 damage 框最少，建议 0.5")
     ap.add_argument("--roi", action="store_true",
                     help="标记本模型是在 ROI 裁剪数据上训练的；写入 _train_meta.json 供推理端读取。"
-                         "不改训练行为（数据本身已裁好），只影响部署时的推理口径")
+                         "不改训练行为（数据本身已裁好），只影响部署时的推理口径。"
+                         "若不传但数据集目录名含 ROI，会自动置位")
+    ap.add_argument("--no-archive", action="store_true",
+                    help="训练结束不自动归档到 experiments/")
     args = ap.parse_args()
 
     if args.resume_from:
         args.model = args.resume_from
+
+    # ROI 口径：显式 --roi，或数据集名字里带 ROI（物化脚本产出的目录名固定含 ROI）。
+    # 必须可靠——推理端 web/app.py 靠这一位决定「先裁剪再检测」，写错会把全图喂给
+    # 只在窄条上训练过的模型，输出全废且不报错。
+    roi_eff = bool(args.roi)
+    roi_source = "flag" if roi_eff else "none"
+    if not roi_eff:
+        _dn = os.path.basename(os.path.dirname(os.path.abspath(args.data))).upper()
+        if "ROI" in _dn:
+            roi_eff, roi_source = True, "dataset-name"
 
     imgsz_raw = args.imgsz
     args.imgsz = resolve_imgsz(args.imgsz, for_what="train")
@@ -250,6 +263,7 @@ def main():
         args.mosaic, args.close_mosaic, args.degrees, args.translate, args.scale,
         args.erasing, args.fliplr, args.hsv_v))
     print("损失 box %g cls %g dfl %g | cls_pw %g" % (args.box, args.cls, args.dfl, args.cls_pw))
+    print("推理口径 %s（来源 %s）" % ("ROI 裁剪" if roi_eff else "全图", roi_source))
     print("输出 %s" % run_dir)
     print("=" * 68)
 
@@ -311,8 +325,9 @@ def main():
         "base_model_md5": md5_of(args.model) if os.path.exists(args.model) else None,
         "resume_from": args.resume_from or None,
         "classes": {0: "damage", 1: "dark", 2: "light"},
-        "roi": bool(args.roi),
-        "roi_box": None if not args.roi else {
+        "roi": roi_eff,
+        "roi_source": roi_source,
+        "roi_box": None if not roi_eff else {
             "x0": roi_mod.ROI_X0, "x1": roi_mod.ROI_X1,
             "y0": roi_mod.ROI_Y0, "y1": roi_mod.ROI_Y1},
         "hyperparams": hyper,
@@ -357,6 +372,17 @@ def main():
     print("best.pt: %s" % best)
     print("元信息: %s" % os.path.join(run_dir, "_train_meta.json"))
     print("日志  : %s" % os.path.join(run_dir, "train.log"))
+
+    # 自动归档到 experiments/<name>/（每次训练一批独立产物 + 报告骨架 + 总索引）
+    if not args.no_archive:
+        try:
+            import subprocess
+            r = subprocess.run([sys.executable, os.path.join(PROJECT_ROOT, "scripts", "archive_experiment.py"),
+                                "--run", name], cwd=PROJECT_ROOT, capture_output=True, text=True)
+            print(r.stdout.strip() or r.stderr.strip())
+        except Exception as e:
+            print("[归档] 失败（不影响训练产物）：%s" % e)
+
     print("→ 下一步：用 scripts/eval_report.py 在冻结 test 上评估，确认后再人工复制进 models/启用/")
 
 

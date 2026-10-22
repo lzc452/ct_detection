@@ -1,0 +1,2 @@
+runs\detect\CT_pro\CT_DATASET_FINAL_V4_AUG_1016_1616\weights\best.pt  md5=63566373becf0f3b5360d4c6bc7b26c0  6.47 MB
+runs\detect\CT_pro\CT_DATASET_FINAL_V4_AUG_1016_1616\weights\last.pt  md5=30a4f1d637882bccaf6abd18a0b7698d  6.47 MB
