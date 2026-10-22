@@ -1,0 +1,90 @@
+{
+  "observed_at": "2026-10-23 01:27:16",
+  "git_head": "332533b0d562257aa098822e552f9d5cdad417f3\n",
+  "api_models": {
+    "current": "models/启用/20261019_V4/best",
+    "models": [
+      {
+        "active": false,
+        "id": "models/启用/20261014_v2mild/best",
+        "label": "20261014_v2mild/best",
+        "name": "best",
+        "path": "models/启用/20261014_v2mild/best.pt"
+      },
+      {
+        "active": false,
+        "id": "models/启用/20261016_V3/best",
+        "label": "20261016_V3/best",
+        "name": "best",
+        "path": "models/启用/20261016_V3/best.pt"
+      },
+      {
+        "active": true,
+        "id": "models/启用/20261019_V4/best",
+        "label": "20261019_V4/best",
+        "name": "best",
+        "path": "models/启用/20261019_V4/best.pt"
+      }
+    ],
+    "success": true
+  },
+  "python": "3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit (AMD64)]\r\n2.8.0+cu128\r\n8.4.146\r\nNVIDIA GeForce RTX 5060\r\n",
+  "processes": [
+    {
+      "ProcessId": 26316,
+      "CommandLine": "runtime\\python.exe  web\\app.py"
+    },
+    {
+      "ProcessId": 14228,
+      "CommandLine": "\"D:\\CT Detection-yolo\\runtime\\python.exe\" scripts/train_run.py --data datasets_v51/CT_DATASET_V51_ROI_M15/data.yaml --imgsz 1536 --name V53_ROI_M15"
+    },
+    {
+      "ProcessId": 23484,
+      "CommandLine": "\"D:\\CT Detection-yolo\\runtime\\python.exe\" \"-B\" \"-c\" \"from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=14228, pipe_handle=3032)\" \"--multiprocessing-fork\""
+    },
+    {
+      "ProcessId": 3748,
+      "CommandLine": "\"D:\\CT Detection-yolo\\runtime\\python.exe\" \"-B\" \"-c\" \"from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=14228, pipe_handle=3036)\" \"--multiprocessing-fork\""
+    },
+    {
+      "ProcessId": 4248,
+      "CommandLine": "\"D:\\CT Detection-yolo\\runtime\\python.exe\" \"-B\" \"-c\" \"from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=14228, pipe_handle=2840)\" \"--multiprocessing-fork\""
+    },
+    {
+      "ProcessId": 13052,
+      "CommandLine": "\"D:\\CT Detection-yolo\\runtime\\python.exe\" \"-B\" \"-c\" \"from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=14228, pipe_handle=2644)\" \"--multiprocessing-fork\""
+    },
+    {
+      "ProcessId": 26100,
+      "CommandLine": "\"D:\\CT Detection-yolo\\runtime\\python.exe\" \"-B\" \"-c\" \"from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=14228, pipe_handle=3496)\" \"--multiprocessing-fork\""
+    },
+    {
+      "ProcessId": 11688,
+      "CommandLine": "\"D:\\CT Detection-yolo\\runtime\\python.exe\" \"-B\" \"-c\" \"from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=14228, pipe_handle=3688)\" \"--multiprocessing-fork\""
+    },
+    {
+      "ProcessId": 33364,
+      "CommandLine": "\"D:\\CT Detection-yolo\\runtime\\python.exe\" \"-B\" \"-c\" \"from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=14228, pipe_handle=4000)\" \"--multiprocessing-fork\""
+    },
+    {
+      "ProcessId": 2040,
+      "CommandLine": "\"D:\\CT Detection-yolo\\runtime\\python.exe\" \"-B\" \"-c\" \"from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=14228, pipe_handle=3532)\" \"--multiprocessing-fork\""
+    },
+    {
+      "ProcessId": 32280,
+      "CommandLine": "\"D:\\CT Detection-yolo\\runtime\\python.exe\" \"-B\" \"-c\" \"from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=14228, pipe_handle=3724)\" \"--multiprocessing-fork\""
+    },
+    {
+      "ProcessId": 35148,
+      "CommandLine": "\"D:\\CT Detection-yolo\\runtime\\python.exe\" \"-B\" \"-c\" \"from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=14228, pipe_handle=3348)\" \"--multiprocessing-fork\""
+    },
+    {
+      "ProcessId": 8308,
+      "CommandLine": "\"D:\\CT Detection-yolo\\runtime\\python.exe\" \"-B\" \"-c\" \"from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=14228, pipe_handle=3756)\" \"--multiprocessing-fork\""
+    },
+    {
+      "ProcessId": 20292,
+      "CommandLine": "\"D:\\CT Detection-yolo\\runtime\\python.exe\" \"-B\" \"-c\" \"from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=14228, pipe_handle=4016)\" \"--multiprocessing-fork\""
+    }
+  ]
+}

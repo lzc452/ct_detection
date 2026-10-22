@@ -1,0 +1,1487 @@
+{
+  "schema": "ct-system-audit/1",
+  "git_head": "332533b0d562257aa098822e552f9d5cdad417f3",
+  "history": [
+    "332533b 2026-10-23T01:08:14+08:00 fix(plan): 优先级表补「关闭依赖」维度；feat(p0-2): 带余量 ROI 实现并在跑",
+    "9cad461 2026-10-23T00:52:30+08:00 feat(p0-1): 损伤标注一致性审计抽样清单（test 全量 73 + train 分层 100）",
+    "1368b5c 2026-10-23T00:10:03+08:00 feat(kb): 训练经验知识库（坑/结论/决策）+ V6 优化方案与优先级",
+    "0bc1f49 2026-10-23T00:09:57+08:00 docs(v5.2): 大白话归因复盘 + 修正报告里只引 best 轮泛化间隙的口径",
+    "97d0aef 2026-10-22T15:14:42+08:00 feat(v5.2): ROI@1536 + 恢复全部正则化的单因素对照；验收不通过，撤回两条旧结论",
+    "b972745 2026-10-22T12:58:16+08:00 docs: 四问质询答复（裁剪质量/结论可追溯/1536 依据/正则化预注册）",
+    "32c860a 2026-10-22T12:54:40+08:00 feat(archive): 每次训练固化一个文件夹 + 总索引；修 ROI 口径位漏写的静默故障",
+    "ccffa14 2026-10-22T10:35:18+08:00 fix(train): Windows 上训练日志临时文件残留 + 日志句柄未释放",
+    "dda8ba4 2026-10-22T10:34:23+08:00 feat(v5.1): 预处理升级为 ROI 裁剪 + 冻结 test 完整验收",
+    "bcf685e 2026-10-21T21:19:17+08:00 fix(batch2): 旋转标签与像素对齐、失败态+文件台账、复核脚本安全化、阈值直传",
+    "7713324 2026-10-21T11:28:47+08:00 交互优化",
+    "a4f274f 2026-10-20T09:20:41+08:00 change gitignore",
+    "6d68d07 2026-10-20T09:15:39+08:00 first commit"
+  ],
+  "inventory": [
+    {
+      "path": "core/Config.py",
+      "lines": 19,
+      "sha256": "570f132740d224086cdb379b53af004fc5c7235b8501fdd7faf5b3beb56f25ab",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "core/ct_preprocess.py",
+      "lines": 166,
+      "sha256": "eda3e7f31dcd7639358ee73a5935647e8a5719c91faa0d4518fbf85dc8e58146",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": [
+        148,
+        151,
+        159,
+        163
+      ]
+    },
+    {
+      "path": "core/dataset_split.py",
+      "lines": 439,
+      "sha256": "5cc4818babb2402424a966080c51a070a0adae86e74a3f935181da3f01b30736",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "core/device_utils.py",
+      "lines": 42,
+      "sha256": "c94ac38293bb6087189fc948a2965973194fdc8366ab8302827eec2b90eecda1",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "core/preprocess.py",
+      "lines": 229,
+      "sha256": "b21434f446632f452709ad7930c740111c948a213312f3664b839362885cd305",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "core/roi.py",
+      "lines": 329,
+      "sha256": "f3b77f00071b45b9417d02c191cf9e706348fb43fe93149e33e9c1930d76251d",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/_review_safe.py",
+      "lines": 370,
+      "sha256": "304f59018dd7d7ddf765a0af1a95b8540f264e4b9c9f44de4e9d1bbbfaefa18e",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/analyze_leak.py",
+      "lines": 285,
+      "sha256": "929af860e9a279b8f5f0696be5e060c062a450d36f8c62e6cf27fe13cfb8fc18",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/analyze_preprocess.py",
+      "lines": 323,
+      "sha256": "baf7297c3e5ba4243c0fc949cc40421b392c0000db91f87ea777c2e44aab113b",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/analyze_preprocess_extra.py",
+      "lines": 215,
+      "sha256": "43ae98622594c7f74ec1943fa668b172a4db8a84e8fb31f8ae57a5b7c9659890",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/analyze_roi_fidelity.py",
+      "lines": 261,
+      "sha256": "870d84266967dd2f23958636f979773d1362493ff988f80f9208eb8eed97296d",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/analyze_v3_val.py",
+      "lines": 143,
+      "sha256": "5b6eb14b5b212bcf354229c3689f84c73b94e34220c5aba47bbf0bb7aa37ca3e",
+      "syntax": "ok",
+      "legacy_path_lines": [
+        8
+      ],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/analyze_v4_val.py",
+      "lines": 100,
+      "sha256": "0d39507fa6d36aaba82268b79cc393b95b94451a35ec241d22c3f80c58e29e07",
+      "syntax": "ok",
+      "legacy_path_lines": [
+        8
+      ],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/archive_experiment.py",
+      "lines": 589,
+      "sha256": "3f3e43a1ae2e72d1d420c115cd8cb5eec1b467c5bc7f59f27d689ced5c21af6d",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/audit_sample.py",
+      "lines": 734,
+      "sha256": "3782d0feda3dbabf8f2d0233648a3b3e13deb20002f69f8d10be78c98cd1be54",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/augment.yaml",
+      "lines": 54,
+      "sha256": "7eeee270c01a788f9a1ecedf2ced12357a09aeca75ba2a2a370f55346144a551",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/augment_final.py",
+      "lines": 192,
+      "sha256": "25f37afdcf907042ebbe28129f61e33340d20ffdc9ed696444101477c2a286c3",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": [
+        142,
+        151,
+        156,
+        161
+      ]
+    },
+    {
+      "path": "scripts/battlefield.py",
+      "lines": 85,
+      "sha256": "09342d5c3ad74f22095b1dfd34e797fe9c314db304204c75eaec88ce51f72d1d",
+      "syntax": "ok",
+      "legacy_path_lines": [
+        10
+      ],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/build_clean_exam.py",
+      "lines": 51,
+      "sha256": "9b71177864f11101d9d2818cb240e2b91e09e1365a75d24ccde34a6ef8ffeddc",
+      "syntax": "ok",
+      "legacy_path_lines": [
+        6
+      ],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/build_final_dataset.py",
+      "lines": 132,
+      "sha256": "f423b6868b041d2be94f5318fe2109055708dc5990cf60f21a5e13c2cc5f5b05",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/build_split_manifest.py",
+      "lines": 165,
+      "sha256": "e5de36e1775e11e47b8b4d0ec436db32e67b413ee9dfe608bd6da599d1af1220",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/diag_damage_recall.py",
+      "lines": 138,
+      "sha256": "6c08ecfc8a4460f044c6f8a31be081555be985aa00ba2cc4f229f84c72d1ce62",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/eval_by_res.py",
+      "lines": 97,
+      "sha256": "c276a83c818c5c2afd17d5de261cf52a93628d2b9bcdef3391d11cf8aec2c212",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/eval_compare.py",
+      "lines": 107,
+      "sha256": "7c4ea5600b988f52fa4e8d85f80d24e23e6016088bb1d0f9690e8baa5b34fd05",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/eval_loose.py",
+      "lines": 71,
+      "sha256": "23971cc127af4e35717f8c6908fbad4d12c50cd772c4cf9b9c4f3c68d0c2a6ed",
+      "syntax": "ok",
+      "legacy_path_lines": [
+        8
+      ],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/eval_report.py",
+      "lines": 411,
+      "sha256": "7136e726d4bb8ff65eea824436e550e45f3150b9cb5585c07a32ae278a5f6c29",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/eval_scaleup.py",
+      "lines": 126,
+      "sha256": "167a49efaa73634cf54a4fb8e55dc56242b56bdcad4ca6ceb88e6c36f9d4e1af",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/eval_seen_unseen.py",
+      "lines": 179,
+      "sha256": "877cf31b63913413fd029476a17a17fdf7d436982bb4f30f77ae5acb67347ef4",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/exam_light_fn.py",
+      "lines": 68,
+      "sha256": "6c47801e5a61ade94b35d2a3b8c3493cac732d672c9da23113f8058692d6aa48",
+      "syntax": "ok",
+      "legacy_path_lines": [
+        8
+      ],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/exec_v4_review.py",
+      "lines": 221,
+      "sha256": "de24cc28bf46956f69d2abefc1a1d207ec9d001c676691ed6aaf1576d03629d6",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/harvest.py",
+      "lines": 97,
+      "sha256": "00e82512867aad29bd3454560a3928fd8c2efc71e560288de37a971c5192594d",
+      "syntax": "ok",
+      "legacy_path_lines": [
+        11
+      ],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/import_harvest_v4.py",
+      "lines": 66,
+      "sha256": "5546ec8bebb90e5632ea078228f4b7723cf0755215923f98d0c0886dc1a704fd",
+      "syntax": "ok",
+      "legacy_path_lines": [
+        11
+      ],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/import_new_labels.py",
+      "lines": 222,
+      "sha256": "437168372313c8260d00edb8b9c984a4334d0971f800b1027bab996ddf23d888",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/kb.py",
+      "lines": 499,
+      "sha256": "9a77493f8083efca13c88e7f640eabd92d711ae90c5d22ccd9ac2075adc67493",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/make_damage_sheet.py",
+      "lines": 53,
+      "sha256": "f79906a03a4ad883aa647f1014546a46c7d029aeb3e0c4dd887c71baf36fb7ab",
+      "syntax": "ok",
+      "legacy_path_lines": [
+        6
+      ],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/materialize_dataset.py",
+      "lines": 98,
+      "sha256": "5eb48b3608e538dd7681b42374dc2aab2e076d8313dfac21f4321933b03944f0",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/materialize_roi_dataset.py",
+      "lines": 156,
+      "sha256": "8d30057d5eb9d92bf1ed0810e16573e0b9e0dc647f4b424f02584609d6b72b70",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/merge_v4_staging.py",
+      "lines": 165,
+      "sha256": "cb5906281760213b0ad87487eae3e53af1ece5706dcde31e772b29ec957c1c5a",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/plot_eval.py",
+      "lines": 468,
+      "sha256": "a9e9f119a14b8f7d7a585b75bf731530372ca3c3450cdd0eae4d06b0fa7789e2",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/plot_preprocess.py",
+      "lines": 181,
+      "sha256": "9a1b0bf45bca55e2e90ac4cf040c7544fc726246225db6dac7bf5c92eb985e8f",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/plot_scale_story.py",
+      "lines": 136,
+      "sha256": "8c0f3cf6dd282123ac46c0c4e133ee3d18360befec3953d6ac12b0df8a3cea5c",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/plot_training.py",
+      "lines": 246,
+      "sha256": "3fc096088e06f98f67a175654075849d1207ce741ee7774b1bef076fb9c5be9d",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/prelabel.py",
+      "lines": 156,
+      "sha256": "c0d777c80184393324713a18b92eec13a503b59dd4b62507bd0ccb78d6286bef",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/review_rollback.py",
+      "lines": 36,
+      "sha256": "e513b6c2e109591b96b41b93c42549b0356d84bac8993c08c4b41d16f249be71",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/sim_threshold.py",
+      "lines": 54,
+      "sha256": "4f7aa0be53071eb1671ce10b5772ea82a721fa95d2f314835c9be17afcf26867",
+      "syntax": "ok",
+      "legacy_path_lines": [
+        7
+      ],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/sweep_conf.py",
+      "lines": 91,
+      "sha256": "201f97365367a7dc0db722ef057f84cbdb019fa903ad041813f000f398401368",
+      "syntax": "ok",
+      "legacy_path_lines": [
+        8
+      ],
+      "native_opencv_io_lines": [
+        46
+      ]
+    },
+    {
+      "path": "scripts/sweep_workpoint.py",
+      "lines": 204,
+      "sha256": "c83020b2e8801502fb96a65fe8f55321e67148f1d404182fc73a201d9ef3ce44",
+      "syntax": "ok",
+      "legacy_path_lines": [
+        9
+      ],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/test_augment_rot.py",
+      "lines": 159,
+      "sha256": "37e61e577729def9b108af426c3b208fec186704ae6b4cdf6f3ebe6a08c8aa82",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/test_fp16.py",
+      "lines": 71,
+      "sha256": "7528afd4915d634f11a666701af8051f7d77b769759fc93b41f953518eb08ddf",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/test_infer_roi.py",
+      "lines": 134,
+      "sha256": "e0b7c01f8db9b16fa7a5f21b086388dcc82f4d7ed25824f0b0b7329d97eb58c4",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/test_merge_staging.py",
+      "lines": 143,
+      "sha256": "09901ae0ca6f24eb5f7d8cc2e6bfa6a1c7e245590bf2ca1d2e0c24b5f88e0471",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/test_review_safe.py",
+      "lines": 164,
+      "sha256": "d55b4796cfd983eba05655748f1c5c0ec73835e548e56af49434590a9d0ae9fd",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/test_web_history.py",
+      "lines": 168,
+      "sha256": "5b3287a9904cf787e3b9f903636700ee086dc02e8d3a957eab582f1cf55c4914",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/test_web_ledger.py",
+      "lines": 297,
+      "sha256": "4d9a9bf5308bb3f43c8d77f1bb323bfee2d768dae56c00064f32769b53e2fea1",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/test_web_pathmode.py",
+      "lines": 156,
+      "sha256": "8b80eedaf361f648958c7669cd2ca05d83bee6c2c91a8bb0bd780f4d87d723b3",
+      "syntax": "ok",
+      "legacy_path_lines": [
+        5
+      ],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/train.py",
+      "lines": 207,
+      "sha256": "cb55a53c45b7d40ecf818ad58ff124c3da824791b37b134c62700fde13f78a7d",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/train_run.py",
+      "lines": 411,
+      "sha256": "00e4d4c772cedb51bca6d80229327aa229c793c40e96876bcb8131f1df7b266d",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/train_watch.py",
+      "lines": 234,
+      "sha256": "1df56b87235d37221582c1d733e61d9eeb0b70cc0d815b859973d1e86b655673",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/verify_split.py",
+      "lines": 151,
+      "sha256": "aab5b13f95ab0a24bb195a2aebeb67a501b8b7bbf052e001aa555bd046100afb",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/vis_damage_fail.py",
+      "lines": 209,
+      "sha256": "8e7c750746f564d83eb16c5598d9ab2f41674a76cfbdb9af9777f2579cba20a6",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "scripts/检查环境.py",
+      "lines": 162,
+      "sha256": "b2c1b2fd91939270e43433b912de75bad89243a2c22b2519ff589c47e35540fe",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "web/app.py",
+      "lines": 1946,
+      "sha256": "42f87b6a48a8d907371bcd939c46cfeb8949b68e7579383802a4ec7005c290fb",
+      "syntax": "ok",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": [
+        425
+      ]
+    },
+    {
+      "path": "web/static/css/login.css",
+      "lines": 318,
+      "sha256": "485004c958d99e55551669d0e3a82dd424df3d7bae42304e34b8a50b5d424b43",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "web/static/css/style.css",
+      "lines": 1851,
+      "sha256": "a0e1e46c7c8c0bad0dd4c885c58b7e757a77442c113be33745604e45c05b3473",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "web/static/js/login.js",
+      "lines": 236,
+      "sha256": "a937365d4d0b00a10211c9569d96b138b56b39a199ed3c04f7a83c4ef4414a07",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "web/static/js/main.js",
+      "lines": 1832,
+      "sha256": "0ba17fcb624a4712425de4d0b4b8d912754fb3306744fa1779f9b8a84a3b65aa",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "web/templates/index.html",
+      "lines": 416,
+      "sha256": "81899eeb549279d299d7ef7c5a915c8695950f3339d343121ca3ae1b7d84ceeb",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    },
+    {
+      "path": "web/templates/login.html",
+      "lines": 70,
+      "sha256": "d4eba0890109fca783e8ed632764abb9b4783095cd6ab2bebb877c6499affb61",
+      "legacy_path_lines": [],
+      "native_opencv_io_lines": []
+    }
+  ],
+  "manifest_sha256": "83ac4bdd370b62048aaed724a5a2b2aaff5caadc11b3ac0579be261a51048bf7",
+  "manifest": {
+    "train": {
+      "images": 3195,
+      "groups": 921,
+      "images_with_cell_id": 127,
+      "true_cells": 48,
+      "boxes": {
+        "damage": 338,
+        "dark": 1092,
+        "light": 630
+      },
+      "negative_images": 1337,
+      "resolutions": {
+        "1052x585": 415,
+        "2129x1198": 2176,
+        "2115x1183": 6,
+        "1052x582": 592,
+        "1052x580": 6
+      }
+    },
+    "val": {
+      "images": 721,
+      "groups": 170,
+      "images_with_cell_id": 36,
+      "true_cells": 13,
+      "boxes": {
+        "damage": 73,
+        "dark": 234,
+        "light": 136
+      },
+      "negative_images": 312,
+      "resolutions": {
+        "2129x1198": 337,
+        "1052x585": 27,
+        "1052x580": 12,
+        "1052x582": 345
+      }
+    },
+    "test": {
+      "images": 676,
+      "groups": 193,
+      "images_with_cell_id": 26,
+      "true_cells": 10,
+      "boxes": {
+        "damage": 73,
+        "dark": 234,
+        "light": 135
+      },
+      "negative_images": 287,
+      "resolutions": {
+        "2129x1198": 605,
+        "1052x585": 54,
+        "1052x582": 16,
+        "1052x580": 1
+      }
+    }
+  },
+  "config_diffs": [
+    {
+      "baseline": "V5_GROUPED_1021_80ep",
+      "candidate": "V51_PREPROC_1021",
+      "differences": {
+        "close_mosaic": [
+          10,
+          0
+        ],
+        "cls_pw": [
+          0.0,
+          0.5
+        ],
+        "degrees": [
+          5.0,
+          0.0
+        ],
+        "erasing": [
+          0.4,
+          0.0
+        ],
+        "imgsz": [
+          1920,
+          2112
+        ],
+        "mosaic": [
+          1.0,
+          0.0
+        ],
+        "scale": [
+          0.05,
+          0.03
+        ],
+        "translate": [
+          0.05,
+          0.0
+        ]
+      }
+    },
+    {
+      "baseline": "V51_PREPROC_1021",
+      "candidate": "V51_ROI_1536",
+      "differences": {
+        "data": [
+          "datasets_v5/CT_DATASET_V5_GROUPED/data.yaml",
+          "datasets_v51/CT_DATASET_V51_ROI/data.yaml"
+        ],
+        "imgsz": [
+          2112,
+          1536
+        ],
+        "scale": [
+          0.03,
+          0.05
+        ]
+      }
+    },
+    {
+      "baseline": "V51_ROI_1536",
+      "candidate": "V52_ROI_1536_REG",
+      "differences": {
+        "close_mosaic": [
+          0,
+          10
+        ],
+        "cls_pw": [
+          0.5,
+          0.0
+        ],
+        "degrees": [
+          0.0,
+          5.0
+        ],
+        "erasing": [
+          0.0,
+          0.4
+        ],
+        "mosaic": [
+          0.0,
+          1.0
+        ],
+        "translate": [
+          0.0,
+          0.05
+        ]
+      }
+    },
+    {
+      "baseline": "V5_GROUPED_1021_80ep",
+      "candidate": "V52_ROI_1536_REG",
+      "differences": {
+        "data": [
+          "datasets_v5/CT_DATASET_V5_GROUPED/data.yaml",
+          "datasets_v51/CT_DATASET_V51_ROI/data.yaml"
+        ],
+        "imgsz": [
+          1920,
+          1536
+        ]
+      }
+    },
+    {
+      "baseline": "V52_ROI_1536_REG",
+      "candidate": "V53_ROI_M15",
+      "differences": {
+        "data": [
+          "datasets_v51/CT_DATASET_V51_ROI/data.yaml",
+          "datasets_v51/CT_DATASET_V51_ROI_M15/data.yaml"
+        ],
+        "model": [
+          "models/pretrained/yolov8n.pt",
+          "models\\pretrained\\yolov8n.pt"
+        ]
+      }
+    }
+  ],
+  "library": {
+    "ultralytics": "8.4.146",
+    "erasing_in_detection_transforms": false,
+    "auto_augment_in_detection_transforms": false,
+    "transforms": {
+      "name": "Compose",
+      "p": null,
+      "children": [
+        {
+          "name": "Compose",
+          "p": null,
+          "children": [
+            {
+              "name": "Mosaic",
+              "p": 1.0,
+              "children": []
+            },
+            {
+              "name": "CopyPaste",
+              "p": 0.0,
+              "children": []
+            },
+            {
+              "name": "RandomPerspective",
+              "p": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "MixUp",
+          "p": 0.0,
+          "children": []
+        },
+        {
+          "name": "CutMix",
+          "p": 0.0,
+          "children": []
+        },
+        {
+          "name": "Albumentations",
+          "p": 1.0,
+          "children": []
+        },
+        {
+          "name": "RandomHSV",
+          "p": null,
+          "children": []
+        },
+        {
+          "name": "RandomFlip",
+          "p": 0.0,
+          "children": []
+        },
+        {
+          "name": "RandomFlip",
+          "p": 0.5,
+          "children": []
+        }
+      ]
+    },
+    "source_sha256": {
+      "ultralytics.data.augment": "83e653664fa459beb66b9f245d90ca50ea25bc3c83caabfa9fab541d4abcb4b3",
+      "ultralytics.data.base": "863018d66387a9904d61368c5058e2ce1cfe830b6fd99a399fe9df159d4b0555",
+      "ultralytics.data.dataset": "6c30496c691aefeb0646bea23a1519d2960c927b71dae10c370afcd9765f0e0e"
+    }
+  },
+  "scaling": [
+    {
+      "name": "0_0006",
+      "split": "train",
+      "roi": false,
+      "imgsz": 1920,
+      "original_hw": [
+        585,
+        1052
+      ],
+      "resized_hw": [
+        1068,
+        1920
+      ],
+      "scale": 1.8256410256410256,
+      "letterbox_scaleup_pixel_equal": true
+    },
+    {
+      "name": "0_0006",
+      "split": "train",
+      "roi": true,
+      "imgsz": 1536,
+      "original_hw": [
+        484,
+        319
+      ],
+      "resized_hw": [
+        1536,
+        1013
+      ],
+      "scale": 3.1735537190082646,
+      "letterbox_scaleup_pixel_equal": true
+    },
+    {
+      "name": "0_0026",
+      "split": "train",
+      "roi": false,
+      "imgsz": 1920,
+      "original_hw": [
+        1198,
+        2129
+      ],
+      "resized_hw": [
+        1081,
+        1920
+      ],
+      "scale": 0.9023372287145242,
+      "letterbox_scaleup_pixel_equal": true
+    },
+    {
+      "name": "0_0026",
+      "split": "train",
+      "roi": true,
+      "imgsz": 1536,
+      "original_hw": [
+        991,
+        647
+      ],
+      "resized_hw": [
+        1536,
+        1003
+      ],
+      "scale": 1.5499495459132189,
+      "letterbox_scaleup_pixel_equal": true
+    },
+    {
+      "name": "0_0049",
+      "split": "val",
+      "roi": false,
+      "imgsz": 1920,
+      "original_hw": [
+        585,
+        1052
+      ],
+      "resized_hw": [
+        1068,
+        1920
+      ],
+      "scale": 1.8256410256410256,
+      "letterbox_scaleup_pixel_equal": true
+    },
+    {
+      "name": "0_0049",
+      "split": "val",
+      "roi": true,
+      "imgsz": 1536,
+      "original_hw": [
+        484,
+        319
+      ],
+      "resized_hw": [
+        1536,
+        1013
+      ],
+      "scale": 3.1735537190082646,
+      "letterbox_scaleup_pixel_equal": true
+    },
+    {
+      "name": "0_0001",
+      "split": "val",
+      "roi": false,
+      "imgsz": 1920,
+      "original_hw": [
+        1198,
+        2129
+      ],
+      "resized_hw": [
+        1081,
+        1920
+      ],
+      "scale": 0.9023372287145242,
+      "letterbox_scaleup_pixel_equal": true
+    },
+    {
+      "name": "0_0001",
+      "split": "val",
+      "roi": true,
+      "imgsz": 1536,
+      "original_hw": [
+        991,
+        647
+      ],
+      "resized_hw": [
+        1536,
+        1003
+      ],
+      "scale": 1.5499495459132189,
+      "letterbox_scaleup_pixel_equal": true
+    },
+    {
+      "name": "0_0078",
+      "split": "test",
+      "roi": false,
+      "imgsz": 1920,
+      "original_hw": [
+        585,
+        1052
+      ],
+      "resized_hw": [
+        1068,
+        1920
+      ],
+      "scale": 1.8256410256410256,
+      "letterbox_scaleup_pixel_equal": true
+    },
+    {
+      "name": "0_0078",
+      "split": "test",
+      "roi": true,
+      "imgsz": 1536,
+      "original_hw": [
+        484,
+        319
+      ],
+      "resized_hw": [
+        1536,
+        1013
+      ],
+      "scale": 3.1735537190082646,
+      "letterbox_scaleup_pixel_equal": true
+    },
+    {
+      "name": "0_0010",
+      "split": "test",
+      "roi": false,
+      "imgsz": 1920,
+      "original_hw": [
+        1198,
+        2129
+      ],
+      "resized_hw": [
+        1081,
+        1920
+      ],
+      "scale": 0.9023372287145242,
+      "letterbox_scaleup_pixel_equal": true
+    },
+    {
+      "name": "0_0010",
+      "split": "test",
+      "roi": true,
+      "imgsz": 1536,
+      "original_hw": [
+        991,
+        647
+      ],
+      "resized_hw": [
+        1536,
+        1003
+      ],
+      "scale": 1.5499495459132189,
+      "letterbox_scaleup_pixel_equal": true
+    }
+  ],
+  "matching": {
+    "gt": [
+      [
+        0,
+        0,
+        10,
+        10
+      ],
+      [
+        4,
+        0,
+        14,
+        10
+      ]
+    ],
+    "predictions": [
+      [
+        2,
+        0,
+        14,
+        10
+      ],
+      [
+        0,
+        0,
+        10,
+        10
+      ]
+    ],
+    "first_acceptable_tp": 1,
+    "max_iou_tp": 2,
+    "note": "合成重叠同类框反例，不声称历史实测指标已改变"
+  },
+  "mosaic": {
+    "original_box_side": 16,
+    "mosaic_hw": [
+      640,
+      640
+    ],
+    "output_hw": [
+      320,
+      320
+    ],
+    "output_boxes": [
+      [
+        80.0,
+        80.0,
+        96.0,
+        96.0
+      ]
+    ],
+    "retained_widths": [
+      16.0
+    ],
+    "retained_heights": [
+      16.0
+    ],
+    "note": "恒等尺度合成反例，否定必然缩半；不代表完整训练随机分布"
+  },
+  "device": {
+    "pick_device_gpu_return": 0,
+    "web_half_expression_results": [
+      {
+        "device": 0,
+        "half": false
+      },
+      {
+        "device": "cuda:0",
+        "half": true
+      },
+      {
+        "device": "cpu",
+        "half": false
+      }
+    ],
+    "note": "core/device_utils.py返回整数0时，Web USE_FP16恒为False；未使用GPU运行推理"
+  },
+  "metrics": [
+    {
+      "tag": "V5_80ep",
+      "weights_md5": "d8e6b3d6d8d640bd1555e2c1e3452b06",
+      "workpoint": {
+        "conf": 0.25,
+        "iou": 0.5,
+        "nms_iou": 0.7,
+        "matching": "同类 + IoU>=0.50 + conf 降序贪心一对一"
+      },
+      "per_class": {
+        "damage": {
+          "tp": 41,
+          "fp": 23,
+          "fn": 32,
+          "precision": 0.6406,
+          "recall": 0.5616
+        },
+        "dark": {
+          "tp": 199,
+          "fp": 27,
+          "fn": 35,
+          "precision": 0.8805,
+          "recall": 0.8504
+        },
+        "light": {
+          "tp": 121,
+          "fp": 10,
+          "fn": 14,
+          "precision": 0.9237,
+          "recall": 0.8963
+        }
+      },
+      "fp_per_1000img": 88.8,
+      "group_level": {
+        "n_defect_groups": 170,
+        "n_missed_groups": 45,
+        "miss_rate": 0.2647,
+        "cell_level_miss_rate": 0.2,
+        "cell_level_n": 10
+      },
+      "layer1": {
+        "mAP50": 0.8027800856151973,
+        "mAP50_95": 0.4186068170558657,
+        "mAP75": 0.40902011419241036,
+        "mean_precision": 0.8443859681817317,
+        "mean_recall": 0.7739770377388261,
+        "per_class": {
+          "damage": {
+            "ap50": 0.5867645425359234,
+            "ap": 0.23628887494046746,
+            "p": 0.6974015786363831,
+            "r": 0.5616438356164384
+          },
+          "dark": {
+            "ap50": 0.8780040576954204,
+            "ap": 0.5326271744589433,
+            "p": 0.8976422194314917,
+            "r": 0.8619784205401673
+          },
+          "light": {
+            "ap50": 0.9435716566142479,
+            "ap": 0.48690440176818656,
+            "p": 0.9381141064773203,
+            "r": 0.8983088570598725
+          }
+        },
+        "speed_ms": {
+          "preprocess": 3.1049773665337916,
+          "inference": 10.015346302055704,
+          "loss": 0.00036671549665945525,
+          "postprocess": 0.27416124299289824
+        }
+      },
+      "elapsed_s": 752.6
+    },
+    {
+      "tag": "V51_2112",
+      "weights_md5": "a82243d2e7ebc531911326ce524a1e6e",
+      "workpoint": {
+        "conf": 0.25,
+        "iou": 0.5,
+        "nms_iou": 0.7,
+        "matching": "同类 + IoU>=0.50 + conf 降序贪心一对一"
+      },
+      "per_class": {
+        "damage": {
+          "tp": 41,
+          "fp": 78,
+          "fn": 32,
+          "precision": 0.3445,
+          "recall": 0.5616
+        },
+        "dark": {
+          "tp": 199,
+          "fp": 21,
+          "fn": 35,
+          "precision": 0.9045,
+          "recall": 0.8504
+        },
+        "light": {
+          "tp": 115,
+          "fp": 24,
+          "fn": 20,
+          "precision": 0.8273,
+          "recall": 0.8519
+        }
+      },
+      "fp_per_1000img": 182.0,
+      "group_level": {
+        "n_defect_groups": 170,
+        "n_missed_groups": 51,
+        "miss_rate": 0.3,
+        "cell_level_miss_rate": 0.4,
+        "cell_level_n": 10
+      },
+      "layer1": {
+        "mAP50": 0.7128842666450553,
+        "mAP50_95": 0.34611283432817225,
+        "mAP75": 0.3171517098493222,
+        "mean_precision": 0.7766463273715448,
+        "mean_recall": 0.7180319764794652,
+        "per_class": {
+          "damage": {
+            "ap50": 0.4140624067898386,
+            "ap": 0.1647100875463562,
+            "p": 0.5401829794485195,
+            "r": 0.4794520547945205
+          },
+          "dark": {
+            "ap50": 0.8688916435915774,
+            "ap": 0.48325688376168036,
+            "p": 0.9307070917321568,
+            "r": 0.8376068376068376
+          },
+          "light": {
+            "ap50": 0.85569874955375,
+            "ap": 0.3903715316764801,
+            "p": 0.8590489109339582,
+            "r": 0.837037037037037
+          }
+        },
+        "speed_ms": {
+          "preprocess": 3.4594591703546955,
+          "inference": 12.368970562134919,
+          "loss": 0.0003463016566682673,
+          "postprocess": 0.28176272109553174
+        }
+      },
+      "elapsed_s": 327.3
+    },
+    {
+      "tag": "V51_ROI_1536",
+      "weights_md5": "38de3f281b5adfbb3c9527c1e9e82ab7",
+      "workpoint": {
+        "conf": 0.25,
+        "iou": 0.5,
+        "nms_iou": 0.7,
+        "matching": "同类 + IoU>=0.50 + conf 降序贪心一对一"
+      },
+      "per_class": {
+        "damage": {
+          "tp": 30,
+          "fp": 17,
+          "fn": 43,
+          "precision": 0.6383,
+          "recall": 0.411
+        },
+        "dark": {
+          "tp": 204,
+          "fp": 53,
+          "fn": 30,
+          "precision": 0.7938,
+          "recall": 0.8718
+        },
+        "light": {
+          "tp": 119,
+          "fp": 15,
+          "fn": 16,
+          "precision": 0.8881,
+          "recall": 0.8815
+        }
+      },
+      "fp_per_1000img": 125.7,
+      "group_level": {
+        "n_defect_groups": 170,
+        "n_missed_groups": 48,
+        "miss_rate": 0.2824,
+        "cell_level_miss_rate": 0.5,
+        "cell_level_n": 10
+      },
+      "layer1": {
+        "mAP50": 0.7522009885820761,
+        "mAP50_95": 0.40154309082692713,
+        "mAP75": 0.39426791465674443,
+        "mean_precision": 0.7662438408313134,
+        "mean_recall": 0.7131290879985802,
+        "per_class": {
+          "damage": {
+            "ap50": 0.4726840734199961,
+            "ap": 0.23209612773542104,
+            "p": 0.6112551015169106,
+            "r": 0.3972602739726027
+          },
+          "dark": {
+            "ap50": 0.8559017857720841,
+            "ap": 0.4778771913035588,
+            "p": 0.7925623556262165,
+            "r": 0.8589743589743589
+          },
+          "light": {
+            "ap50": 0.9280171065541483,
+            "ap": 0.4946559534418018,
+            "p": 0.8949140653508132,
+            "r": 0.883152631048779
+          }
+        },
+        "speed_ms": {
+          "preprocess": 2.213416567703257,
+          "inference": 7.87227145088258,
+          "loss": 0.0004002961506460898,
+          "postprocess": 0.2869489646142007
+        }
+      },
+      "elapsed_s": 31.1
+    },
+    {
+      "tag": "V52_ROI_1536_REG",
+      "weights_md5": "51c144d8c0a0a569672993c3fd76ef56",
+      "workpoint": {
+        "conf": 0.25,
+        "iou": 0.5,
+        "nms_iou": 0.7,
+        "matching": "同类 + IoU>=0.50 + conf 降序贪心一对一"
+      },
+      "per_class": {
+        "damage": {
+          "tp": 32,
+          "fp": 36,
+          "fn": 41,
+          "precision": 0.4706,
+          "recall": 0.4384
+        },
+        "dark": {
+          "tp": 206,
+          "fp": 45,
+          "fn": 28,
+          "precision": 0.8207,
+          "recall": 0.8803
+        },
+        "light": {
+          "tp": 120,
+          "fp": 8,
+          "fn": 15,
+          "precision": 0.9375,
+          "recall": 0.8889
+        }
+      },
+      "fp_per_1000img": 131.7,
+      "group_level": {
+        "n_defect_groups": 170,
+        "n_missed_groups": 49,
+        "miss_rate": 0.2882,
+        "cell_level_miss_rate": 0.3,
+        "cell_level_n": 10
+      },
+      "layer1": {
+        "mAP50": 0.7600061627095317,
+        "mAP50_95": 0.3976925074160473,
+        "mAP75": 0.38384798709645845,
+        "mean_precision": 0.8086198173795774,
+        "mean_recall": 0.7181906880537018,
+        "per_class": {
+          "damage": {
+            "ap50": 0.45296535657220105,
+            "ap": 0.18134376138913008,
+            "p": 0.6182122686527719,
+            "r": 0.4246575342465753
+          },
+          "dark": {
+            "ap50": 0.880373795389278,
+            "ap": 0.49496104592394186,
+            "p": 0.8588259742855561,
+            "r": 0.8632478632478633
+          },
+          "light": {
+            "ap50": 0.9466793361671161,
+            "ap": 0.5167727149350696,
+            "p": 0.9488212092004042,
+            "r": 0.8666666666666667
+          }
+        },
+        "speed_ms": {
+          "preprocess": 2.2462368348665733,
+          "inference": 7.850032544125852,
+          "loss": 0.0003804728256527489,
+          "postprocess": 0.28013668578261364
+        }
+      },
+      "elapsed_s": 31.1
+    },
+    {
+      "tag": "V5_resume120",
+      "weights_md5": "5212167be71c5cf2b11f0f6f7b6cd1e5",
+      "workpoint": {
+        "conf": 0.25,
+        "iou": 0.5,
+        "nms_iou": 0.7,
+        "matching": "同类 + IoU>=0.50 + conf 降序贪心一对一"
+      },
+      "per_class": {
+        "damage": {
+          "tp": 39,
+          "fp": 16,
+          "fn": 34,
+          "precision": 0.7091,
+          "recall": 0.5342
+        },
+        "dark": {
+          "tp": 197,
+          "fp": 22,
+          "fn": 37,
+          "precision": 0.8995,
+          "recall": 0.8419
+        },
+        "light": {
+          "tp": 119,
+          "fp": 20,
+          "fn": 16,
+          "precision": 0.8561,
+          "recall": 0.8815
+        }
+      },
+      "fp_per_1000img": 85.8,
+      "group_level": {
+        "n_defect_groups": 170,
+        "n_missed_groups": 49,
+        "miss_rate": 0.2882,
+        "cell_level_miss_rate": 0.2,
+        "cell_level_n": 10
+      },
+      "layer1": {
+        "mAP50": 0.7787284747766187,
+        "mAP50_95": 0.4165314212626687,
+        "mAP75": 0.4266721612145214,
+        "mean_precision": 0.8378633886257897,
+        "mean_recall": 0.7406407554719984,
+        "per_class": {
+          "damage": {
+            "ap50": 0.5543140735049533,
+            "ap": 0.22129150959830585,
+            "p": 0.7230929660849116,
+            "r": 0.4931506849315068
+          },
+          "dark": {
+            "ap50": 0.8563854014286325,
+            "ap": 0.5113351959322378,
+            "p": 0.9153572415172415,
+            "r": 0.8461538461538461
+          },
+          "light": {
+            "ap50": 0.92548594939627,
+            "ap": 0.5169675582574629,
+            "p": 0.875139958275216,
+            "r": 0.8826177353306424
+          }
+        },
+        "speed_ms": {
+          "preprocess": 3.1653357987958914,
+          "inference": 9.896900591277932,
+          "loss": 0.0003803250677442762,
+          "postprocess": 0.2735032539500596
+        }
+      },
+      "elapsed_s": 244.2
+    }
+  ]
+}
