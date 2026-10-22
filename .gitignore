@@ -78,3 +78,6 @@ datasets_v51/
 
 # ---------- ultralytics 训练时自建的图像缓存（可重建） ----------
 runs/**/*.npy
+
+# ---------- 训练日志的临时文件（结束时归位为 <run>/train.log，Windows 上句柄未关会残留） ----------
+runs/detect/CT_pro/_*.train.log

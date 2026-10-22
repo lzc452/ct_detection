@@ -28,6 +28,7 @@ import shutil
 import datetime
 import argparse
 import hashlib
+import logging
 
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(_SCRIPT_DIR)
@@ -325,7 +326,22 @@ def main():
 
     # 日志归位
     try:
-        logf.flush()
+        # Windows 上文件句柄不关就删不掉，会残留 _<name>.train.log
+        try:
+            sys.stdout = sys.__stdout__
+            sys.stderr = sys.__stderr__
+        except Exception:
+            pass
+        try:
+            logf.flush()
+            logf.close()
+        except Exception:
+            pass
+        try:
+            logging.getLogger().removeHandler(_log_handler)
+            _log_handler.close()
+        except Exception:
+            pass
         final_log = os.path.join(run_dir, "train.log")
         shutil.copy2(log_path, final_log)
         # 转录不完整时用 results.csv 回放补齐 epoch 表（数值原样，不加工）
