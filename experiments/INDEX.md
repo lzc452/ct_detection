@@ -2,6 +2,13 @@
 
 > 由 `scripts/archive_experiment.py` 生成。每次训练一个文件夹，内含 `01_train/`（原始产物）、`02_eval/`（评测）、`04_report.md`（数据+结论）。
 
+**配套知识库**（开训前必读）：[踩坑库 LESSONS.md](LESSONS.md) · [结论台账 FINDINGS.md](FINDINGS.md)（**已证伪的永不删除**） · [决策日志 DECISIONS.md](DECISIONS.md)
+
+```bash
+runtime/python.exe scripts/kb.py preflight --data <data.yaml> --imgsz <画布>   # 开训前自检
+runtime/python.exe scripts/kb.py query 关键词                                  # 查经验
+```
+
 | run | 画布 | ROI | 完成/计划轮 | 最优 ep | mAP50 | mAP50-95 | FP/千张 | 组级漏检 | 训练时长 | 报告 |
 |---|---|---|---|---|---|---|---|---|---|---|
 | `CT_DATASET_FINAL_V4_AUG_1016_1616` | 1920 | 否 | 75/300 | 45 | - | - | - | - | 11.97 h | [报告](CT_DATASET_FINAL_V4_AUG_1016_1616/04_report.md) |

@@ -37,6 +37,25 @@
 5. `.bat` 文件为 **GBK/ANSI 编码**，编辑时保持编码不变，否则中文乱码。
 6. 源文件头部多为 `#coding:utf-8` / `# -*- coding: utf-8 -*-`，保持 UTF-8 编码与既有注释风格（中文注释）。
 
+## 训练与实验约定
+
+**开训练之前必须先读这三处，别凭记忆动手：**
+
+| 想知道 | 去哪 |
+| --- | --- |
+| 这个报错/现象见过没 | `experiments/LESSONS.md`（踩坑库，18 条） |
+| 某条结论还能不能当依据引用 | `experiments/FINDINGS.md`（结论台账，**已证伪的永不删除**） |
+| 当初为什么这么定 | `experiments/DECISIONS.md`（决策日志，含复核触发条件） |
+
+1. **开训前跑一次自检**：`runtime/python.exe scripts/kb.py preflight --data <data.yaml> --imgsz <画布>`。它会检查数据集、画布对齐、meta 的 `roi` 位是否与实际数据一致，并列出相关坑和**已证伪结论**。
+2. **判据先预注册**（`DECISIONS` D-003）：训练启动前把门槛和可证伪预测写进 `FINDINGS.md`（状态=待验），结束后回填状态，不做结果回填式解释。
+3. **一次只动一个变量**（`LESSONS` L-008）：开跑前 diff 两轮的 `args.yaml`，差异超过 1 项就不许开。
+4. **新增坑/结论/决策用 CLI 记**，别只写在 commit message 里：
+   `runtime/python.exe scripts/kb.py add-lesson|add-finding|add-decision ...`
+   写完跑 `runtime/python.exe scripts/kb.py check` 校验格式。
+5. **选型只看层 2/3**（`predict` 口径的 FP/千张、组级漏检、损伤召回），层 1（`model.val` 的 COCO mAP）只用于横向比（`DECISIONS` D-005）。
+6. 生产模型 = **V5 全图@1920**（`DECISIONS` D-001）。换模型必须过 §4 预注册判据，代码不得自动上线。
+
 ## 数据与安全红线
 
 - `datasets/`、`积攒/`、`练兵/`、`收割结果_*/`、`复核_*/`、`问题电芯图片汇总/` 等为原始生产数据，**体积巨大（数百 GB）且已 gitignore**：不要复制、移动、删除，不要递归遍历统计（`du` 会超时），按需精确访问。
