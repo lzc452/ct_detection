@@ -1,6 +1,6 @@
 {
   "schema": "ct-eval-report/1",
-  "generated_at": "2026-10-22 10:16:24",
+  "generated_at": "2026-10-22 15:06:47",
   "weights": "runs/detect/CT_pro/V51_ROI_1536/weights/best.pt",
   "weights_md5": "38de3f281b5adfbb3c9527c1e9e82ab7",
   "manifest": "reports/splits/v5_split_manifest.csv",
@@ -41,10 +41,10 @@
       }
     },
     "speed_ms": {
-      "preprocess": 2.8547757398543783,
-      "inference": 7.722507691776832,
-      "loss": 0.0007153850685276046,
-      "postprocess": 0.4913755921583579
+      "preprocess": 2.213416567703257,
+      "inference": 7.87227145088258,
+      "loss": 0.0004002961506460898,
+      "postprocess": 0.2869489646142007
     }
   },
   "layer2_3_workpoint": {
@@ -56,18 +56,18 @@
     },
     "per_class": {
       "damage": {
-        "tp": 29,
-        "fp": 19,
-        "fn": 44,
-        "precision": 0.6042,
-        "recall": 0.3973
+        "tp": 30,
+        "fp": 17,
+        "fn": 43,
+        "precision": 0.6383,
+        "recall": 0.411
       },
       "dark": {
-        "tp": 202,
-        "fp": 52,
-        "fn": 32,
-        "precision": 0.7953,
-        "recall": 0.8632
+        "tp": 204,
+        "fp": 53,
+        "fn": 30,
+        "precision": 0.7938,
+        "recall": 0.8718
       },
       "light": {
         "tp": 119,
@@ -77,7 +77,7 @@
         "recall": 0.8815
       }
     },
-    "fp_per_1000img": 127.2,
+    "fp_per_1000img": 125.7,
     "group_level": {
       "n_defect_groups": 170,
       "n_missed_groups": 48,
@@ -94,18 +94,18 @@
           "recall": 0.4384
         },
         "dark": {
-          "tp": 211,
-          "fn": 23,
-          "recall": 0.9017
+          "tp": 213,
+          "fn": 21,
+          "recall": 0.9103
         },
         "light": {
-          "tp": 122,
-          "fn": 13,
-          "recall": 0.9037
+          "tp": 121,
+          "fn": 14,
+          "recall": 0.8963
         }
       }
     },
     "n_images": 676
   },
-  "elapsed_s": 30.2
+  "elapsed_s": 31.1
 }

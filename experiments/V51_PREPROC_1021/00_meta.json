@@ -1,6 +1,6 @@
 {
  "run": "V51_PREPROC_1021",
- "archived_at": "2026-10-22 12:53:54",
+ "archived_at": "2026-10-22 15:14:02",
  "data": "datasets_v5/CT_DATASET_V5_GROUPED/data.yaml",
  "model": "models/pretrained/yolov8n.pt",
  "imgsz": 2112,

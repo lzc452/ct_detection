@@ -1,0 +1,137 @@
+{
+  "schema": "ct-val-scaleup-v1",
+  "items": [
+    {
+      "name": "V5_全图@1920",
+      "imgsz": 1920,
+      "data": ".cache/eval_V5_80ep_v5test/data.yaml",
+      "weights": "runs/detect/CT_pro/V5_GROUPED_1021_80ep/weights/best.pt",
+      "val_default": {
+        "mAP50": 0.8028,
+        "mAP50_95": 0.4186,
+        "per_class": {
+          "damage": {
+            "AP50": 0.5868,
+            "AP50_95": 0.2363
+          },
+          "dark": {
+            "AP50": 0.878,
+            "AP50_95": 0.5326
+          },
+          "light": {
+            "AP50": 0.9436,
+            "AP50_95": 0.4869
+          }
+        }
+      },
+      "val_scaleup": {
+        "mAP50": 0.7937,
+        "mAP50_95": 0.4078,
+        "per_class": {
+          "damage": {
+            "AP50": 0.5994,
+            "AP50_95": 0.2208
+          },
+          "dark": {
+            "AP50": 0.8681,
+            "AP50_95": 0.5203
+          },
+          "light": {
+            "AP50": 0.9136,
+            "AP50_95": 0.4822
+          }
+        }
+      },
+      "delta_mAP50_95": -0.0108,
+      "delta_pct": -2.6
+    },
+    {
+      "name": "V51B_ROI@1536",
+      "imgsz": 1536,
+      "data": ".cache/eval_V51_ROI_1536_v5test_roi/data.yaml",
+      "weights": "runs/detect/CT_pro/V51_ROI_1536/weights/best.pt",
+      "val_default": {
+        "mAP50": 0.7522,
+        "mAP50_95": 0.4015,
+        "per_class": {
+          "damage": {
+            "AP50": 0.4727,
+            "AP50_95": 0.2321
+          },
+          "dark": {
+            "AP50": 0.8559,
+            "AP50_95": 0.4779
+          },
+          "light": {
+            "AP50": 0.928,
+            "AP50_95": 0.4947
+          }
+        }
+      },
+      "val_scaleup": {
+        "mAP50": 0.7671,
+        "mAP50_95": 0.3867,
+        "per_class": {
+          "damage": {
+            "AP50": 0.4947,
+            "AP50_95": 0.221
+          },
+          "dark": {
+            "AP50": 0.8634,
+            "AP50_95": 0.4945
+          },
+          "light": {
+            "AP50": 0.9432,
+            "AP50_95": 0.4445
+          }
+        }
+      },
+      "delta_mAP50_95": -0.0148,
+      "delta_pct": -3.7
+    },
+    {
+      "name": "V52_ROI@1536",
+      "imgsz": 1536,
+      "data": ".cache/eval_V52_ROI_1536_REG_v5test_roi/data.yaml",
+      "weights": "runs/detect/CT_pro/V52_ROI_1536_REG/weights/best.pt",
+      "val_default": {
+        "mAP50": 0.76,
+        "mAP50_95": 0.3977,
+        "per_class": {
+          "damage": {
+            "AP50": 0.453,
+            "AP50_95": 0.1813
+          },
+          "dark": {
+            "AP50": 0.8804,
+            "AP50_95": 0.495
+          },
+          "light": {
+            "AP50": 0.9467,
+            "AP50_95": 0.5168
+          }
+        }
+      },
+      "val_scaleup": {
+        "mAP50": 0.7554,
+        "mAP50_95": 0.3992,
+        "per_class": {
+          "damage": {
+            "AP50": 0.4521,
+            "AP50_95": 0.1863
+          },
+          "dark": {
+            "AP50": 0.8841,
+            "AP50_95": 0.4996
+          },
+          "light": {
+            "AP50": 0.9299,
+            "AP50_95": 0.5116
+          }
+        }
+      },
+      "delta_mAP50_95": 0.0015,
+      "delta_pct": 0.4
+    }
+  ]
+}

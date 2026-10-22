@@ -146,8 +146,14 @@ def _load_model_spec(pt_path):
     没有 meta 的旧模型（V3/V4 等）回退到全图 INFER_SIZE，行为与改造前完全一致。
     """
     spec = {'imgsz': INFER_SIZE, 'roi': False, 'source': 'default'}
-    meta_path = os.path.join(os.path.dirname(pt_path), '_train_meta.json')
-    if not os.path.exists(meta_path):
+    # meta 默认在 run 根目录（weights/ 的上一层）；早期的 models/启用/<ver>/ 布局与 .pt 同级。
+    # 两处都要找，否则 ultralytics 直接产出的 best.pt 永远读不到口径。
+    d = os.path.dirname(pt_path)
+    for meta_path in (os.path.join(d, '_train_meta.json'),
+                      os.path.join(os.path.dirname(d), '_train_meta.json')):
+        if os.path.exists(meta_path):
+            break
+    else:
         return spec
     try:
         with open(meta_path, encoding='utf-8') as f:

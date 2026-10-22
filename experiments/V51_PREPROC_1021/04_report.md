@@ -1,7 +1,7 @@
 # `V51_PREPROC_1021` 训练结果与分析
 
 > 本文件由 `scripts/archive_experiment.py` 依据 `runs/detect/CT_pro/V51_PREPROC_1021/` 与 `reports/eval/` 的真实文件生成，数字未经人工改写。
-> 生成时间：2026-10-22 12:53
+> 生成时间：2026-10-22 15:14
 
 ## 1. 配置
 

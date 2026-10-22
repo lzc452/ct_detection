@@ -1,6 +1,6 @@
 {
  "run": "CT_DATASET_FINAL_V4_AUG_1016_1616",
- "archived_at": "2026-10-22 12:53:53",
+ "archived_at": "2026-10-22 15:14:01",
  "data": "datasets\\CT_DATASET_FINAL_V4_AUG\\data.yaml",
  "model": "models/pretrained\\yolov8n.pt",
  "imgsz": 1920,

@@ -1,6 +1,6 @@
 {
  "run": "V5_GROUPED_1021_resume120",
- "archived_at": "2026-10-22 12:53:56",
+ "archived_at": "2026-10-22 15:14:03",
  "data": "datasets_v5/CT_DATASET_V5_GROUPED/data.yaml",
  "model": "runs/detect/CT_pro/V5_GROUPED_1021_80ep/weights/best.pt",
  "imgsz": 1920,

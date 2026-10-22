@@ -329,22 +329,28 @@ def plot_fp_miss(reports, specs, out):
 
 
 def write_table(reports, specs, out):
+    # 训练集覆盖了冻结 test 的 run 必须标注：它们的 mAP 被泄漏抬高，不可用于选型比较。
+    # 依据 reports/splits/v5_split_manifest.csv 的泄漏量化（V4 训练集覆盖 test 93.9%）。
+    LEAKED = {"V3", "V4", "v2mild",
+              "CT_DATASET_FINAL_V4_AUG_1016_1616"}
     rs = _order(reports, specs)
     lines = ["# 评测汇总（plot_eval.py 自动生成，勿手改）", "",
              "- 同一清单、同一 split 才算同一张考卷；口径不同则绝对值不可比",
              "- 工作点 conf=0.25 / IoU=0.5", "",
-             "| 报告 | 口径 | mAP50 | mAP50-95 | 损伤 AP50/AP | 暗斑 AP50/AP | 亮斑 AP50/AP | FP千张 | 组级漏检 |",
-             "|---|---|---|---|---|---|---|---|---|"]
+             "| 报告 | 口径 | mAP50 | mAP50-95 | 损伤 AP50/AP | 暗斑 AP50/AP | 亮斑 AP50/AP | FP千张 | 组级漏检 | 备注 |",
+             "|---|---|---|---|---|---|---|---|---|---|"]
     for r in rs:
         pc = r["layer1_coco"]["per_class"]
         wp = r["layer2_3_workpoint"]
-        lines.append("| %s | %s | %.3f | %.3f | %.3f / %.3f | %.3f / %.3f | %.3f / %.3f | %.1f | %.1f%% |" % (
+        note = "⚠ 训练集覆盖 test 93.9%，数字被泄漏抬高，不可用于选型" \
+            if any(k in r["_name"] for k in LEAKED) else ""
+        lines.append("| %s | %s | %.3f | %.3f | %.3f / %.3f | %.3f / %.3f | %.3f / %.3f | %.1f | %.1f%% | %s |" % (
             r["_name"], r["_spec"],
             r["layer1_coco"]["mAP50"], r["layer1_coco"]["mAP50_95"],
             pc["damage"]["ap50"], pc["damage"]["ap"],
             pc["dark"]["ap50"], pc["dark"]["ap"],
             pc["light"]["ap50"], pc["light"]["ap"],
-            wp["fp_per_1000img"], 100 * wp["group_level"]["miss_rate"]))
+            wp["fp_per_1000img"], 100 * wp["group_level"]["miss_rate"], note))
     with open(out, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     print("  -> %s" % os.path.relpath(out, ROOT))

@@ -363,12 +363,13 @@ def build_report(run, summ, evals, sweeps):
 def roi_of_run(run_dir, args):
     """该 run 的推理口径是不是 ROI。
 
-    优先级：_train_meta.json 的 roi 位 > 数据集名字里是否含 ROI。
+    优先级：meta 的 roi=True 直接认定；否则看数据集名字里是否含 ROI
+    —— 数据集名是物化时写入的、不可能说谎，而旧版 train_run.py 会把 roi 写成 False。
     推理端 web/app.py 只认 meta 里的 roi 位，所以这里也是唯一的事实来源。
     """
     meta = read_json(os.path.join(run_dir, "_train_meta.json")) or {}
-    if "roi" in meta:
-        return bool(meta.get("roi")), "meta"
+    if meta.get("roi") is True:
+        return True, "meta"
     data = str(args.get("data") or "")
     dname = os.path.basename(os.path.dirname(os.path.abspath(data))) if data else ""
     if "ROI" in dname.upper():
@@ -387,7 +388,10 @@ def backfill_roi_meta(run):
     if not os.path.isfile(mp):
         return None
     meta = read_json(mp) or {}
-    if "roi" in meta:
+    # 已经显式且自洽（True，或 False 且有来源标注）就不动；只修「缺位」和「写错成 False」
+    if meta.get("roi") is True:
+        return None
+    if meta.get("roi") is False and meta.get("roi_source"):
         return None
     rows = read_csv_rows(os.path.join(run_dir, "results.csv"))
     args = {}

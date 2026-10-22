@@ -162,14 +162,25 @@ def layer1_coco(weights, yaml_path, imgsz, device, verbose=True):
 
 # ----------------------------- 层 2/3 -----------------------------
 def layer23_workpoint(weights, rows, imgsz, conf_wp, iou_wp, device, chunk=32, verbose=True, roi_dir=None):
-    """roi_dir 给定时，预测用该目录下的 ROI 裁剪图，GT 也用 ROI 坐标（与训练同口径）"""
+    """roi_dir 给定时表示走 ROI 口径：预测用内存里现裁的 ROI 图，GT 也用 ROI 坐标。
+
+    注意：不读 .cache 里的 ROI JPEG。实测同一张图「读缓存 JPEG」与「内存里从原图裁」
+    在 40 张里有 24 张的框不完全相同（坐标抖动 ±0.01px，个别在阈值边缘翻转），
+    会让本函数与 sweep_workpoint.py 在同一 conf 上差 1~2 个框，报告里出现自相矛盾的数字。
+    产线也是解码原图后内存裁剪、不重编码，所以内存裁剪才是与产线一致的喂法。
+    """
+    import cv2
     from ultralytics import YOLO
     import roi as R
     m = YOLO(weights)
     if roi_dir:
-        paths = [os.path.join(roi_dir, r["name"] + ".jpg") for r in rows]
+        feeds = []
+        for r in rows:
+            img = cv2.imdecode(np.fromfile(os.path.join(ROOT, r["src_path"]), dtype=np.uint8),
+                               cv2.IMREAD_COLOR)
+            feeds.append(R.crop_roi(img)[0])
     else:
-        paths = [os.path.join(ROOT, r["src_path"]) for r in rows]
+        feeds = [os.path.join(ROOT, r["src_path"]) for r in rows]
 
     stats = {c: {"tp": 0, "fp": 0, "fn": 0} for c in range(3)}
     loose = {c: {"tp": 0, "fn": 0} for c in range(3)}
@@ -180,10 +191,10 @@ def layer23_workpoint(weights, rows, imgsz, conf_wp, iou_wp, device, chunk=32, v
 
     for s in range(0, len(rows), chunk):
         batch_rows = rows[s:s + chunk]
-        batch_paths = paths[s:s + chunk]
-        results = m.predict(batch_paths, imgsz=imgsz, conf=conf_wp, iou=0.7, device=device,
+        batch_feeds = feeds[s:s + chunk]
+        results = m.predict(batch_feeds, imgsz=imgsz, conf=conf_wp, iou=0.7, device=device,
                             verbose=False, stream=False)
-        for r, row, pth in zip(results, batch_rows, batch_paths):
+        for r, row in zip(results, batch_rows):
             gt = []
             if roi_dir:
                 # ROI 坐标系：GT 由 core.roi 变换，尺寸取 ROI 尺寸

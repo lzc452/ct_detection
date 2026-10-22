@@ -1,6 +1,6 @@
 {
  "run": "v2mild",
- "archived_at": "2026-10-22 12:53:56",
+ "archived_at": "2026-10-22 15:14:03",
  "data": "datasets\\CT_DATASET_FINAL_V2_AUG\\data.yaml",
  "model": "models/pretrained\\yolov8n.pt",
  "imgsz": 1920,

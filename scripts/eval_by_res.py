@@ -64,18 +64,13 @@ def main():
                  "weights": wpath, "groups": {}}
         print("\n===== %s (%s) =====" % (label, entry["spec"]))
         for gname, grows in groups.items():
-            roi_dir = None
-            if roi:
-                if args.roi_images:
-                    roi_dir = args.roi_images if os.path.isabs(args.roi_images) \
-                        else os.path.join(ROOT, args.roi_images)
-                else:
-                    roi_dir = os.path.join(ROOT, ".cache", "eval_%s_roi" % args.split, "images")
-                if not os.path.isdir(roi_dir):
-                    raise SystemExit("缺少 ROI 评估集缓存：%s" % roi_dir)
+            # ROI 模型统一交给 layer23_workpoint 在内存里从原图现裁。
+            # 不读 .cache 的 ROI JPEG：实测同一张图「读缓存 JPEG」与「内存裁剪」在
+            # 40 张里有 24 张框不完全一致，会让本脚本与 eval_report / sweep 对不上
+            # （同一模型曾跑出 142.1 与 137.2 两个 FP/千张）。
             res = E.layer23_workpoint(wpath, grows, sz, args.conf, args.iou,
                                       args.device, chunk=32, verbose=False,
-                                      roi_dir=roi_dir)
+                                      roi_dir="inmem" if roi else None)
             pc = res["per_class"]
             entry["groups"][gname] = {
                 "n_images": len(grows),
