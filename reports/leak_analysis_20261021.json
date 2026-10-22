@@ -1,0 +1,90 @@
+{
+  "generated_at": "2026-10-21 12:40:43",
+  "n_master_images": 4592,
+  "md5_dup_groups": 20,
+  "md5_dup_images": 40,
+  "cluster": {
+    "0.9999": {
+      "n_clusters": 3028,
+      "n_multi_clusters": 247,
+      "n_imgs_in_multi": 1811,
+      "max_cluster": 243,
+      "top5": [
+        243,
+        134,
+        53,
+        46,
+        42
+      ]
+    },
+    "0.9995": {
+      "n_clusters": 1676,
+      "n_multi_clusters": 652,
+      "n_imgs_in_multi": 3568,
+      "max_cluster": 290,
+      "top5": [
+        290,
+        192,
+        136,
+        78,
+        60
+      ]
+    },
+    "0.999": {
+      "n_clusters": 1339,
+      "n_multi_clusters": 733,
+      "n_imgs_in_multi": 3986,
+      "max_cluster": 368,
+      "top5": [
+        368,
+        312,
+        147,
+        78,
+        62
+      ]
+    },
+    "0.995": {
+      "n_clusters": 762,
+      "n_multi_clusters": 494,
+      "n_imgs_in_multi": 4324,
+      "max_cluster": 428,
+      "top5": [
+        428,
+        405,
+        163,
+        135,
+        91
+      ]
+    },
+    "0.99": {
+      "n_clusters": 438,
+      "n_multi_clusters": 302,
+      "n_imgs_in_multi": 4456,
+      "max_cluster": 443,
+      "top5": [
+        443,
+        405,
+        213,
+        201,
+        182
+      ]
+    }
+  },
+  "v4_leak": {
+    "val_to_train_maxcos": {
+      "p50": 0.9997729063034058,
+      "p90": 0.9999929070472717,
+      "p99": 0.9999968737363816,
+      "ge_0.9999": 245,
+      "ge_0.999": 536,
+      "ge_0.995": 594,
+      "n_val": 646
+    }
+  },
+  "provenance": {
+    "covered": 181,
+    "total": 4592,
+    "ratio": 0.0394
+  },
+  "elapsed_s": 128.9
+}

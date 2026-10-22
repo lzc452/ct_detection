@@ -44,6 +44,7 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, 'core'))
 import Config
 from device_utils import pick_device
 from ultralytics import YOLO
+import roi as roi_mod
 from PIL import Image, ImageFont
 import pandas as pd
 from openpyxl import Workbook
@@ -138,6 +139,109 @@ scan_models()
 current_model = None
 current_model_id = None
 
+
+def _load_model_spec(pt_path):
+    """读模型同目录的 _train_meta.json，得到推理口径（imgsz + 是否 ROI 裁剪）。
+
+    没有 meta 的旧模型（V3/V4 等）回退到全图 INFER_SIZE，行为与改造前完全一致。
+    """
+    spec = {'imgsz': INFER_SIZE, 'roi': False, 'source': 'default'}
+    meta_path = os.path.join(os.path.dirname(pt_path), '_train_meta.json')
+    if not os.path.exists(meta_path):
+        return spec
+    try:
+        with open(meta_path, encoding='utf-8') as f:
+            m = json.load(f)
+        hp = m.get('hyperparams') or {}
+        if hp.get('imgsz'):
+            spec['imgsz'] = int(hp['imgsz'])
+        spec['roi'] = bool(m.get('roi'))
+        spec['source'] = meta_path
+    except Exception as e:
+        print(f"[Model Spec] 读取 {meta_path} 失败，回退默认口径: {e}")
+    return spec
+
+
+_roi_warn = [0]
+
+
+def _infer_spec():
+    """当前模型的 (imgsz, 是否 ROI)"""
+    info = MODEL_REGISTRY.get(current_model_id) or {}
+    spec = info.get('spec') or {}
+    return spec.get('imgsz', INFER_SIZE), bool(spec.get('roi'))
+
+
+def _prep_infer(img):
+    """按当前模型口径裁出送入模型的图；返回 (输入图, offset 或 None)"""
+    _, use_roi = _infer_spec()
+    if not use_roi:
+        return img, None
+    roi_img, box = roi_mod.crop_roi(img)
+    if not roi_mod.roi_looks_valid(roi_img):
+        _roi_warn[0] += 1
+        if _roi_warn[0] <= 5:
+            print(f"[ROI] 警告 #{_roi_warn[0]}：ROI 内灰度标准差过低，成像布局可能已变化，"
+                  f"裁剪可能不含电芯，请人工检查 core/roi.py 的边界")
+    return roi_img, box
+
+
+def _restore_boxes(res, box):
+    """ROI 坐标 -> 原图坐标（就地修改 res.boxes）"""
+    if box is None:
+        return
+    try:
+        if res.boxes is not None and len(res.boxes):
+            res.boxes.data[:, 0] += box[0]
+            res.boxes.data[:, 2] += box[0]
+            res.boxes.data[:, 1] += box[1]
+            res.boxes.data[:, 3] += box[1]
+    except Exception as e:
+        print(f"[ROI] 坐标映射失败: {e}")
+
+
+def _plot_after_infer(res, orig_img, box):
+    """画图。ROI 模式：先在 ROI 图上画（此时还是 ROI 坐标），再贴回原图。
+
+    必须在 _restore_boxes 之前调用。
+    """
+    if box is None:
+        return res.plot()
+    roi_drawn = res.plot()
+    x0, y0, x1, y1 = box
+    draw = orig_img.copy()
+    draw[y0:y1, x0:x1] = roi_drawn
+    return draw
+
+
+def infer_one(model, img, conf, imgsz=None):
+    """单图推理 + 画图，自动处理 ROI。返回 (results, draw_img)"""
+    size = imgsz or _infer_spec()[0]
+    inp, box = _prep_infer(img)
+    res = model(inp, imgsz=size, half=USE_FP16, device=DEVICE,
+                max_det=MAX_DET, verbose=False, conf=conf)[0]
+    draw = _plot_after_infer(res, img, box)
+    _restore_boxes(res, box)
+    return res, draw
+
+
+def infer_batch(model, imgs, conf, imgsz=None):
+    """批量推理 + 画图，自动处理 ROI。返回 (results_list, draws_list)"""
+    size = imgsz or _infer_spec()[0]
+    inputs, boxes = [], []
+    for im in imgs:
+        inp, box = _prep_infer(im)
+        inputs.append(inp)
+        boxes.append(box)
+    results = list(model(inputs, imgsz=size, half=USE_FP16, device=DEVICE,
+                         max_det=MAX_DET, verbose=False, conf=conf))
+    draws = []
+    for res, im, box in zip(results, imgs, boxes):
+        draws.append(_plot_after_infer(res, im, box))
+        _restore_boxes(res, box)
+    return results, draws
+
+
 def load_model(model_id, warmup=True):
     """
     加载指定模型，自动卸载旧模型释放显存
@@ -158,16 +262,21 @@ def load_model(model_id, warmup=True):
             torch.cuda.empty_cache()
     # 加载新模型
     model_info = MODEL_REGISTRY[model_id]
+    if 'spec' not in model_info:
+        model_info['spec'] = _load_model_spec(model_info['path'])
+    spec = model_info['spec']
     model_path = model_info['path']
     print(f"[Model] Loading: {model_id} ({model_path})")
+    print(f"[Model] Spec: imgsz={spec['imgsz']} roi={spec['roi']} (来源 {spec['source']})")
     new_model = YOLO(model_path, task='detect')
     current_model = new_model
     current_model_id = model_id
-    # 预热
+    # 预热（用该模型自己的 imgsz，不能再用全局 INFER_SIZE）
     if warmup:
-        _warmup_imgs = [np.zeros((INFER_SIZE, INFER_SIZE, 3), dtype=np.uint8)] * BATCH_SIZE
-        new_model(_warmup_imgs, imgsz=INFER_SIZE, half=USE_FP16, device=DEVICE, verbose=False)
-        print(f"[Model] Warmup done for {model_id}")
+        _sz = spec['imgsz']
+        _warmup_imgs = [np.zeros((_sz, _sz, 3), dtype=np.uint8)] * BATCH_SIZE
+        new_model(_warmup_imgs, imgsz=_sz, half=USE_FP16, device=DEVICE, verbose=False)
+        print(f"[Model] Warmup done for {model_id} (imgsz={_sz})")
     return new_model
 
 # 加载默认模型：优先 V4（2026-10-19 清洗考卷 mAP50 93.3%，生产口径三类召回 95.8/96.6/90.3，全面优于 V3）
@@ -540,17 +649,11 @@ def detect_image():
 
         # --- 计时：模型推理（阈值直传，#8）---
         t1 = time.time()
-        results = current_model(
-            img,
-            imgsz=INFER_SIZE,
-            half=USE_FP16,
-            device=DEVICE,
-            max_det=MAX_DET,
-            verbose=False,
-            conf=conf_threshold,   # 唯一阈值：NMS 与输出都是它
-        )[0]
+        # ROI 模式下 infer_one 内部顺序：裁剪 → 推理 → 在 ROI 上画 → 坐标映射回原图
+        results, draw_img = infer_one(current_model, img, conf_threshold)
         t2 = time.time()
         t_infer = t2 - t1
+        t_plot = 0.0    # 画图已合并进 infer_one（必须先画后映射，不能拆开）
 
         has_det = results.boxes is not None and len(results.boxes) > 0
 
@@ -559,11 +662,6 @@ def detect_image():
             parse_results_to_global(results, filename, '', batch_id)
         else:
             print("[WARNING] parse_results_to_global not found in globals, skipping result storage")
-
-        # --- 计时：画图 ---
-        t4 = time.time()
-        draw_img = results.plot()
-        t_plot = time.time() - t4
 
         # --- 计时：保存 ---
         t5 = time.time()
@@ -684,9 +782,15 @@ def detect_batch():
             # 推理计时（阈值直传，#8）
             t_infer0 = time.time()
             try:
+                # ROI 模式下先把每张裁成模型口径的输入，偏移量留着做坐标映射
+                _ins, _offs = [], []
+                for _im in chunk_imgs:
+                    _i, _b = _prep_infer(_im)
+                    _ins.append(_i)
+                    _offs.append(_b)
                 results = current_model(
-                    chunk_imgs,
-                    imgsz=INFER_SIZE,
+                    _ins,
+                    imgsz=_infer_spec()[0],
                     half=USE_FP16,
                     device=DEVICE,
                     max_det=MAX_DET,
@@ -710,12 +814,20 @@ def detect_batch():
             chunk_defect_imgs = 0
             chunk_clean_imgs = 0
 
-            for img, idx, result in zip(chunk_imgs, chunk_idx, results):
+            for img, idx, result, _off in zip(chunk_imgs, chunk_idx, results, _offs):
                 filename = name_of(idx)
                 try:
                     boxes = result.boxes
                     has_det = boxes is not None and len(boxes) > 0
                     orig_file = None
+
+                    # ROI 模式：有检出时先在 ROI 图上画好（此时仍是 ROI 坐标），再把坐标映射回原图
+                    _pre_draw = None
+                    if has_det:
+                        t_p0 = time.time()
+                        _pre_draw = _plot_after_infer(result, img, _off)
+                        t_plot += (time.time() - t_p0)
+                    _restore_boxes(result, _off)
 
                     _g = extract_group(filename)
                     if _g and _g not in batch_info[batch_id]['groups']:
@@ -728,10 +840,7 @@ def detect_batch():
                     # 提速（2026-10-21）：无检出的干净图不画图不存盘（产线大多数是干净图，省100~300ms/张）
                     result_filename = None
                     if has_det:
-                        t_p0 = time.time()
-                        draw_img = result.plot()
-                        t_plot += (time.time() - t_p0)
-
+                        draw_img = _pre_draw
                         t_s0 = time.time()
                         result_filename = save_annotated_image(draw_img, filename)
                         t_save += (time.time() - t_s0)
@@ -914,15 +1023,8 @@ def process_video_task(task_id, temp_path, conf_threshold, original_filename):
                 break
             try:
                 t_i0 = time.time()
-                results = current_model(
-                    frame,
-                    imgsz=INFER_SIZE,
-                    half=USE_FP16,
-                    device=DEVICE,
-                    max_det=MAX_DET,
-                    verbose=False,
-                    conf=conf_threshold
-                )[0]
+                # ROI 模式：裁剪 → 推理 → 在 ROI 上画 → 坐标映射回原图（顺序不能拆）
+                results, _drawf = infer_one(current_model, frame, conf_threshold)
                 t_total_infer += (time.time() - t_i0)
 
                 has_det = results.boxes is not None and len(results.boxes) > 0
@@ -930,7 +1032,7 @@ def process_video_task(task_id, temp_path, conf_threshold, original_filename):
                     total_frames_with_defects += 1
 
                 t_p0 = time.time()
-                annotated = results.plot() if has_det else frame
+                annotated = _drawf if has_det else frame
                 t_total_plot += (time.time() - t_p0)
             except Exception as e:
                 print(f"[Video Error] frame {cur}: {e}")
@@ -1485,6 +1587,10 @@ def _detect_worker(task_id, root, jobs, conf, skip, batch_id):
     """后台检测线程：batch 读盘推理，问题图即存备份，逐批落盘可续检"""
     task = detect_tasks[task_id]
     model = current_model          # 捕获引用：任务中途切换模型不影响本任务
+    # 推理口径也在任务开始时锁定（imgsz + 是否 ROI），与 model 一起冻结
+    _spec = (MODEL_REGISTRY.get(current_model_id) or {}).get('spec') or {}
+    _task_sz = int(_spec.get('imgsz', INFER_SIZE))
+    _task_roi = bool(_spec.get('roi'))
     t0 = time.time()
     processed = 0
     try:
@@ -1507,7 +1613,20 @@ def _detect_worker(task_id, root, jobs, conf, skip, batch_id):
                                     full_path=ap, error='读图失败: %s' % e)
             if imgs:
                 try:
-                    results = model(imgs, imgsz=INFER_SIZE, half=USE_FP16, device=DEVICE,
+                    _ins, _offs = [], []
+                    for _im in imgs:
+                        if _task_roi:
+                            _i, _b = roi_mod.crop_roi(_im)
+                            if not roi_mod.roi_looks_valid(_i) and _roi_warn[0] < 5:
+                                _roi_warn[0] += 1
+                                print(f"[ROI] 警告 #{_roi_warn[0]}：扫描任务中 ROI 有效性检查失败，"
+                                      f"请人工确认成像布局")
+                            _ins.append(_i)
+                            _offs.append(_b)
+                        else:
+                            _ins.append(_im)
+                            _offs.append(None)
+                    results = model(_ins, imgsz=_task_sz, half=USE_FP16, device=DEVICE,
                                     max_det=MAX_DET, verbose=False, conf=conf)
                 except Exception as e:
                     print(f"[ERROR] 批量推理失败（本块 {len(imgs)} 张记为失败）: {e}")
@@ -1516,13 +1635,16 @@ def _detect_worker(task_id, root, jobs, conf, skip, batch_id):
                     for ap, rel in zip(aps, rels):
                         add_file_record(batch_id, rel, STATUS_FAILED, 0, conf,
                                         full_path=ap, error='推理失败: %s' % e)
-                    results = []
-                for img, ap, rel, res in zip(imgs, aps, rels, results):
+                    results, _offs = [], []
+                for img, ap, rel, res, _off in zip(imgs, aps, rels, results, _offs):
                     boxes = res.boxes
                     has = boxes is not None and len(boxes) > 0
+                    draw = None
+                    if has:
+                        draw = _plot_after_infer(res, img, _off)   # 先画（ROI 坐标）
+                    _restore_boxes(res, _off)                       # 再映射回原图坐标
                     if has:
                         parse_results_to_global(res, rel, ap, batch_id)
-                        draw = res.plot()
                         ann = save_annotated_image(draw, rel)
                         orig = backup_original_file(ap)
                         classes = [int(c) for c in boxes.cls.tolist()]

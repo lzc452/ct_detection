@@ -1,0 +1,81 @@
+{
+  "generated_at": "2026-10-21 12:49:02",
+  "n_images": 4592,
+  "group_info": {
+    "n_groups": 1284,
+    "n_multi_groups": 732,
+    "n_imgs_in_multi": 4040,
+    "max_group": 368,
+    "top10_group_sizes": [
+      368,
+      312,
+      147,
+      78,
+      62,
+      57,
+      55,
+      42,
+      27,
+      25
+    ],
+    "candidate_pairs": 3256,
+    "provenance_groups": 71,
+    "cos_th": 0.999,
+    "mae_th": 1.5
+  },
+  "split_totals": {
+    "train": {
+      "cb": [
+        338,
+        1092,
+        630
+      ],
+      "neg": 1337,
+      "n": 3195
+    },
+    "val": {
+      "cb": [
+        73,
+        234,
+        136
+      ],
+      "neg": 312,
+      "n": 721
+    },
+    "test": {
+      "cb": [
+        73,
+        234,
+        135
+      ],
+      "neg": 287,
+      "n": 676
+    }
+  },
+  "leak_problems": [],
+  "v4_baseline": {
+    "n_train": 3752,
+    "n_val": 642,
+    "val_with_pixel_dupe_in_train": 535,
+    "val_dupe_ratio": 0.8333,
+    "dupe_pairs": 6324,
+    "val_maxcos_p50": 0.999774,
+    "val_maxcos_p90": 0.999993
+  },
+  "coverage": {
+    "images_with_cell_id": 189,
+    "ratio": 0.0412,
+    "groups_without_cell_id": 1231
+  },
+  "params": {
+    "cos": 0.999,
+    "mae": 1.5,
+    "ratios": [
+      0.7,
+      0.15,
+      0.15
+    ],
+    "seed": 42
+  },
+  "elapsed_s": 68.1
+}

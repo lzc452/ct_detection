@@ -1,0 +1,89 @@
+{
+  "note": "conf 下限 0.01；宽度为各自口径下的像素",
+  "cases": [
+    {
+      "name": "0_0017",
+      "gt_w_roi_px": 22.2,
+      "v5": {
+        "best_iou": 0.643,
+        "conf": 0.32347,
+        "pred_w_px": 32.5
+      },
+      "roi": {
+        "best_iou": 0.525,
+        "conf": 0.06144,
+        "pred_w_px": 16.2
+      }
+    },
+    {
+      "name": "0_0018",
+      "gt_w_roi_px": 20.6,
+      "v5": {
+        "best_iou": 0.599,
+        "conf": 0.52353,
+        "pred_w_px": 32.3
+      },
+      "roi": {
+        "best_iou": 0.575,
+        "conf": 0.02769,
+        "pred_w_px": 16.2
+      }
+    },
+    {
+      "name": "0_0197",
+      "gt_w_roi_px": 26.4,
+      "v5": {
+        "best_iou": 0.834,
+        "conf": 0.40271,
+        "pred_w_px": 26.0
+      },
+      "roi": {
+        "best_iou": 0.704,
+        "conf": 0.13864,
+        "pred_w_px": 20.6
+      }
+    },
+    {
+      "name": "0_0257",
+      "gt_w_roi_px": 19.8,
+      "v5": {
+        "best_iou": 0.765,
+        "conf": 0.6775,
+        "pred_w_px": 21.3
+      },
+      "roi": {
+        "best_iou": 0.765,
+        "conf": 0.05702,
+        "pred_w_px": 16.8
+      }
+    },
+    {
+      "name": "0_0258",
+      "gt_w_roi_px": 18.8,
+      "v5": {
+        "best_iou": 0.545,
+        "conf": 0.68652,
+        "pred_w_px": 23.1
+      },
+      "roi": {
+        "best_iou": 0.491,
+        "conf": 0.01248,
+        "pred_w_px": 19.1
+      }
+    },
+    {
+      "name": "0_0259",
+      "gt_w_roi_px": 20.8,
+      "v5": {
+        "best_iou": 0.574,
+        "conf": 0.03831,
+        "pred_w_px": 19.2
+      },
+      "roi": {
+        "best_iou": 0.0,
+        "conf": 0.0,
+        "pred_w_px": null
+      }
+    }
+  ]
+}

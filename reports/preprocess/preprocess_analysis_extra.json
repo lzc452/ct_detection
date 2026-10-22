@@ -1,0 +1,51 @@
+{
+  "resolution_groups_mixed": {
+    "n_groups_with_multiple_sizes": 0,
+    "n_images_in_those_groups": 0,
+    "examples": []
+  },
+  "channels": {
+    "3": 500
+  },
+  "border_std": {
+    "p50": 23.49,
+    "p90": 27.78
+  },
+  "snr": {
+    "damage": {
+      "n": 56,
+      "contrast_abs_p50": 10.900039672851562,
+      "noise_std_p50": 20.44709587097168,
+      "side_px_p50": 34.14674215792775,
+      "snr_orig_p50": 18.56174795054161,
+      "snr_letterbox_p50": 16.705573155487446,
+      "snr_mosaic_p50": 9.280873975270804
+    },
+    "light": {
+      "n": 97,
+      "contrast_abs_p50": 3.1903076171875,
+      "noise_std_p50": 3.7200639247894287,
+      "side_px_p50": 16.431676725154983,
+      "snr_orig_p50": 13.35411066112761,
+      "snr_letterbox_p50": 12.018699595014851,
+      "snr_mosaic_p50": 6.677055330563805
+    },
+    "dark": {
+      "n": 171,
+      "contrast_abs_p50": 3.20977783203125,
+      "noise_std_p50": 4.084575176239014,
+      "side_px_p50": 22.978250586152114,
+      "snr_orig_p50": 18.68878312585028,
+      "snr_letterbox_p50": 16.81990481326525,
+      "snr_mosaic_p50": 9.34439156292514
+    }
+  },
+  "jpeg_retention": {
+    "damage_q90": 1.0028,
+    "damage_q75": 1.0091,
+    "light_q90": 1.0045,
+    "light_q75": 0.9973,
+    "dark_q90": 0.9959,
+    "dark_q75": 0.9941
+  }
+}
