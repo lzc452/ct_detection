@@ -1,0 +1,20 @@
+{
+  "schema": "damage_audit_sample/v1",
+  "seed": 20261023,
+  "total_damage_boxes": 484,
+  "bins": {
+    "q33": 51.8,
+    "q67": 123.5
+  },
+  "batch_A": {
+    "n": 73,
+    "groups": 27,
+    "rule": "test 全量"
+  },
+  "batch_B": {
+    "n": 100,
+    "groups": 87,
+    "rule": "train 按长边三分位分层，组内上限 2 框"
+  },
+  "crops": 173
+}
