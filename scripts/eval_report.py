@@ -162,17 +162,26 @@ def layer1_coco(weights, yaml_path, imgsz, device, verbose=True):
 
 
 # ----------------------------- 层 2/3 -----------------------------
-def layer23_workpoint(weights, rows, imgsz, conf_wp, iou_wp, device, chunk=32, verbose=True, roi_dir=None):
+def layer23_workpoint(weights, rows, imgsz, conf_wp, iou_wp, device, chunk=32, verbose=True,
+                      roi_dir=None, roi_k=None):
     """roi_dir 给定时表示走 ROI 口径：预测用内存里现裁的 ROI 图，GT 也用 ROI 坐标。
 
     注意：不读 .cache 里的 ROI JPEG。实测同一张图「读缓存 JPEG」与「内存里从原图裁」
     在 40 张里有 24 张的框不完全相同（坐标抖动 ±0.01px，个别在阈值边缘翻转），
     会让本函数与 sweep_workpoint.py 在同一 conf 上差 1~2 个框，报告里出现自相矛盾的数字。
     产线也是解码原图后内存裁剪、不重编码，所以内存裁剪才是与产线一致的喂法。
+
+    roi_k：余量系数。None 时**在函数内部**从权重 meta 读，而不是依赖调用方先
+    set_margin_k——否则任何直接调用本函数的脚本（如 eval_by_res.py）都会静默用 k=0
+    去评估 k=1.5 的模型：图按一种裁法、GT 按另一种算，指标全错且不报错（L-003 同类）。
     """
     import cv2
     from ultralytics import YOLO
     import roi as R
+    if roi_dir:
+        R.set_margin_k(roi_k if roi_k is not None else R.margin_k_of_weights(weights))
+        if verbose:
+            print("  ROI 余量 k=%s" % R.get_margin_k())
     m = YOLO(weights)
     if roi_dir:
         feeds = []

@@ -4,6 +4,136 @@
   "iou": 0.5,
   "models": [
     {
+      "name": "V53",
+      "spec": "ROI@1536",
+      "weights": "runs/detect/CT_pro/V53_ROI_M15/weights/best.pt",
+      "groups": {
+        "高分辨率 2129x1198": {
+          "n_images": 605,
+          "fp_per_1000img": 104.1,
+          "group_miss": 0.2759,
+          "n_defect_groups": 145,
+          "per_class": {
+            "damage": {
+              "tp": 20,
+              "fp": 19,
+              "fn": 32,
+              "precision": 0.5128,
+              "recall": 0.3846
+            },
+            "dark": {
+              "tp": 192,
+              "fp": 34,
+              "fn": 28,
+              "precision": 0.8496,
+              "recall": 0.8727
+            },
+            "light": {
+              "tp": 106,
+              "fp": 10,
+              "fn": 12,
+              "precision": 0.9138,
+              "recall": 0.8983
+            }
+          }
+        },
+        "低分辨率 ~1052x58x": {
+          "n_images": 71,
+          "fp_per_1000img": 197.2,
+          "group_miss": 0.28,
+          "n_defect_groups": 25,
+          "per_class": {
+            "damage": {
+              "tp": 13,
+              "fp": 11,
+              "fn": 8,
+              "precision": 0.5417,
+              "recall": 0.619
+            },
+            "dark": {
+              "tp": 10,
+              "fp": 2,
+              "fn": 4,
+              "precision": 0.8333,
+              "recall": 0.7143
+            },
+            "light": {
+              "tp": 16,
+              "fp": 1,
+              "fn": 1,
+              "precision": 0.9412,
+              "recall": 0.9412
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "V52",
+      "spec": "ROI@1536",
+      "weights": "runs/detect/CT_pro/V52_ROI_1536_REG/weights/best.pt",
+      "groups": {
+        "高分辨率 2129x1198": {
+          "n_images": 605,
+          "fp_per_1000img": 125.6,
+          "group_miss": 0.2759,
+          "n_defect_groups": 145,
+          "per_class": {
+            "damage": {
+              "tp": 21,
+              "fp": 23,
+              "fn": 31,
+              "precision": 0.4773,
+              "recall": 0.4038
+            },
+            "dark": {
+              "tp": 194,
+              "fp": 45,
+              "fn": 26,
+              "precision": 0.8117,
+              "recall": 0.8818
+            },
+            "light": {
+              "tp": 105,
+              "fp": 8,
+              "fn": 13,
+              "precision": 0.9292,
+              "recall": 0.8898
+            }
+          }
+        },
+        "低分辨率 ~1052x58x": {
+          "n_images": 71,
+          "fp_per_1000img": 197.2,
+          "group_miss": 0.36,
+          "n_defect_groups": 25,
+          "per_class": {
+            "damage": {
+              "tp": 11,
+              "fp": 13,
+              "fn": 10,
+              "precision": 0.4583,
+              "recall": 0.5238
+            },
+            "dark": {
+              "tp": 12,
+              "fp": 1,
+              "fn": 2,
+              "precision": 0.9231,
+              "recall": 0.8571
+            },
+            "light": {
+              "tp": 15,
+              "fp": 0,
+              "fn": 2,
+              "precision": 1.0,
+              "recall": 0.8824
+            }
+          }
+        }
+      }
+    },
+    {
       "name": "V5",
       "spec": "全图@1920",
       "weights": "runs/detect/CT_pro/V5_GROUPED_1021_80ep/weights/best.pt",
@@ -63,136 +193,6 @@
               "fn": 1,
               "precision": 0.8889,
               "recall": 0.9412
-            }
-          }
-        }
-      }
-    },
-    {
-      "name": "V51_ROI",
-      "spec": "ROI@1536",
-      "weights": "runs/detect/CT_pro/V51_ROI_1536/weights/best.pt",
-      "groups": {
-        "高分辨率 2129x1198": {
-          "n_images": 605,
-          "fp_per_1000img": 137.2,
-          "group_miss": 0.2759,
-          "n_defect_groups": 145,
-          "per_class": {
-            "damage": {
-              "tp": 20,
-              "fp": 17,
-              "fn": 32,
-              "precision": 0.5405,
-              "recall": 0.3846
-            },
-            "dark": {
-              "tp": 193,
-              "fp": 51,
-              "fn": 27,
-              "precision": 0.791,
-              "recall": 0.8773
-            },
-            "light": {
-              "tp": 104,
-              "fp": 15,
-              "fn": 14,
-              "precision": 0.8739,
-              "recall": 0.8814
-            }
-          }
-        },
-        "低分辨率 ~1052x58x": {
-          "n_images": 71,
-          "fp_per_1000img": 28.2,
-          "group_miss": 0.32,
-          "n_defect_groups": 25,
-          "per_class": {
-            "damage": {
-              "tp": 10,
-              "fp": 0,
-              "fn": 11,
-              "precision": 1.0,
-              "recall": 0.4762
-            },
-            "dark": {
-              "tp": 11,
-              "fp": 2,
-              "fn": 3,
-              "precision": 0.8462,
-              "recall": 0.7857
-            },
-            "light": {
-              "tp": 15,
-              "fp": 0,
-              "fn": 2,
-              "precision": 1.0,
-              "recall": 0.8824
-            }
-          }
-        }
-      }
-    },
-    {
-      "name": "V52_ROI",
-      "spec": "ROI@1536",
-      "weights": "runs/detect/CT_pro/V52_ROI_1536_REG/weights/best.pt",
-      "groups": {
-        "高分辨率 2129x1198": {
-          "n_images": 605,
-          "fp_per_1000img": 125.6,
-          "group_miss": 0.2759,
-          "n_defect_groups": 145,
-          "per_class": {
-            "damage": {
-              "tp": 21,
-              "fp": 23,
-              "fn": 31,
-              "precision": 0.4773,
-              "recall": 0.4038
-            },
-            "dark": {
-              "tp": 194,
-              "fp": 45,
-              "fn": 26,
-              "precision": 0.8117,
-              "recall": 0.8818
-            },
-            "light": {
-              "tp": 105,
-              "fp": 8,
-              "fn": 13,
-              "precision": 0.9292,
-              "recall": 0.8898
-            }
-          }
-        },
-        "低分辨率 ~1052x58x": {
-          "n_images": 71,
-          "fp_per_1000img": 197.2,
-          "group_miss": 0.36,
-          "n_defect_groups": 25,
-          "per_class": {
-            "damage": {
-              "tp": 11,
-              "fp": 13,
-              "fn": 10,
-              "precision": 0.4583,
-              "recall": 0.5238
-            },
-            "dark": {
-              "tp": 12,
-              "fp": 1,
-              "fn": 2,
-              "precision": 0.9231,
-              "recall": 0.8571
-            },
-            "light": {
-              "tp": 15,
-              "fp": 0,
-              "fn": 2,
-              "precision": 1.0,
-              "recall": 0.8824
             }
           }
         }
