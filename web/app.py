@@ -42,7 +42,7 @@ sys.path.insert(0, PROJECT_ROOT)
 sys.path.insert(0, os.path.join(PROJECT_ROOT, 'core'))
 
 import Config
-from device_utils import pick_device
+from device_utils import pick_device, is_cuda_device
 from ultralytics import YOLO
 import roi as roi_mod
 from PIL import Image, ImageFont
@@ -62,8 +62,10 @@ os.makedirs(RESULTS_FOLDER, exist_ok=True)
 # ==================== 设备与推理参数 ====================
 # 自动适配：有可用显卡用 GPU，无显卡/显卡太旧自动退回 CPU
 DEVICE = pick_device(verbose=True)
-# 2026-10-21 实测：FP16 与 FP32 检出框零偏差（考卷对比），推理 41→20ms/张；无显卡的电脑自动退回 FP32
-USE_FP16 = bool(torch.cuda.is_available()) and str(DEVICE).startswith('cuda')
+# FP16可减少GPU计算开销；框坐标/置信度存在数值差异，不能宣称与FP32零偏差。
+# pick_device 已验证驱动/架构，并返回整数 0，不能再按 'cuda' 字符串判断。
+# CT_FP16=0 可回退 FP32，供同输入条件下的精度/速度对照使用。
+USE_FP16 = is_cuda_device(DEVICE) and os.environ.get('CT_FP16', '1') != '0'
 INFER_SIZE = 1920   # ★必须与训练分辨率一致：1920训练的模型在640下几乎检不出缺陷（2026-10-14 实测）
 BATCH_SIZE = 16     # 2026-10-21 实测：5060 FP16 batch16 峰值显存仅 1.66G，20ms/张
 MAX_DET = 300

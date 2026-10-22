@@ -1,0 +1,81 @@
+{
+  "schema": "ct-eval-report/2",
+  "matching_version": "max-iou-v2",
+  "generated_at": "2026-10-23 06:31:23",
+  "weights": "runs/detect/CT_pro/V5_GROUPED_1021_80ep/weights/best.pt",
+  "weights_md5": "d8e6b3d6d8d640bd1555e2c1e3452b06",
+  "manifest": "reports/splits/v5_split_manifest.csv",
+  "manifest_md5": "7ebaab23b533a2ec8c3d98a72ee588ba",
+  "split": "test",
+  "n_images": 676,
+  "roi": false,
+  "roi_k": 0.0,
+  "imgsz_requested": "1920",
+  "imgsz_layer1": 1920,
+  "imgsz_predict": [
+    1920,
+    1920
+  ],
+  "layer2_3_workpoint": {
+    "workpoint": {
+      "conf": 0.25,
+      "iou": 0.5,
+      "nms_iou": 0.7,
+      "matching": "同类 + IoU>=0.50 + conf 降序贪心一对一",
+      "matching_version": "max-iou-v2"
+    },
+    "per_class": {
+      "damage": {
+        "tp": 41,
+        "fp": 23,
+        "fn": 32,
+        "precision": 0.6406,
+        "recall": 0.5616
+      },
+      "dark": {
+        "tp": 199,
+        "fp": 27,
+        "fn": 35,
+        "precision": 0.8805,
+        "recall": 0.8504
+      },
+      "light": {
+        "tp": 121,
+        "fp": 10,
+        "fn": 14,
+        "precision": 0.9237,
+        "recall": 0.8963
+      }
+    },
+    "fp_per_1000img": 88.8,
+    "group_level": {
+      "n_defect_groups": 170,
+      "n_missed_groups": 45,
+      "miss_rate": 0.2647,
+      "cell_level_miss_rate": 0.2,
+      "cell_level_n": 10
+    },
+    "loose_reference": {
+      "note": "仅业务参考：IoU>=0.1 或中心互落；禁止与 IoU0.5 口径或 V3 数字并列比较",
+      "per_class": {
+        "damage": {
+          "tp": 49,
+          "fn": 24,
+          "recall": 0.6712
+        },
+        "dark": {
+          "tp": 207,
+          "fn": 27,
+          "recall": 0.8846
+        },
+        "light": {
+          "tp": 125,
+          "fn": 10,
+          "recall": 0.9259
+        }
+      }
+    },
+    "n_images": 676
+  },
+  "elapsed_s": 90.4
+}

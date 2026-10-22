@@ -16,6 +16,7 @@
       --manifest reports\\splits\\v5_split_manifest.csv --split test --tag V4_v5test
 """
 import os
+os.environ.setdefault("PROCESSOR_ARCHITECTURE", "AMD64")
 import sys
 import json
 import time
@@ -30,6 +31,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
 sys.path.insert(0, os.path.join(ROOT, "core"))
 
+from detection_metrics import MATCHING_VERSION, LEGACY_MATCHING, match_predictions, iou_xyxy  # noqa: E402
+from eval_cache import build_contract, file_sha256, validate_annotation, validate_cached_files  # noqa: E402
 import dataset_split as ds  # noqa: E402
 import roi as R  # noqa: E402
 from preprocess import resolve_imgsz  # noqa: E402
@@ -41,81 +44,74 @@ CACHE = os.path.join(ROOT, ".cache")
 
 # ----------------------------- 数据准备 -----------------------------
 def prepare_eval_dataset(manifest_rows, tag, verbose=True, roi=False):
-    """把 manifest 指定的 split 物化成 ultralytics 可读的临时数据集。
-
-    roi=False：硬链接原图（零拷贝），标注用原始归一化坐标
-    roi=True ：真实裁剪 ROI 并重编码，标注经 core.roi.labelme_boxes_in_roi 变换
-               （必须与训练集的裁剪口径完全一致，否则评估的是另一个分布）
-    """
-    out = os.path.join(CACHE, "eval_%s%s" % (tag, "_roi" if roi else ""))
-    img_dir = os.path.join(out, "images")
-    lab_dir = os.path.join(out, "labels")
+    """按完整输入/变换指纹复用缓存，损坏或未完成的缓存直接拒绝。"""
+    if not tag or "/" in tag or "\\" in tag:
+        raise ValueError("评测tag不能包含路径分隔符")
+    contract, fingerprint = build_contract(manifest_rows, roi)
+    out = os.path.join(CACHE, "eval_%s%s_%s" % (tag, "_roi" if roi else "", fingerprint[:16]))
+    img_dir, lab_dir = os.path.join(out, "images"), os.path.join(out, "labels")
     yaml_path = os.path.join(out, "data.yaml")
-    if os.path.isdir(out) and os.path.exists(yaml_path) and \
-            len(os.listdir(img_dir)) == len(manifest_rows):
+    marker = os.path.join(out, "cache_contract.json")
+    if os.path.isdir(out):
+        if not os.path.isfile(marker):
+            raise ValueError("评测缓存未完成，请检查派生目录或换tag: " + out)
+        with open(marker, encoding="utf-8") as f:
+            metadata = json.load(f)
+        if metadata.get("fingerprint") != fingerprint or metadata.get("contract") != contract:
+            raise ValueError("评测缓存契约不一致: " + out)
+        validate_cached_files(out, metadata)
         if verbose:
-            print("复用已有临时数据集:", out)
+            print("复用内容指纹一致的评测缓存:", out)
         return yaml_path
-
-    os.makedirs(img_dir, exist_ok=True)
-    os.makedirs(lab_dir, exist_ok=True)
-    dropped_total = 0
-    for r in manifest_rows:
-        src = os.path.join(ROOT, r["src_path"])
-        stem = r["name"]
+    os.makedirs(img_dir)
+    os.makedirs(lab_dir)
+    outputs = []
+    for row in manifest_rows:
+        src = os.path.join(ROOT, row["src_path"])
+        stem = row["name"]
         dst = os.path.join(img_dir, stem + ".jpg")
         if roi:
             import cv2
-            import numpy as np
-            import roi as R
             img = cv2.imdecode(np.fromfile(src, dtype=np.uint8), cv2.IMREAD_COLOR)
             if img is None:
-                continue
-            roi_img, box = R.crop_roi(img)
-            ok, buf = cv2.imencode(".jpg", roi_img, [cv2.IMWRITE_JPEG_QUALITY, 95])
-            if ok:
-                buf.tofile(dst)
-            lines, _, dropped = R.labelme_boxes_in_roi(
-                os.path.join(ROOT, r["label_json"]), box) if r["label_json"] else ([], 0, 0)
-            dropped_total += dropped
+                raise ValueError("评测图无法解码: " + stem)
+            width, height = (int(v) for v in row["size"].split("x"))
+            if img.shape[:2] != (height, width):
+                raise ValueError("原图尺寸与清单不符: " + stem)
+            cropped, box = R.crop_roi(img)
+            if not R.roi_looks_valid(cropped):
+                raise ValueError("评测ROI质量检查失败: " + stem)
+            ok, buffer = cv2.imencode(".jpg", cropped, [cv2.IMWRITE_JPEG_QUALITY, 95])
+            if not ok:
+                raise ValueError("评测ROI编码失败: " + stem)
+            buffer.tofile(dst)
+            labels, _, dropped = R.labelme_boxes_in_roi(
+                os.path.join(ROOT, row["label_json"]), box) if row["label_json"] else ([], 0, 0)
+            if dropped:
+                raise ValueError("评测ROI丢弃了真值框: " + stem)
         else:
-            if not os.path.exists(dst):
-                try:
-                    os.link(src, dst)                  # 硬链接：零拷贝
-                except OSError:
-                    try:
-                        shutil.copy2(src, dst)         # 跨卷兜底（会占空间）
-                    except shutil.SameFileError:
-                        pass
-            lines = []
-            if r["label_json"]:
-                W, H, boxes = ds.json_to_yolo(os.path.join(ROOT, r["label_json"]))
-                for cls, xc, yc, bw, bh in boxes:
-                    lines.append("%d %.6f %.6f %.6f %.6f" % (cls, xc, yc, bw, bh))
-        with open(os.path.join(lab_dir, stem + ".txt"), "w", encoding="utf-8") as f:
-            f.write("\n".join(lines))
-    if roi and dropped_total:
-        print("[警告] ROI 评估集有 %d 个框越界被丢弃 —— 与训练集口径不一致，结果不可比！" % dropped_total)
-
-    yaml_path = os.path.join(out, "data.yaml")
+            # 仅允许硬链接；跨卷失败也不复制原始生产数据。
+            os.link(src, dst)
+            labels = []
+            if row["label_json"]:
+                _, _, boxes = ds.json_to_yolo(os.path.join(ROOT, row["label_json"]))
+                labels = ["%d %.6f %.6f %.6f %.6f" % tuple(box) for box in boxes]
+        label_path = os.path.join(lab_dir, stem + ".txt")
+        with open(label_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(labels))
+        outputs += ["images/" + stem + ".jpg", "labels/" + stem + ".txt"]
     with open(yaml_path, "w", encoding="utf-8") as f:
-        # ultralytics 的 check_det_dataset 要求 train/val 键同时存在；
-        # 这里两者指向同一目录，只为让 val() 跑起来，不会用于训练
-        f.write("# 评估临时集（%s生成，源为问题电芯图片汇总）\n" % ("ROI 裁剪" if roi else "硬链接"))
         f.write("path: %s\ntrain: images\nval: images\n\nnc: 3\n"
                 "names:\n  0: damage\n  1: dark\n  2: light\n" % out.replace("\\", "/"))
+    outputs.append("data.yaml")
+    metadata = dict(fingerprint=fingerprint, contract=contract,
+                    outputs={relative: file_sha256(os.path.join(out, relative)) for relative in outputs})
+    # 完成标记最后写；失败中间态永不复用，不删除已有缓存或源文件。
+    with open(marker, "x", encoding="utf-8") as f:
+        json.dump(metadata, f, ensure_ascii=False, indent=2)
     if verbose:
-        print("临时数据集就绪：%s（%d 张）" % (out, len(manifest_rows)))
+        print("评测缓存就绪: %s（%d张）" % (out, len(manifest_rows)))
     return yaml_path
-
-
-def iou_xyxy(a, b):
-    x1, y1 = max(a[0], b[0]), max(a[1], b[1])
-    x2, y2 = min(a[2], b[2]), min(a[3], b[3])
-    i = max(0.0, x2 - x1) * max(0.0, y2 - y1)
-    ua = (a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]) - i
-    return i / ua if ua > 0 else 0.0
-
 
 def center_in(box, pt):
     return box[0] <= pt[0] <= box[2] and box[1] <= pt[1] <= box[3]
@@ -163,7 +159,7 @@ def layer1_coco(weights, yaml_path, imgsz, device, verbose=True):
 
 # ----------------------------- 层 2/3 -----------------------------
 def layer23_workpoint(weights, rows, imgsz, conf_wp, iou_wp, device, chunk=32, verbose=True,
-                      roi_dir=None, roi_k=None):
+                      roi_dir=None, roi_k=None, matching=MATCHING_VERSION):
     """roi_dir 给定时表示走 ROI 口径：预测用内存里现裁的 ROI 图，GT 也用 ROI 坐标。
 
     注意：不读 .cache 里的 ROI JPEG。实测同一张图「读缓存 JPEG」与「内存里从原图裁」
@@ -182,13 +178,20 @@ def layer23_workpoint(weights, rows, imgsz, conf_wp, iou_wp, device, chunk=32, v
         R.set_margin_k(roi_k if roi_k is not None else R.margin_k_of_weights(weights))
         if verbose:
             print("  ROI 余量 k=%s" % R.get_margin_k())
+    for row in rows:
+        validate_annotation(row)
     m = YOLO(weights)
     if roi_dir:
         feeds = []
         for r in rows:
             img = cv2.imdecode(np.fromfile(os.path.join(ROOT, r["src_path"]), dtype=np.uint8),
                                cv2.IMREAD_COLOR)
-            feeds.append(R.crop_roi(img)[0])
+            if img is None:
+                raise ValueError("评测图解码失败: " + r["name"])
+            cropped, _ = R.crop_roi(img)
+            if not R.roi_looks_valid(cropped):
+                raise ValueError("评测ROI质量检查失败: " + r["name"])
+            feeds.append(cropped)
     else:
         feeds = [os.path.join(ROOT, r["src_path"]) for r in rows]
 
@@ -212,7 +215,9 @@ def layer23_workpoint(weights, rows, imgsz, conf_wp, iou_wp, device, chunk=32, v
                 box = R.active_box(W0, H0)
                 cw, ch = box[2] - box[0], box[3] - box[1]
                 if row["label_json"]:
-                    lines, _, _ = R.labelme_boxes_in_roi(os.path.join(ROOT, row["label_json"]), box)
+                    lines, _, dropped = R.labelme_boxes_in_roi(os.path.join(ROOT, row["label_json"]), box)
+                    if dropped:
+                        raise ValueError("评测ROI丢弃真值框: " + row["name"])
                     for ln in lines:
                         cs = ln.split()
                         cls = int(cs[0])
@@ -241,22 +246,10 @@ def layer23_workpoint(weights, rows, imgsz, conf_wp, iou_wp, device, chunk=32, v
             g = grp[key]
             g["n_gt"] += len(gt)
 
-            # ---- 主口径：IoU>=iou_wp、同类、conf 降序贪心 ----
-            used_p = set()
-            used_g = set()
-            for pi, pb in enumerate(sorted(range(len(preds)), key=lambda z: -preds[z]["conf"])):
-                pass
-            order_p = sorted(range(len(preds)), key=lambda z: -preds[z]["conf"])
-            for pi in order_p:
-                pb = preds[pi]
-                for gi, gb in enumerate(gt):
-                    if gi in used_g or gb["cls"] != pb["cls"]:
-                        continue
-                    if iou_xyxy(pb["xyxy"], gb["xyxy"]) >= iou_wp:
-                        used_g.add(gi)
-                        used_p.add(pi)
-                        stats[pb["cls"]]["tp"] += 1
-                        break
+            # 与工作点扫描共用唯一匹配器，版本写入报告。
+            used_p, used_g = match_predictions(preds, gt, iou_wp, matching)
+            for pi in used_p:
+                stats[preds[pi]["cls"]]["tp"] += 1
             for gi, gb in enumerate(gt):
                 if gi not in used_g:
                     stats[gb["cls"]]["fn"] += 1
@@ -307,7 +300,8 @@ def layer23_workpoint(weights, rows, imgsz, conf_wp, iou_wp, device, chunk=32, v
 
     out = {
         "workpoint": {"conf": conf_wp, "iou": iou_wp, "nms_iou": 0.7,
-                      "matching": "同类 + IoU>=%.2f + conf 降序贪心一对一" % iou_wp},
+                      "matching": "同类 + IoU>=%.2f + conf 降序贪心一对一" % iou_wp,
+                      "matching_version": matching},
         "per_class": per_cls,
         "fp_per_1000img": round(n_fp_total / max(1, len(rows)) * 1000.0, 1),
         "group_level": {
@@ -362,6 +356,8 @@ def main():
     ap.add_argument("--roi-k", type=float, default=None,
                     help="ROI 余量系数。默认从权重同目录 _train_meta.json 的 roi_k 自动读取，"
                          "读不到则按 0（原始 ROI）。显式传入可覆盖——但传错比不传更危险")
+    ap.add_argument("--matching", choices=(MATCHING_VERSION, LEGACY_MATCHING), default=MATCHING_VERSION,
+                    help="新版最大IoU匹配；legacy-first只复算旧报告，结果按版本另存")
     args = ap.parse_args()
     # 余量必须在任何裁剪之前定下来：crop_roi 与 label_to_roi 共用同一个 k，
     # 否则「图按一种裁法、GT 按另一种算」，指标全错但不报错（L-012）。
@@ -385,11 +381,13 @@ def main():
     print("评估集：%s（%d 张）%s" % (args.split, len(rows), " [ROI 裁剪]" if args.roi else ""))
     print("权重：%s (md5=%s)" % (args.weights, md5_file(args.weights)[:12]))
 
-    yaml_path = prepare_eval_dataset(rows, tag, roi=args.roi)
-    roi_img_dir = os.path.join(CACHE, "eval_%s_roi" % tag, "images") if args.roi else None
+    # 只测工作点时直接内存裁剪，不生成无用的676张ROI缓存副本。
+    yaml_path = None if args.skip_layer1 else prepare_eval_dataset(rows, tag, roi=args.roi)
+    roi_img_dir = "memory-roi" if args.roi else None
     t0 = time.time()
     report = {
-        "schema": "ct-eval-report/1",
+        "schema": "ct-eval-report/2",
+        "matching_version": args.matching,
         "generated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
         "weights": args.weights,
         "weights_md5": md5_file(args.weights),
@@ -406,12 +404,12 @@ def main():
     if not args.skip_layer1:
         report["layer1_coco"] = layer1_coco(args.weights, yaml_path, imgsz_l1, args.device)
     report["layer2_3_workpoint"] = layer23_workpoint(
-        args.weights, rows, imgsz_pred, args.conf, args.iou, args.device, roi_dir=roi_img_dir)
+        args.weights, rows, imgsz_pred, args.conf, args.iou, args.device, roi_dir=roi_img_dir, roi_k=args.roi_k, matching=args.matching)
     report["elapsed_s"] = round(time.time() - t0, 1)
 
     os.makedirs(os.path.join(ROOT, "reports", "eval"), exist_ok=True)
-    outp = os.path.join("reports", "eval", "%s.json" % tag)
-    with open(outp, "w", encoding="utf-8") as f:
+    outp = os.path.join("reports", "eval", "%s_%s.json" % (tag, args.matching))
+    with open(outp, "x", encoding="utf-8") as f:
         json.dump(report, f, ensure_ascii=False, indent=2)
     print("\n报告已写出：%s（%.0fs）" % (outp, report["elapsed_s"]))
 

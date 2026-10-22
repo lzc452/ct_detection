@@ -1,0 +1,83 @@
+{
+  "schema": "ct-precision-smoke-comparison/1",
+  "weights_md5": "63566373becf0f3b5360d4c6bc7b26c0",
+  "dtypes": [
+    "torch.float32",
+    "torch.float16"
+  ],
+  "p50_call_wall_ms": [
+    14.19680000981316,
+    11.253399949055165
+  ],
+  "p95_call_wall_ms": [
+    16.569700004765764,
+    13.1587250798475
+  ],
+  "per_image": [
+    {
+      "name": "0_0078",
+      "count_fp32": 1,
+      "count_fp16": 1,
+      "classes_equal": true,
+      "min_paired_iou": 0.9885933944149936,
+      "max_conf_delta": 0.0014430880546569824
+    },
+    {
+      "name": "0_0010",
+      "count_fp32": 0,
+      "count_fp16": 0,
+      "classes_equal": true,
+      "min_paired_iou": null,
+      "max_conf_delta": null
+    },
+    {
+      "name": "1_0145",
+      "count_fp32": 1,
+      "count_fp16": 1,
+      "classes_equal": true,
+      "min_paired_iou": 0.9787265950898469,
+      "max_conf_delta": 0.0002465248107910156
+    },
+    {
+      "name": "0_0330",
+      "count_fp32": 2,
+      "count_fp16": 2,
+      "classes_equal": true,
+      "min_paired_iou": 0.920588225473668,
+      "max_conf_delta": 0.0010032057762145996
+    },
+    {
+      "name": "2_0022",
+      "count_fp32": 1,
+      "count_fp16": 1,
+      "classes_equal": true,
+      "min_paired_iou": 0.9627061404968209,
+      "max_conf_delta": 0.0001323223114013672
+    },
+    {
+      "name": "0_0257",
+      "count_fp32": 2,
+      "count_fp16": 2,
+      "classes_equal": true,
+      "min_paired_iou": 0.9153151201849715,
+      "max_conf_delta": 0.0021295547485351562
+    },
+    {
+      "name": "9_0430",
+      "count_fp32": 0,
+      "count_fp16": 0,
+      "classes_equal": true,
+      "min_paired_iou": null,
+      "max_conf_delta": null
+    },
+    {
+      "name": "9_0859",
+      "count_fp32": 0,
+      "count_fp16": 0,
+      "classes_equal": true,
+      "min_paired_iou": null,
+      "max_conf_delta": null
+    }
+  ],
+  "limitation": "8图batch1小样本；不是全量等价性或生产P95保证"
+}

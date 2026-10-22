@@ -1,0 +1,131 @@
+{
+  "schema": "ct-audit-stage2/1",
+  "base_commit": "532b33df6855f787851d5b29532f04648654b929\n",
+  "closure_dependency": "算力",
+  "tests": [
+    {
+      "script": "scripts/test_web_precision.py",
+      "passed": 4
+    },
+    {
+      "script": "scripts/test_detection_metrics.py",
+      "passed": 5
+    },
+    {
+      "script": "scripts/test_eval_cache.py",
+      "passed": 7
+    },
+    {
+      "script": "scripts/test_web_ledger.py",
+      "passed": true
+    }
+  ],
+  "frozen_annotation_validation": {
+    "images": 676,
+    "passed": true
+  },
+  "matching": {
+    "version": "max-iou-v2",
+    "V5": {
+      "per_class": {
+        "damage": {
+          "tp": 41,
+          "fp": 23,
+          "fn": 32,
+          "precision": 0.6406,
+          "recall": 0.5616
+        },
+        "dark": {
+          "tp": 199,
+          "fp": 27,
+          "fn": 35,
+          "precision": 0.8805,
+          "recall": 0.8504
+        },
+        "light": {
+          "tp": 121,
+          "fp": 10,
+          "fn": 14,
+          "precision": 0.9237,
+          "recall": 0.8963
+        }
+      },
+      "fp_per_1000img": 88.8,
+      "group_level": {
+        "n_defect_groups": 170,
+        "n_missed_groups": 45,
+        "miss_rate": 0.2647,
+        "cell_level_miss_rate": 0.2,
+        "cell_level_n": 10
+      }
+    },
+    "V53": {
+      "per_class": {
+        "damage": {
+          "tp": 34,
+          "fp": 29,
+          "fn": 39,
+          "precision": 0.5397,
+          "recall": 0.4658
+        },
+        "dark": {
+          "tp": 202,
+          "fp": 36,
+          "fn": 32,
+          "precision": 0.8487,
+          "recall": 0.8632
+        },
+        "light": {
+          "tp": 124,
+          "fp": 10,
+          "fn": 11,
+          "precision": 0.9254,
+          "recall": 0.9185
+        }
+      },
+      "fp_per_1000img": 110.9,
+      "group_level": {
+        "n_defect_groups": 170,
+        "n_missed_groups": 46,
+        "miss_rate": 0.2706,
+        "cell_level_miss_rate": 0.3,
+        "cell_level_n": 10
+      }
+    },
+    "V5_counts_match_historical": true,
+    "V53_counts_match_historical": true
+  },
+  "production_current": {
+    "current": "models/启用/20261019_V4/best",
+    "models": [
+      {
+        "active": false,
+        "id": "models/启用/20261014_v2mild/best",
+        "label": "20261014_v2mild/best",
+        "name": "best",
+        "path": "models/启用/20261014_v2mild/best.pt"
+      },
+      {
+        "active": false,
+        "id": "models/启用/20261016_V3/best",
+        "label": "20261016_V3/best",
+        "name": "best",
+        "path": "models/启用/20261016_V3/best.pt"
+      },
+      {
+        "active": true,
+        "id": "models/启用/20261019_V4/best",
+        "label": "20261019_V4/best",
+        "name": "best",
+        "path": "models/启用/20261019_V4/best.pt"
+      }
+    ],
+    "success": true
+  },
+  "production_restarted": false,
+  "new_training_started": false,
+  "plot_discovery": {
+    "complete_reports": 9,
+    "partial_recounts_excluded": true
+  }
+}

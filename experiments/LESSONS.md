@@ -218,6 +218,15 @@
 - **证据**：docs/ct_system_audit_20261023.md；scripts/audit_system.py；reports/system_audit/evidence.json
 - **首次**：2026-10-23
 
+### L-024 FP16对照应分进程核验实际dtype，框数相同不能称零偏差
+- **标签**：评测
+- **现象**：此前离线对照只看框数，Web注释声称FP16与FP32零偏差；真实8图核验框数相同但对应框IoU最低约0.9153
+- **根因**：同一YOLO对象的预测器可能复用已固定的精度；仅比较框数也遗漏定位与阈值边缘的变化
+- **解法**：两种精度在独立进程加载相同权重，读取实际网络dtype，比较类别/置信度/框IoU；小样本仅作冒烟，完整发布需全量回归
+- **证据**：scripts/verify_precision.py；reports/system_audit/precision_comparison.json；docs/ct_audit_stage2_20261023.md
+- **首次**：2026-10-23
+
+
 
 
 ## 部署

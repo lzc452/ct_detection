@@ -14,6 +14,7 @@
       --imgsz 1536 --roi --tag V51_ROI
 """
 import os
+os.environ.setdefault("PROCESSOR_ARCHITECTURE", "AMD64")
 import sys
 import json
 import time
@@ -25,19 +26,63 @@ sys.path.insert(0, os.path.join(ROOT, "core"))
 
 import numpy as np  # noqa: E402
 import cv2  # noqa: E402
+from detection_metrics import MATCHING_VERSION, LEGACY_MATCHING, match_predictions  # noqa: E402
+from eval_cache import validate_annotation  # noqa: E402
 import dataset_split as ds  # noqa: E402
 import roi as R  # noqa: E402
 
 
-def iou(a, b):
-    ix1, iy1 = max(a[0], b[0]), max(a[1], b[1])
-    ix2, iy2 = min(a[2], b[2]), min(a[3], b[3])
-    iw, ih = max(0.0, ix2 - ix1), max(0.0, iy2 - iy1)
-    inter = iw * ih
-    if inter <= 0:
-        return 0.0
-    ua = (a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]) - inter
-    return inter / ua if ua > 0 else 0.0
+def score_workpoints(rows, gts, preds, confs, iou_threshold=0.5, matching=MATCHING_VERSION):
+    """对逐图预测扫描工作点；命令行与回归验证共同调用。"""
+    if not (len(rows) == len(gts) == len(preds)):
+        raise ValueError("图片、真值与预测数量必须一致")
+    points = []
+    for cf in confs:
+        st = {c: {"tp": 0, "fp": 0, "fn": 0} for c in range(3)}
+        grp = {}
+        n_img_with_gt = 0
+        n_img_miss = 0
+        for gt, pr, row in zip(gts, preds, rows):
+            pp = [p for p in pr if p["conf"] >= cf]
+            used_p, used_g = match_predictions(pp, gt, iou_threshold, matching)
+            for pi, p in enumerate(pp):
+                st[p["cls"]]["tp" if pi in used_p else "fp"] += 1
+            for gi, g in enumerate(gt):
+                if gi not in used_g:
+                    st[g["cls"]]["fn"] += 1
+            if gt:
+                k = row["cell_id"] or row["group"]
+                d = grp.setdefault(k, {"has_gt": 0, "miss": 0})
+                d["has_gt"] = 1          # 分组去重：同一组的多个文件只算一个组
+                if len(used_g) < len(gt):
+                    d["miss"] = 1        # 组内任一缺陷漏检即记为漏检（OR，不看几张图）
+                n_img_with_gt += 1
+                if len(used_g) < len(gt):
+                    n_img_miss += 1
+        tp = sum(st[c]["tp"] for c in st)
+        fp = sum(st[c]["fp"] for c in st)
+        fn = sum(st[c]["fn"] for c in st)
+        prec = tp / (tp + fp) if tp + fp else 0.0
+        rec = tp / (tp + fn) if tp + fn else 0.0
+        n_grp = sum(d["has_gt"] for d in grp.values())
+        points.append({
+            "conf": cf, "precision": round(prec, 4), "recall": round(rec, 4),
+            "f1": round(2 * prec * rec / (prec + rec), 4) if prec + rec else 0.0,
+            "tp": tp, "fp": fp, "fn": fn,
+            "fp_per_1000img": round(fp * 1000.0 / len(rows), 1),
+            # 与 eval_report.py 完全同口径：分母是「有缺陷的分组数」
+            "group_miss": round(sum(d["miss"] for d in grp.values()) / n_grp, 4) if n_grp else None,
+            "n_defect_groups": n_grp,
+            "n_missed_groups": sum(d["miss"] for d in grp.values()),
+            # 参考口径：分母是「有缺陷的图片数」，一张图多组时会重复计数
+            "img_miss": round(n_img_miss / n_img_with_gt, 4) if n_img_with_gt else None,
+            "n_img_with_defect": n_img_with_gt,
+            "per_class": {str(c): {
+                "p": round(st[c]["tp"] / max(1, st[c]["tp"] + st[c]["fp"]), 4),
+                "r": round(st[c]["tp"] / max(1, st[c]["tp"] + st[c]["fn"]), 4)} for c in st},
+        })
+
+    return points
 
 
 def main():
@@ -54,6 +99,7 @@ def main():
     ap.add_argument("--tag", default="")
     ap.add_argument("--device", default="0")
     ap.add_argument("--chunk", type=int, default=32)
+    ap.add_argument("--matching", choices=(MATCHING_VERSION, LEGACY_MATCHING), default=MATCHING_VERSION)
     args = ap.parse_args()
 
     # 余量必须在任何裁剪之前定下来（与 eval_report.py 同一规则：meta 为准）
@@ -80,14 +126,21 @@ def main():
     # 预处理：图 + GT 只算一次
     feeds, gts = [], []
     for r in rows:
+        validate_annotation(r)
         W0, H0 = [int(x) for x in r["size"].split("x")]
         if args.roi:
             img = cv2.imdecode(np.fromfile(os.path.join(ROOT, r["src_path"]), dtype=np.uint8), cv2.IMREAD_COLOR)
+            if img is None:
+                raise ValueError("评测图解码失败: " + r["name"])
             roi_img, box = R.crop_roi(img)
+            if not R.roi_looks_valid(roi_img):
+                raise ValueError("评测ROI质量检查失败: " + r["name"])
             cw, ch = box[2] - box[0], box[3] - box[1]
             gt = []
             if r["label_json"]:
-                lines, _, _ = R.labelme_boxes_in_roi(os.path.join(ROOT, r["label_json"]), box)
+                lines, _, dropped = R.labelme_boxes_in_roi(os.path.join(ROOT, r["label_json"]), box)
+                if dropped:
+                    raise ValueError("评测ROI丢弃真值框: " + r["name"])
                 for ln in lines:
                     cs = ln.split()
                     cls = int(cs[0])
@@ -123,62 +176,7 @@ def main():
     print("推理完成 %.1fs（低阈值 conf>=%.3f 共 %d 框）" % (
         time.time() - t0, low, sum(len(p) for p in preds)))
 
-    points = []
-    for cf in confs:
-        st = {c: {"tp": 0, "fp": 0, "fn": 0} for c in range(3)}
-        grp = {}
-        n_img_with_gt = 0
-        n_img_miss = 0
-        for gt, pr, row in zip(gts, preds, rows):
-            pp = [p for p in pr if p["conf"] >= cf]
-            used = [False] * len(gt)
-            for p in pp:
-                best, bi = 0.0, -1
-                for i, g in enumerate(gt):
-                    if used[i] or g["cls"] != p["cls"]:
-                        continue
-                    v = iou(p["xyxy"], g["xyxy"])
-                    if v > best:
-                        best, bi = v, i
-                if bi >= 0 and best >= args.iou:
-                    used[bi] = True
-                    st[p["cls"]]["tp"] += 1
-                else:
-                    st[p["cls"]]["fp"] += 1
-            for i, g in enumerate(gt):
-                if not used[i]:
-                    st[g["cls"]]["fn"] += 1
-            if gt:
-                k = row["cell_id"] or row["group"]
-                d = grp.setdefault(k, {"has_gt": 0, "miss": 0})
-                d["has_gt"] = 1          # 分组去重：同一组的多个文件只算一个组
-                if any(not used[i] for i in range(len(gt))):
-                    d["miss"] = 1        # 组内任一缺陷漏检即记为漏检（OR，不看几张图）
-                n_img_with_gt += 1
-                if any(not used[i] for i in range(len(gt))):
-                    n_img_miss += 1
-        tp = sum(st[c]["tp"] for c in st)
-        fp = sum(st[c]["fp"] for c in st)
-        fn = sum(st[c]["fn"] for c in st)
-        prec = tp / (tp + fp) if tp + fp else 0.0
-        rec = tp / (tp + fn) if tp + fn else 0.0
-        n_grp = sum(d["has_gt"] for d in grp.values())
-        points.append({
-            "conf": cf, "precision": round(prec, 4), "recall": round(rec, 4),
-            "f1": round(2 * prec * rec / (prec + rec), 4) if prec + rec else 0.0,
-            "tp": tp, "fp": fp, "fn": fn,
-            "fp_per_1000img": round(fp * 1000.0 / len(rows), 1),
-            # 与 eval_report.py 完全同口径：分母是「有缺陷的分组数」
-            "group_miss": round(sum(d["miss"] for d in grp.values()) / n_grp, 4) if n_grp else None,
-            "n_defect_groups": n_grp,
-            "n_missed_groups": sum(d["miss"] for d in grp.values()),
-            # 参考口径：分母是「有缺陷的图片数」，一张图多组时会重复计数
-            "img_miss": round(n_img_miss / n_img_with_gt, 4) if n_img_with_gt else None,
-            "n_img_with_defect": n_img_with_gt,
-            "per_class": {str(c): {
-                "p": round(st[c]["tp"] / max(1, st[c]["tp"] + st[c]["fp"]), 4),
-                "r": round(st[c]["tp"] / max(1, st[c]["tp"] + st[c]["fn"]), 4)} for c in st},
-        })
+    points = score_workpoints(rows, gts, preds, confs, args.iou, args.matching)
 
     print("\n%-6s %-7s %-7s %-7s %-9s %-14s %-14s" % (
         "conf", "P", "R", "F1", "FP/千张", "组级漏检(组)", "图片漏检(参考)"))
@@ -190,10 +188,11 @@ def main():
             "-" if o["img_miss"] is None else "%.1f%%" % (100 * o["img_miss"])))
 
     tag = args.tag or os.path.splitext(os.path.basename(args.weights))[0]
-    outp = os.path.join("reports", "eval", "sweep_%s.json" % tag)
+    outp = os.path.join("reports", "eval", "sweep_%s_%s.json" % (tag, args.matching))
     os.makedirs(os.path.dirname(outp), exist_ok=True)
-    with open(outp, "w", encoding="utf-8") as f:
-        json.dump({"weights": args.weights, "split": args.split, "imgsz": sz,
+    with open(outp, "x", encoding="utf-8") as f:
+        json.dump({"schema": "ct-workpoint-sweep/2", "matching_version": args.matching,
+                   "weights": args.weights, "split": args.split, "imgsz": sz,
                    "roi": bool(args.roi), "iou": args.iou,
                    "manifest": args.manifest, "points": points}, f, ensure_ascii=False, indent=2)
     print("\n已写出 %s" % outp)

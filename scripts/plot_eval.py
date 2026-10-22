@@ -80,6 +80,9 @@ def load_reports(pairs):
             continue
         with open(path, "r", encoding="utf-8") as f:
             d = json.load(f)
+        if "layer1_coco" not in d:
+            print("[跳过] 仅工作点报告不参加包含mAP的总图: %s" % path)
+            continue
         spec, roi = spec_of(d)
         d["_name"] = name
         d["_spec"] = spec
@@ -99,7 +102,7 @@ def discover():
                 d = json.load(f)
         except (OSError, ValueError):
             continue
-        if isinstance(d, dict) and d.get("schema", "").startswith("ct-eval-report"):
+        if isinstance(d, dict) and d.get("schema", "").startswith("ct-eval-report") and "layer1_coco" in d:
             pairs.append((os.path.splitext(os.path.basename(p))[0].replace("_v5test", ""), p))
     return pairs
 

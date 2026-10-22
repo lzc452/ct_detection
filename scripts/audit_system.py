@@ -203,12 +203,13 @@ def device_probe():
     node = next(n for n in ast.parse(text).body if isinstance(n, ast.Assign)
                 and any(isinstance(t, ast.Name) and t.id == "USE_FP16" for t in n.targets))
     expression = compile(ast.Expression(node.value), "web/app.py:USE_FP16", "eval")
+    from device_utils import is_cuda_device
     fake_torch = SimpleNamespace(cuda=SimpleNamespace(is_available=lambda: True))
     cases = []
     for device in (0, "cuda:0", "cpu"):
-        cases.append(dict(device=device, half=eval(expression, {"torch": fake_torch, "DEVICE": device})))
+        cases.append(dict(device=device, half=eval(expression, {"torch": fake_torch, "DEVICE": device, "is_cuda_device": is_cuda_device, "os": os})))
     return dict(pick_device_gpu_return=0, web_half_expression_results=cases,
-                note="core/device_utils.py返回整数0时，Web USE_FP16恒为False；未使用GPU运行推理")
+                note="执行当前Web精度表达式；历史恒False缺陷已修复，原始证据仍保留在evidence.json")
 
 
 def metrics():

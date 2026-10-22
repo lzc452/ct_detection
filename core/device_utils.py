@@ -40,3 +40,12 @@ def pick_device(verbose=True):
         else:
             print(f'[设备] 使用 CPU —— {reason}')
     return device
+
+
+def is_cuda_device(device):
+    """识别 pick_device 返回的 GPU 编号与 CUDA 写法；不额外探测显卡。"""
+    if isinstance(device, bool):
+        return False
+    text = str(device).strip().lower()
+    return text.isdecimal() or text == "cuda" or (
+        text.startswith("cuda:") and text[5:].isdecimal())
