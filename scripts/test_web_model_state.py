@@ -9,6 +9,7 @@ os.environ.setdefault('PROCESSOR_ARCHITECTURE', 'AMD64')
 import sys
 import io
 import json
+import hashlib
 import importlib.util
 import tempfile
 import threading
@@ -83,9 +84,9 @@ class ModelStateTests(unittest.TestCase):
             dst = models / folder
             dst.mkdir(parents=True)
             (dst / 'best.pt').write_bytes(folder.encode())
-            if k is not None:
-                (dst / '_train_meta.json').write_text(json.dumps({
-                    'hyperparams': {'imgsz': 1536}, 'roi': True, 'roi_k': k}), encoding='utf8')
+            (dst / '_train_meta.json').write_text(json.dumps({
+                'hyperparams': {'imgsz': 1920 if k is None else 1536}, 'roi': k is not None,
+                'roi_k': k or 0.0, 'best_pt_sha256': hashlib.sha256(folder.encode()).hexdigest()}), encoding='utf8')
         self.env = mock.patch.dict(os.environ, {
             'CT_MODEL_DIR': str(models), 'CT_RESULTS_DIR': str(self.base / 'results'),
             'CT_NO_BROWSER': '1'})

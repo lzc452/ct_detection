@@ -4,6 +4,8 @@
 假模型与临时结果目录隔离生产服务；不占用GPU，不读取生产图片或修改权重。
 """
 import os
+import json
+import hashlib
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
 os.environ.setdefault("PROCESSOR_ARCHITECTURE", "AMD64")
 import sys
@@ -38,6 +40,9 @@ class PrecisionTests(unittest.TestCase):
             model_dir = base / "models"
             model_dir.mkdir()
             (model_dir / "fake.pt").write_bytes(b"fake")
+            (model_dir / '_train_meta.json').write_text(json.dumps(dict(
+                hyperparams=dict(imgsz=1920), roi=False, roi_k=0.0,
+                best_pt_sha256=hashlib.sha256(b'fake').hexdigest())), encoding='utf8')
             env = dict(CT_MODEL_DIR=str(model_dir), CT_RESULTS_DIR=str(base / "results"),
                        CT_NO_BROWSER="1", CT_FP16=override)
             install_fake_ultralytics()

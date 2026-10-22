@@ -17,6 +17,7 @@ Web 端 #3（失败态）+ #6（文件台账）+ #8（阈值直传）集成测�
 import importlib.util
 import io
 import json
+import hashlib
 import os
 import shutil
 import sys
@@ -119,6 +120,9 @@ def main():
     model_dir.mkdir()
     results_dir.mkdir()
     (model_dir / 'fake_v9.pt').write_bytes(b'fake')
+    (model_dir / '_train_meta.json').write_text(json.dumps(dict(
+        hyperparams=dict(imgsz=1920), roi=False, roi_k=0.0,
+        best_pt_sha256=hashlib.sha256(b'fake').hexdigest())), encoding='utf8')
 
     os.environ['CT_MODEL_DIR'] = str(model_dir)
     os.environ['CT_RESULTS_DIR'] = str(results_dir)

@@ -312,99 +312,50 @@ def cmd_check(a):
 
 
 # ------------------------------------------------------------------ 训练前自检
-def count_labels(images_dir, labels_dir):
-    """统计图片数 / 空标签（负样本）数。只看文件，不读图。"""
-    n_img = n_neg = n_box = 0
-    if not os.path.isdir(images_dir):
-        return None
-    for fn in os.listdir(images_dir):
-        if os.path.splitext(fn)[1].lower() not in (".jpg", ".jpeg", ".png", ".bmp"):
-            continue
-        n_img += 1
-        lp = os.path.join(labels_dir, os.path.splitext(fn)[0] + ".txt")
-        try:
-            with io.open(lp, encoding="utf-8") as f:
-                n = sum(1 for l in f if l.strip())
-        except IOError:
-            n = 0
-        if n == 0:
-            n_neg += 1
-        n_box += n
-    return n_img, n_neg, n_box
-
-
 def cmd_preflight(a):
     print("=" * 66)
     print("训练前自检（只读，不改任何文件）")
     print("=" * 66)
 
-    fatal = 0
-    # 1) 数据集
-    if a.data:
-        if not os.path.exists(a.data):
-            print("[x] data.yaml 不存在：%s" % a.data)
-            fatal += 1
+    sys.path.insert(0, os.path.join(ROOT, 'core'))
+    from dataset_contract import inspect_dataset
+    from path_safety import run_output
+    fatal, inspection = 0, None
+    try:
+        size = int(a.imgsz) if a.imgsz else None
+        if size is not None and (size <= 0 or size % 32):
+            raise ValueError('imgsz必须是32对齐的正整数')
+        if a.data:
+            inspection = inspect_dataset(a.data, size)
+            print('[1] 严格数据契约通过：%s' % a.data)
+            for split, counts in inspection['stats'].items():
+                print('    %s: %s' % (split, counts))
+            print('    数据契约SHA256: %s' % inspection['contract_sha256'])
         else:
-            txt = read(a.data)
-            names = re.findall(r"^\s*(\d+):\s*(\S+)", txt, flags=re.M)
-            path = re.search(r"^path:\s*(.+)$", txt, flags=re.M)
-            print("[1] 数据集：%s" % a.data)
-            print("    类别：%s" % ", ".join("%s=%s" % (k, v) for k, v in names))
-            base = (path.group(1).strip() if path else os.path.dirname(os.path.abspath(a.data)))
-            if not os.path.isdir(base):
-                print("    [!] data.yaml 里的 path 不存在（换机器后常见）：%s" % base)
-                base = os.path.dirname(os.path.abspath(a.data))
-            for split in ("train", "val"):
-                r = count_labels(os.path.join(base, split, "images"),
-                                 os.path.join(base, split, "labels"))
-                if r is None:
-                    print("    [!] 缺目录 %s/images" % split)
-                    fatal += 1
-                    continue
-                n_img, n_neg, n_box = r
-                print("    %-5s %4d 张 / %5d 框 / 负样本 %4d (%.1f%%) / %.2f 框每图"
-                      % (split, n_img, n_box, n_neg, 100.0 * n_neg / max(n_img, 1),
-                         n_box / max(n_img, 1)))
-                if n_img < 100:
-                    print("    [!] %s 少于 100 张，指标会很不稳" % split)
-    else:
-        print("[1] 未指定 --data，跳过数据集检查")
-
-    # 2) ROI 一致性（L-003 / L-004 的复发检查项）
-    print("[2] ROI 一致性检查")
-    roi_flag = None
-    if a.roi is not None:
-        roi_flag = a.roi
-    elif a.data:
-        roi_flag = "ROI" in a.data.upper()
-        print("    由数据集名推断：roi=%s" % roi_flag)
-    if a.run_name:
-        meta_p = os.path.join(ROOT, "runs", "detect", "CT_pro", a.run_name, "_train_meta.json")
-        if os.path.exists(meta_p):
-            import json
-            meta = json.loads(read(meta_p))
-            print("    已有 run 的 meta：roi=%s imgsz=%s" % (meta.get("roi"), meta.get("imgsz")))
-            if roi_flag is not None and bool(meta.get("roi")) != bool(roi_flag):
-                print("    [x] meta 的 roi 位与实际数据表示不一致 —— 部署端会喂错输入（见 L-017）")
-                fatal += 1
-        else:
-            print("    （该 run 尚无 meta，训练结束会写）")
-    if roi_flag and a.imgsz and int(a.imgsz) > 1920:
-        print("    [!] ROI 下画布 >1920 意义不大：ROI 只有 647x991，放大反而全是插值（见 L-006）")
-
-    # 3) 画布
-    print("[3] 画布")
-    if a.imgsz:
-        c = int(a.imgsz)
-        print("    imgsz=%d（%.2f MP）" % (c, c * c / 1e6))
-        if c % 32:
-            print("    [x] 不是 32 的倍数，无法被 5 级 stride 整除")
-            fatal += 1
-        if a.roi and c > 1536:
-            print("    [!] 已验证过的 ROI 画布是 1536，其他值没有消融数据（见 F-013）")
+            print('[1] 未指定--data，仅列知识库；这不构成开训许可')
+        print('[2] ROI/元信息一致性（只读契约，不猜目录名）')
+        if inspection:
+            contract = inspection['contract']
+            if a.roi is not None and a.roi != contract['roi']:
+                raise ValueError('请求roi位与数据契约不一致')
+            if contract['roi']:
+                raise ValueError('D-010已终止当前ROI训练路线；数据历史复核请用物化器--verify-only')
+            if a.run_name:
+                import json
+                meta_path = run_output(a.run_name) / '_train_meta.json'
+                if meta_path.exists():
+                    meta = json.loads(meta_path.read_text(encoding='utf8'))
+                    if (meta.get('roi') != contract['roi'] or meta.get('roi_k') != contract['roi_k']
+                            or meta.get('hyperparams', {}).get('imgsz') != size):
+                        raise ValueError('已有run规格与请求/数据不一致')
+        print('[3] 画布：%s' % size)
+    except (ValueError, OSError, KeyError, TypeError) as exc:
+        fatal += 1
+        print('[x] %s' % exc)
 
     # 4) 相关坑
     print("[4] 与本次训练相关的坑（完整内容：kb.py query <关键词>）")
+    print("    历史条目须结合复核：L-014的旧scaleup机制已撤回，erasing不进入当前检测增强链。")
     text = read(F_LESSON)
     want = {"训练", "数据", "评测"} if not a.tag else set(a.tag)
     n = 0

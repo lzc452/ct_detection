@@ -45,6 +45,7 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, 'core'))
 
 import Config
 from device_utils import pick_device, is_cuda_device
+from model_spec import InferenceSpec, load_model_spec as read_model_spec
 from ultralytics import YOLO
 import roi as roi_mod
 from PIL import Image, ImageFont
@@ -141,15 +142,6 @@ scan_models()
 
 # ==================== 模型加载管理 ====================
 @dataclass(frozen=True)
-class InferenceSpec:
-    """与权重一起冻结的推理规格；不从可变注册表读取。"""
-    imgsz: int = INFER_SIZE
-    roi: bool = False
-    roi_k: float = 0.0
-    source: str = 'default'
-
-
-@dataclass(frozen=True)
 class ModelBundle:
     """一次任务持有一个完整快照。模型对象本身的调用由 _MODEL_LOCK 串行保护。"""
     model: object
@@ -173,31 +165,8 @@ def snapshot_model():
 
 
 def _load_model_spec(pt_path):
-    """旧模型无 meta 时显式用全图1920；存在但损坏的 meta 拒绝切换。"""
-    d = os.path.dirname(pt_path)
-    for meta_path in (os.path.join(d, '_train_meta.json'),
-                      os.path.join(os.path.dirname(d), '_train_meta.json')):
-        if os.path.exists(meta_path):
-            break
-    else:
-        return InferenceSpec()
-    with open(meta_path, encoding='utf-8') as f:
-        meta = json.load(f)
-    if not isinstance(meta, dict) or not isinstance(meta.get('hyperparams'), dict):
-        raise ValueError(f'meta缺少hyperparams对象: {meta_path}')
-    hp = meta['hyperparams']
-    size = hp.get('imgsz')
-    use_roi = meta.get('roi')
-    if use_roi is True and 'roi_k' not in meta:
-        raise ValueError(f'ROI meta缺少roi_k，请核对训练口径后补齐: {meta_path}')
-    k = meta.get('roi_k', 0.0)
-    if type(size) is not int or size <= 0 or size % 32:
-        raise ValueError(f'meta imgsz 必须是32对齐的正整数: {meta_path}')
-    if type(use_roi) is not bool:
-        raise ValueError(f'meta roi 必须是布尔值: {meta_path}')
-    if isinstance(k, bool) or not isinstance(k, (float, int)) or not math.isfinite(k) or k < 0:
-        raise ValueError(f'meta roi_k 必须是非负有限数: {meta_path}')
-    return InferenceSpec(size, use_roi, float(k), meta_path)
+    """共享严格规格登记；未知无meta权重不再静默退全图。"""
+    return read_model_spec(pt_path)
 
 
 def _prep_infer(img, bundle):

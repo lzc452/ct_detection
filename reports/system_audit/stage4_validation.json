@@ -1,0 +1,229 @@
+{
+  "schema": "ct-training-validation/1",
+  "date": "2026-10-23",
+  "baseline_commit": "75974e3fb69f0b753bbda84b902c3261e10448b6",
+  "closure_dependency": "compute",
+  "checks": [
+    {
+      "path": "scripts/test_training_contract.py",
+      "status": "fulfilled",
+      "tests": "24",
+      "test_names": [
+        "test_actual_materialize_and_kb_cli_use_same_gate",
+        "test_bad_json_class_and_coordinates_are_rejected",
+        "test_cross_split_groups_hashes_and_case_collisions_are_rejected",
+        "test_force_preserves_existing_output_and_protected_paths",
+        "test_full_materialization_is_hardlinked_and_frozen",
+        "test_hardlink_failure_does_not_copy_and_bad_encoding_never_completes",
+        "test_image_md5_dimension_and_missing_image_are_rejected",
+        "test_invalid_roi_and_dropped_gt_never_complete",
+        "test_junction_escape_is_rejected_without_touching_target",
+        "test_missing_positive_label_and_unconfirmed_negative_are_rejected",
+        "test_preflight_rejects_missing_label_drift_and_wrong_classes",
+        "test_roi_transform_and_verify_only_do_not_touch_sources",
+        "test_yolo_quality_gate",
+        "test_actual_directory_drift_is_failed_without_metadata_written_elsewhere",
+        "test_archive_failure_is_distinct_from_training_failure",
+        "test_constructor_and_training_failure_always_leave_meta_and_release_handles",
+        "test_cutmix_is_forwarded_and_actual_batch_and_best_are_recorded",
+        "test_default_plan_is_readonly_1920_and_both_entries_delegate",
+        "test_inactive_detection_augmentation_cannot_launch_a_noop_experiment",
+        "test_model_plan_and_label_drift_are_blocked_before_model_factory",
+        "test_preregistration_must_bind_pending_run_and_exact_plan",
+        "test_roi_training_unknown_specs_and_unsafe_run_names_are_blocked",
+        "test_training_slot_blocks_existing_process_lock_and_releases_on_error",
+        "test_two_changes_are_blocked_and_path_normalization_is_not_change"
+      ]
+    },
+    {
+      "path": "scripts/test_model_spec.py",
+      "status": "fulfilled",
+      "tests": "5",
+      "test_names": [
+        "test_bad_state_hash_classes_or_missing_margin_are_rejected",
+        "test_corrupt_meta_does_not_fall_back_even_for_known_legacy",
+        "test_legacy_compatibility_is_bound_to_hash_not_filename",
+        "test_meta_sha256_and_historical_md5_binding",
+        "test_unknown_weight_without_meta_is_rejected"
+      ]
+    },
+    {
+      "path": "scripts/test_web_model_state.py",
+      "status": "fulfilled",
+      "tests": "18",
+      "test_names": [
+        "test_bad_metadata_never_falls_back_to_clean_default",
+        "test_concurrent_scan_submission_creates_only_one_worker",
+        "test_coordinate_restore_failure_is_not_suppressed",
+        "test_failed_warmup_keeps_old_model_available",
+        "test_forward_and_switch_warmup_are_serialized",
+        "test_frozen_snapshot_survives_switch_and_registry_mutation",
+        "test_invalid_roi_batch_does_not_poison_neighbors",
+        "test_invalid_roi_single_is_failed_with_no_forward",
+        "test_invalid_roi_video_counts_failed_frames",
+        "test_invalid_roi_worker_retains_task_snapshot_and_ledger",
+        "test_isolated_http_server",
+        "test_partial_concurrent_state_write_is_not_visible_to_readers",
+        "test_result_count_mismatch_is_failed_for_upload_and_worker",
+        "test_resume_checks_model_threshold_and_file_manifest",
+        "test_state_file_replacement_failure_preserves_previous_json",
+        "test_two_roi_margins_cannot_interleave_set_and_crop",
+        "test_upload_chunks_reject_model_change_in_same_batch",
+        "test_upload_routes_keep_snapshot_when_switch_occurs_during_decode"
+      ]
+    },
+    {
+      "path": "scripts/test_web_precision.py",
+      "status": "fulfilled",
+      "tests": "4",
+      "test_names": [
+        "test_cpu_disables_half",
+        "test_device_identifiers",
+        "test_explicit_fp32",
+        "test_gpu_integer_enables_half"
+      ]
+    },
+    {
+      "path": "scripts/test_web_ledger.py",
+      "status": "fulfilled",
+      "tests": "ledger suite",
+      "test_names": []
+    }
+  ],
+  "additional": [
+    "eval cache 7 tests passed",
+    "matching 5 tests passed",
+    "17 changed Python sources AST passed",
+    "4 CLI help passed",
+    "KB check 26 lessons,32 findings(4 refuted),12 decisions"
+  ],
+  "sources": [
+    {
+      "path": "core/dataset_split.py",
+      "sha256": "b9b961d30f602bc2d5e860a52b104f275422f8d81e588df2b857b2d47fc6c8da"
+    },
+    {
+      "path": "scripts/kb.py",
+      "sha256": "2755e2c13377be43d2999292c3acd64e9915db2a031819ec36e4ead645188d26"
+    },
+    {
+      "path": "scripts/materialize_dataset.py",
+      "sha256": "24e70c7bc6fa779becca6e9b9457f9e1e00d79e564348621dfc0f5ab70bfe6aa"
+    },
+    {
+      "path": "scripts/materialize_roi_dataset.py",
+      "sha256": "042a843f2d3ee79f09fb4a24d86b86af3ad15e7c6473a1dd0d4a88ec420535ce"
+    },
+    {
+      "path": "scripts/test_web_ledger.py",
+      "sha256": "3fa4c0f8b449b6e18feae6e4b062eb0d116943d8948e0e13463b87e7fedfc717"
+    },
+    {
+      "path": "scripts/test_web_model_state.py",
+      "sha256": "0d6950e7c57b48f37c34c4d48fa86870dc4b26c0b7db975d1b7d64c64fa9f5f2"
+    },
+    {
+      "path": "scripts/test_web_precision.py",
+      "sha256": "07da1efb20d5b1e25d1401cb8360564cc10524bef44097b4643ec141a9e93b46"
+    },
+    {
+      "path": "scripts/train.py",
+      "sha256": "c51407bd85f29ab8621271531b281d0f7c9c93ca19729975dc52add97256e1b9"
+    },
+    {
+      "path": "scripts/train_run.py",
+      "sha256": "b21a0209653cea05cb35c264f96221af60be334d7eb95eb6160645be4594a6e0"
+    },
+    {
+      "path": "web/app.py",
+      "sha256": "527e5ff0ba27bfd876012ae27733dd0ddb92895716f165be631605499e718da5"
+    },
+    {
+      "path": "core/path_safety.py",
+      "sha256": "b6374ce7c6f1bbc18fe5317d792aa3194b3bbc60b7470caa7ec8434b36d7c6cc"
+    },
+    {
+      "path": "core/dataset_contract.py",
+      "sha256": "ca960eb34c992a0eacb37b36534586f0a3be107190e20a1bbefe6d51725e4c5d"
+    },
+    {
+      "path": "core/materialize.py",
+      "sha256": "08880f8aa43e85c176e343d064e9a2a3fdef89d5f788a8ff097aa901f8a60e42"
+    },
+    {
+      "path": "core/training_contract.py",
+      "sha256": "565184736d9571796e0359c23cf20babb4615097e5cca04d990b712c42e0e050"
+    },
+    {
+      "path": "core/model_spec.py",
+      "sha256": "80485b1688cb2dcb17390fc0da15e76145a16c998f842cd407926bd2c66df6b9"
+    },
+    {
+      "path": "scripts/test_training_contract.py",
+      "sha256": "f4207b85cdcbf546d18fefb30345d6b39215b7ed6fe3e4223e839b88babc5ec6"
+    },
+    {
+      "path": "scripts/test_model_spec.py",
+      "sha256": "377c0549dbbaf139e9de39c16c9eacd2c1a31d1316863b66c51b37f1143e9cca"
+    }
+  ],
+  "legacy_models": [
+    {
+      "path": "models/启用/20261014_v2mild/best.pt",
+      "sha256": "030fedde2456077c5ed6c0687eb7a81f7270010df162fb03e5589c14e506acdb"
+    },
+    {
+      "path": "models/启用/20261016_V3/best.pt",
+      "sha256": "fac289704787d21394eadfe1e96c40cd1f18d069531734e84cc0d6ecc0bb6756"
+    },
+    {
+      "path": "models/启用/20261019_V4/best.pt",
+      "sha256": "cc54bf9a5d5db9f7ff88fd241d52645c6718b968060de5704b67a892c28d480c"
+    }
+  ],
+  "live": {
+    "models": {
+      "current": "models/启用/20261019_V4/best",
+      "models": [
+        {
+          "active": false,
+          "id": "models/启用/20261014_v2mild/best",
+          "label": "20261014_v2mild/best",
+          "name": "best",
+          "path": "models/启用/20261014_v2mild/best.pt"
+        },
+        {
+          "active": false,
+          "id": "models/启用/20261016_V3/best",
+          "label": "20261016_V3/best",
+          "name": "best",
+          "path": "models/启用/20261016_V3/best.pt"
+        },
+        {
+          "active": true,
+          "id": "models/启用/20261019_V4/best",
+          "label": "20261019_V4/best",
+          "name": "best",
+          "path": "models/启用/20261019_V4/best.pt"
+        }
+      ],
+      "success": true
+    },
+    "processes": {
+      "ProcessId": 26316,
+      "CommandLine": "runtime\\python.exe  web\\app.py"
+    }
+  },
+  "real_training_started": false,
+  "full_dataset_materialized": false,
+  "original_data_modified": false,
+  "enabled_weights_modified": false,
+  "production_service_restarted": false,
+  "limits": [
+    "synthetic 3-image manifest and fake trainer; no GPU optimizer/quality guarantee",
+    "negative truth and complete real cell lineage require people",
+    "no historical label versions can be reconstructed",
+    "hash verification is not filesystem isolation during training",
+    "legacy Web compatibility only for 3 registered SHA256 identities; old running process unchanged"
+  ]
+}

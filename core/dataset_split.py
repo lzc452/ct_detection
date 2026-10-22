@@ -138,7 +138,8 @@ def scan_master(with_desc=True, verbose=True):
 
 def json_to_yolo(jpath):
     """X-AnyLabeling JSON -> (W, H, [(cls, xc, yc, w, h), ...])"""
-    d = json.load(open(jpath, encoding="utf-8"))
+    with open(jpath, encoding="utf-8") as stream:
+        d = json.load(stream)
     W, H = d["imageWidth"], d["imageHeight"]
     boxes = []
     for s in d.get("shapes", []):
