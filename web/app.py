@@ -46,6 +46,7 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, 'core'))
 import Config
 from device_utils import pick_device, is_cuda_device
 from model_spec import InferenceSpec, load_model_spec as read_model_spec
+from image_io import read_bgr_upload, read_bgr_disk, write_bgr
 from ultralytics import YOLO
 import roi as roi_mod
 from PIL import Image, ImageFont
@@ -443,12 +444,12 @@ def system_version():
 
 
 def save_annotated_image(img, filename):
-    """保存结果图到 results/，确保文件名安全（提取纯文件名，不含路径）"""
+    """保存BGR结果图；中文目录可写，编码失败返回None。"""
     ext = os.path.splitext(os.path.basename(filename))[1].lower() or '.jpg'
     result_filename = f"result_{uuid.uuid4().hex}{ext}"
     result_path = os.path.join(RESULTS_FOLDER, result_filename)
     try:
-        cv2.imwrite(result_path, img)
+        write_bgr(result_path, img, ext)
         return result_filename
     except Exception as e:
         print(f"[Save Error] Failed to save {result_path}: {e}")
@@ -456,12 +457,12 @@ def save_annotated_image(img, filename):
         return None
 
 
-def save_original_image(rgb_img):
-    """有检出时保存原图（RGB numpy，来自上传流），供导出打包用"""
+def save_original_image(bgr_img):
+    """有检出时保存解码后的BGR图（JPEG派生图），供导出打包用。"""
     orig_filename = f"orig_{uuid.uuid4().hex}.jpg"
     orig_path = os.path.join(RESULTS_FOLDER, orig_filename)
     try:
-        Image.fromarray(rgb_img).save(orig_path, 'JPEG', quality=95)
+        write_bgr(orig_path, bgr_img, '.jpg', [cv2.IMWRITE_JPEG_QUALITY, 95])
         return orig_filename
     except Exception as e:
         print(f"[Save Error] Failed to save original {orig_path}: {e}")
@@ -680,8 +681,8 @@ def detect_image():
         # --- 计时：读取 ---
         t0 = time.time()
         try:
-            # PIL 对象直接喂模型有兼容问题（可能静默漏检），统一转 numpy RGB
-            img = np.array(Image.open(file.stream).convert('RGB'))
+            # Ultralytics的numpy输入是BGR；与视频/磁盘路径保持一致。
+            img = read_bgr_upload(file.stream)
         except Exception as e:
             add_file_record(batch_id, filename, STATUS_FAILED, 0, conf_threshold, bundle=bundle,
                             error='读图失败: %s' % e)
@@ -699,12 +700,6 @@ def detect_image():
         t_plot = 0.0    # 画图已合并进 infer_one（必须先画后映射，不能拆开）
 
         has_det = results.boxes is not None and len(results.boxes) > 0
-
-        # 安全调用 parse_results_to_global（避免某些加载场景下 NameError）
-        if 'parse_results_to_global' in globals():
-            parse_results_to_global(results, filename, '', batch_id)
-        else:
-            print("[WARNING] parse_results_to_global not found in globals, skipping result storage")
 
         # --- 计时：保存 ---
         t5 = time.time()
@@ -727,8 +722,11 @@ def detect_image():
         orig_file = None
         if has_det:
             orig_file = save_original_image(img)
+            if not orig_file:
+                raise OSError('原图保存失败')
             register_problem_image(filename, orig_file, result_filename, classes, batch_id)
 
+        parse_results_to_global(results, filename, '', batch_id)
         status = STATUS_OK_DEFECT if has_det else STATUS_OK_CLEAN
         add_file_record(batch_id, filename, status, len(classes), conf_threshold, bundle=bundle)
         save_state()
@@ -817,8 +815,7 @@ def detect_batch():
                 idx = i + pos
                 nm = name_of(idx)
                 try:
-                    # PIL 对象直接喂模型有兼容问题（可能静默漏检），统一转 numpy RGB
-                    img = np.array(Image.open(f.stream).convert('RGB'))
+                    img = read_bgr_upload(f.stream)
                     inp, off = _prep_infer(img, bundle)
                     chunk_imgs.append(img)
                     chunk_idx.append(idx)
@@ -874,10 +871,6 @@ def detect_batch():
                     if _g and _g not in batch_info[batch_id]['groups']:
                         batch_info[batch_id]['groups'].append(_g)
 
-                    # 安全调用 parse_results_to_global
-                    if 'parse_results_to_global' in globals():
-                        parse_results_to_global(result, filename, '', batch_id)
-
                     # 提速（2026-10-21）：无检出的干净图不画图不存盘（产线大多数是干净图，省100~300ms/张）
                     result_filename = None
                     if has_det:
@@ -885,6 +878,8 @@ def detect_batch():
                         t_s0 = time.time()
                         result_filename = save_annotated_image(draw_img, filename)
                         t_save += (time.time() - t_s0)
+                        if not result_filename:
+                            raise OSError('标注图保存失败')
 
                     locations = [list(map(int, e)) for e in boxes.xyxy.tolist()] if has_det else []
                     classes = [int(i) for i in boxes.cls.tolist()] if has_det else []
@@ -893,17 +888,18 @@ def detect_batch():
                     # 有检出：留存原图并登记类别，供导出打包
                     if has_det:
                         orig_file = save_original_image(img)
+                        if not orig_file:
+                            raise OSError('原图保存失败')
                         register_problem_image(filename, orig_file, result_filename, classes, batch_id)
 
+                    parse_results_to_global(result, filename, '', batch_id)
                     status = STATUS_OK_DEFECT if has_det else STATUS_OK_CLEAN
                     if has_det:
                         chunk_defect_imgs += 1
                         chunk_defects += len(classes)
                     else:
                         chunk_clean_imgs += 1
-                    add_file_record(batch_id, filename, status, len(classes), conf_threshold, bundle=bundle,
-                                    error='' if result_filename or not has_det
-                                    else '标注图保存失败')
+                    add_file_record(batch_id, filename, status, len(classes), conf_threshold, bundle=bundle)
 
                     records[idx] = {
                         "index": idx,
@@ -1440,14 +1436,6 @@ detect_tasks = {}
 TASK_FILE = os.path.join(RESULTS_FOLDER, '_detect_task.json')
 
 
-def read_rgb_disk(path):
-    """中文路径安全读图 → RGB numpy（与上传模式 PIL 读出的 RGB 一致）"""
-    img = cv2.imdecode(np.fromfile(path, dtype=np.uint8), cv2.IMREAD_COLOR)
-    if img is None:
-        raise ValueError('无法解码图片')
-    return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-
 def _list_images(d):
     try:
         return sorted(f for f in os.listdir(d) if f.lower().endswith(IMG_EXTS))
@@ -1667,7 +1655,7 @@ def _detect_worker(task_id, root, jobs, conf, skip, batch_id, bundle=None):
             _ins, _offs = [], []
             for ap, rel in chunk:
                 try:
-                    img = read_rgb_disk(ap)
+                    img = read_bgr_disk(ap)
                     inp, off = _prep_infer(img, bundle)
                     imgs.append(img)
                     _ins.append(inp)
@@ -1700,10 +1688,14 @@ def _detect_worker(task_id, root, jobs, conf, skip, batch_id, bundle=None):
                             draw = _plot_after_infer(res, img, _off)   # 先画（ROI 坐标）
                         _restore_boxes(res, _off)                       # 再映射回原图坐标
                         if has:
-                            parse_results_to_global(res, rel, ap, batch_id)
                             ann = save_annotated_image(draw, rel)
+                            if not ann:
+                                raise OSError('标注图保存失败')
                             orig = backup_original_file(ap)
+                            if not orig:
+                                raise OSError('原图备份失败')
                             classes = [int(c) for c in boxes.cls.tolist()]
+                            parse_results_to_global(res, rel, ap, batch_id)
                             register_problem_image(rel, orig, ann, classes, batch_id)
                             task['defect_imgs'] += 1
                             task['defects'] += len(boxes)
