@@ -1,0 +1,177 @@
+{
+  "schema": "ct-stage5-validation/1",
+  "measured_git_commit": "fee8c6508589393f3c018b822ce91037b8595556",
+  "measured_source_match": {
+    "scripts/audit_precision_e2e.py": {
+      "plan": "c958eace163f419505a965043f327f07124f712ee55e7d5c9a39f61bb9635b8b",
+      "git_blob_sha256": "c958eace163f419505a965043f327f07124f712ee55e7d5c9a39f61bb9635b8b"
+    },
+    "web/app.py": {
+      "plan": "94ce501d375af975f7ea0789dd3a5a5de8ee2e4b34e0ed6efe1b027d4fbe94f1",
+      "git_blob_sha256": "94ce501d375af975f7ea0789dd3a5a5de8ee2e4b34e0ed6efe1b027d4fbe94f1"
+    },
+    "core/image_io.py": {
+      "plan": "e3718aed9f44c24b46fe0123a1f3d5b0d6f195c4bf09aff27c97fe562d22382d",
+      "git_blob_sha256": "e3718aed9f44c24b46fe0123a1f3d5b0d6f195c4bf09aff27c97fe562d22382d"
+    },
+    "core/model_spec.py": {
+      "plan": "80485b1688cb2dcb17390fc0da15e76145a16c998f842cd407926bd2c66df6b9",
+      "git_blob_sha256": "80485b1688cb2dcb17390fc0da15e76145a16c998f842cd407926bd2c66df6b9"
+    },
+    "core/detection_metrics.py": {
+      "plan": "5f7f1548ff4182cba473468959c9330146b4bc685c199fc4b8d31da063909653",
+      "git_blob_sha256": "5f7f1548ff4182cba473468959c9330146b4bc685c199fc4b8d31da063909653"
+    },
+    "core/eval_cache.py": {
+      "plan": "55ab62617803df505c4f1f7a7d0901730fb157c040cf434e8eed9989060c8a4f",
+      "git_blob_sha256": "55ab62617803df505c4f1f7a7d0901730fb157c040cf434e8eed9989060c8a4f"
+    }
+  },
+  "final_source_sha256": {
+    "web/app.py": "d65e1bf4c0926e86e72adfde4f081e6859c7f7f4eb8fc2c52bfc16a6115c5494",
+    "core/image_io.py": "a95401a7cac77f79a8dbe5e968066bc26e3b78f2816b5581fe5a49a451efa6f1",
+    "scripts/test_image_contract.py": "309600a51c99af43792308e88bf68f81488bf9a7253049ea9362c8a2dca08da2",
+    "scripts/test_web_precision.py": "de1619bcd02a4a4672b163019cac1475f152289558c3d6bf233a5075a093ca2e",
+    "scripts/audit_precision_e2e.py": "c958eace163f419505a965043f327f07124f712ee55e7d5c9a39f61bb9635b8b",
+    "scripts/audit_color_path.py": "3df1c46df11c24525feb0de1c12a6f4123efc497a521f2ccdbdf151e4780b7ab"
+  },
+  "artifacts": {
+    "stage5_plan.json": {
+      "sha256": "f3944987feae5b825321dbcdf0819b95f5217b2a807e284cbf59aafcf5930450",
+      "bytes": 195904
+    },
+    "stage5_plan_v2.json": {
+      "sha256": "7fac605c95fccc794b864df3bf21f9a4b4212113a1d6cf9faa46d50ed7240be4",
+      "bytes": 195904
+    },
+    "stage5_followup_plan.json": {
+      "sha256": "7eb2a7a6062e56a0d47ead4884ec70dce3a07216767a7e8896bf356a5164c31b",
+      "bytes": 2049
+    },
+    "stage5_fp32.json": {
+      "sha256": "8dec454862e6eec2c3e8fe91a6317371368a69bc0d96a50250124bfe0377ffcb",
+      "bytes": 915441
+    },
+    "stage5_fp16.json": {
+      "sha256": "11f32b8f36d4ddf9255e662cc3bceadb60fc8792fafdf096754ba7e8333705f2",
+      "bytes": 907679
+    },
+    "stage5_comparison.json": {
+      "sha256": "4e9e017e36e68ae5805331ae56c5ca8f126707e787b37fc62d46fc71bb0d25af",
+      "bytes": 1242744
+    },
+    "stage5_color_path_fp32.json": {
+      "sha256": "9b7afe6ce9737f964bebac38922e6a20fcc242982438e5c773c879c9bb1a5833",
+      "bytes": 648497
+    },
+    "stage5_color_path_fp16.json": {
+      "sha256": "6849ab30f116e7a7db3486b4d1181045ab062078dd19573f0f68fec8f7396b7e",
+      "bytes": 1436
+    }
+  },
+  "final_tests": [
+    {
+      "command": [
+        "runtime/python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/test_image_contract.py"
+      ],
+      "stdout": "atch Done] 共1张 | 总耗时:0.00s | 平均:0.0ms/张 | 有缺陷:0张 | 无缺陷:0张 | 失败:1张 | 缺陷总数:0个\r\n[Batch Failed] 1 张检测失败：['red.png']\r\n[Device] cpu | FP16: False | imgsz: 1920 | batch: 16\r\n[Model Scan] Found 3 models:\r\n  - C:/Users/HP/AppData/Local/Temp/ct_模型沙盘_e6o_xwrn/models/legacy/best: best\r\n  - C:/Users/HP/AppData/Local/Temp/ct_模型沙盘_e6o_xwrn/models/roi0/best: best\r\n  - C:/Users/HP/AppData/Local/Temp/ct_模型沙盘_e6o_xwrn/models/roi15/best: best\r\n[Model] Loading: C:/Users/HP/AppData/Local/Temp/ct_模型沙盘_e6o_xwrn/models/legacy/best (C:\\Users\\HP\\AppData\\Local\\Temp\\ct_模型沙盘_e6o_xwrn\\models\\legacy\\best.pt)\r\n[Model] Spec: {'imgsz': 1920, 'roi': False, 'roi_k': 0.0, 'source': 'C:\\\\Users\\\\HP\\\\AppData\\\\Local\\\\Temp\\\\ct_模型沙盘_e6o_xwrn\\\\models\\\\legacy\\\\_train_meta.json'}\r\n[Model] Ready: C:/Users/HP/AppData/Local/Temp/ct_模型沙盘_e6o_xwrn/models/legacy/best\r\n[DetectTask] 1/1 | 缺陷图 0 | 1005.1张/s\r\n[DetectTask Done] 1/1 | 缺陷图 0 | 缺陷 0 | 状态 done\r\n[DetectTask] 1/1 | 缺陷图 0 | 1005.6张/s\r\n[DetectTask Done] 1/1 | 缺陷图 0 | 缺陷 0 | 状态 done\r\n",
+      "stderr": "test_actual_ultralytics_preprocessor_requires_bgr (__main__.ImageContractTests) ... ok\r\ntest_both_upload_routes_pass_bgr_to_model (__main__.ImageContractTests) ... ok\r\ntest_encoder_false_does_not_return_nonexistent_filename (__main__.ImageContractTests) ... Traceback (most recent call last):\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 454, in save_annotated_image\r\n    write_bgr(result_path, img, ext)\r\n  File \"D:\\CT Detection-yolo\\core\\image_io.py\", line 29, in write_bgr\r\n    raise OSError('图片编码失败: ' + ext)\r\nOSError: 图片编码失败: .png\r\nok\r\ntest_legacy_color_contract_cannot_continue_same_upload_batch (__main__.ImageContractTests) ... ok\r\ntest_legacy_color_contract_cannot_resume_path_task (__main__.ImageContractTests) ... ok\r\ntest_upload_disk_and_saved_color_agree_in_chinese_directory (__main__.ImageContractTests) ... ok\r\ntest_upload_save_failures_are_failed_without_detection_rows (__main__.ImageContractTests) ... Traceback (most recent call last):\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 728, in detect_image\r\n    raise OSError('原图保存失败')\r\nOSError: 原图保存失败\r\nTraceback (most recent call last):\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 884, in detect_batch\r\n    raise OSError('标注图保存失败')\r\nOSError: 标注图保存失败\r\nTraceback (most recent call last):\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 894, in detect_batch\r\n    raise OSError('原图保存失败')\r\nOSError: 原图保存失败\r\nok\r\ntest_worker_saves_fail_without_defect_success_or_detection_rows (__main__.ImageContractTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 1.544s\r\n\r\nOK\r\n",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "runtime/python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/test_web_model_state.py"
+      ],
+      "stdout": "计:0.004s | 阈值:0.3 | 缺陷:0个(无)\r\n[Model] Loading: C:/Users/HP/AppData/Local/Temp/ct_模型沙盘_18my2mdj/models/legacy/best (C:\\Users\\HP\\AppData\\Local\\Temp\\ct_模型沙盘_18my2mdj\\models\\legacy\\best.pt)\r\n[Model] Spec: {'imgsz': 1920, 'roi': False, 'roi_k': 0.0, 'source': 'C:\\\\Users\\\\HP\\\\AppData\\\\Local\\\\Temp\\\\ct_模型沙盘_18my2mdj\\\\models\\\\legacy\\\\_train_meta.json'}\r\n[Model] Ready: C:/Users/HP/AppData/Local/Temp/ct_模型沙盘_18my2mdj/models/legacy/best\r\n[Model] Loading: C:/Users/HP/AppData/Local/Temp/ct_模型沙盘_18my2mdj/models/roi0/best (C:\\Users\\HP\\AppData\\Local\\Temp\\ct_模型沙盘_18my2mdj\\models\\roi0\\best.pt)\r\n[Model] Spec: {'imgsz': 1536, 'roi': True, 'roi_k': 0.0, 'source': 'C:\\\\Users\\\\HP\\\\AppData\\\\Local\\\\Temp\\\\ct_模型沙盘_18my2mdj\\\\models\\\\roi0\\\\_train_meta.json'}\r\n[Model] Ready: C:/Users/HP/AppData/Local/Temp/ct_模型沙盘_18my2mdj/models/roi0/best\r\n[Batch Chunk 1/1] 读取:0.001s | 推理:0.001s | 画图:0.000s | 保存:0.000s | 1张 | 平均:2.0ms/张 | 缺陷:0个 | 阈值:0.3\r\n[Batch Done] 共1张 | 总耗时:0.00s | 平均:2.0ms/张 | 有缺陷:0张 | 无缺陷:1张 | 失败:0张 | 缺陷总数:0个\r\n",
+      "stderr": "all__\r\n    raise RuntimeError('injected warmup failure')\r\nRuntimeError: injected warmup failure\r\nok\r\ntest_forward_and_switch_warmup_are_serialized (__main__.ModelStateTests) ... ok\r\ntest_frozen_snapshot_survives_switch_and_registry_mutation (__main__.ModelStateTests) ... ok\r\ntest_invalid_roi_batch_does_not_poison_neighbors (__main__.ModelStateTests) ... ok\r\ntest_invalid_roi_single_is_failed_with_no_forward (__main__.ModelStateTests) ... Traceback (most recent call last):\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 699, in detect_image\r\n    results, draw_img = infer_one(bundle, img, conf_threshold)\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 223, in infer_one\r\n    inp, box = _prep_infer(img, bundle)\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 181, in _prep_infer\r\n    raise ValueError('ROI有效性检查失败：请复核成像布局，不能判为无缺陷')\r\nValueError: ROI有效性检查失败：请复核成像布局，不能判为无缺陷\r\nok\r\ntest_invalid_roi_video_counts_failed_frames (__main__.ModelStateTests) ... Traceback (most recent call last):\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 1070, in process_video_task\r\n    results, _drawf = infer_one(bundle, frame, conf_threshold)\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 223, in infer_one\r\n    inp, box = _prep_infer(img, bundle)\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 181, in _prep_infer\r\n    raise ValueError('ROI有效性检查失败：请复核成像布局，不能判为无缺陷')\r\nValueError: ROI有效性检查失败：请复核成像布局，不能判为无缺陷\r\nTraceback (most recent call last):\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 1070, in process_video_task\r\n    results, _drawf = infer_one(bundle, frame, conf_threshold)\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 223, in infer_one\r\n    inp, box = _prep_infer(img, bundle)\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 181, in _prep_infer\r\n    raise ValueError('ROI有效性检查失败：请复核成像布局，不能判为无缺陷')\r\nValueError: ROI有效性检查失败：请复核成像布局，不能判为无缺陷\r\nok\r\ntest_invalid_roi_worker_retains_task_snapshot_and_ledger (__main__.ModelStateTests) ... ok\r\ntest_isolated_http_server (__main__.ModelStateTests) ... 127.0.0.1 - - [23/Oct/2026 08:15:57] \"GET / HTTP/1.1\" 200 -\r\n127.0.0.1 - - [23/Oct/2026 08:15:57] \"GET /api/models HTTP/1.1\" 200 -\r\nok\r\ntest_partial_concurrent_state_write_is_not_visible_to_readers (__main__.ModelStateTests) ... ok\r\ntest_result_count_mismatch_is_failed_for_upload_and_worker (__main__.ModelStateTests) ... Traceback (most recent call last):\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 699, in detect_image\r\n    results, draw_img = infer_one(bundle, img, conf_threshold)\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 224, in infer_one\r\n    res = _predict_inputs(bundle, [inp], conf)[0]\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 217, in _predict_inputs\r\n    raise RuntimeError(f'模型返回数量不符: {len(results)}/{len(inputs)}')\r\nRuntimeError: 模型返回数量不符: 0/1\r\nTraceback (most recent call last):\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 839, in detect_batch\r\n    results = _predict_inputs(bundle, _ins, conf_threshold)\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 217, in _predict_inputs\r\n    raise RuntimeError(f'模型返回数量不符: {len(results)}/{len(inputs)}')\r\nRuntimeError: 模型返回数量不符: 0/1\r\nTraceback (most recent call last):\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 1675, in _detect_worker\r\n    results = _predict_inputs(bundle, _ins, conf)\r\n  File \"D:\\CT Detection-yolo\\web\\app.py\", line 217, in _predict_inputs\r\n    raise RuntimeError(f'模型返回数量不符: {len(results)}/{len(inputs)}')\r\nRuntimeError: 模型返回数量不符: 0/1\r\nok\r\ntest_resume_checks_model_threshold_and_file_manifest (__main__.ModelStateTests) ... ok\r\ntest_state_file_replacement_failure_preserves_previous_json (__main__.ModelStateTests) ... ok\r\ntest_two_roi_margins_cannot_interleave_set_and_crop (__main__.ModelStateTests) ... ok\r\ntest_upload_chunks_reject_model_change_in_same_batch (__main__.ModelStateTests) ... ok\r\ntest_upload_routes_keep_snapshot_when_switch_occurs_during_decode (__main__.ModelStateTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 18 tests in 4.722s\r\n\r\nOK\r\n",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "runtime/python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/test_web_precision.py"
+      ],
+      "stdout": "\n[Model] Spec: {'imgsz': 1920, 'roi': False, 'roi_k': 0.0, 'source': 'C:\\\\Users\\\\HP\\\\AppData\\\\Local\\\\Temp\\\\ct_precision_g4j5a2vc\\\\models\\\\_train_meta.json'}\r\n[Model] Ready: C:/Users/HP/AppData/Local/Temp/ct_precision_g4j5a2vc/models/fake\r\n[Image] synthetic.jpg | 读取:0.000s | 推理:0.000s | 画图:0.000s | 保存:0.001s | 总计:0.003s | 阈值:0.3 | 缺陷:1个(暗斑x1)\r\n[Device] 0 | FP16: False | imgsz: 1920 | batch: 16\r\n[Model Scan] Found 1 models:\r\n  - C:/Users/HP/AppData/Local/Temp/ct_precision_d04cml4k/models/fake: fake\r\n[Model] Loading: C:/Users/HP/AppData/Local/Temp/ct_precision_d04cml4k/models/fake (C:\\Users\\HP\\AppData\\Local\\Temp\\ct_precision_d04cml4k\\models\\fake.pt)\r\n[Model] Spec: {'imgsz': 1920, 'roi': False, 'roi_k': 0.0, 'source': 'C:\\\\Users\\\\HP\\\\AppData\\\\Local\\\\Temp\\\\ct_precision_d04cml4k\\\\models\\\\_train_meta.json'}\r\n[Model] Ready: C:/Users/HP/AppData/Local/Temp/ct_precision_d04cml4k/models/fake\r\n[Image] synthetic.jpg | 读取:0.000s | 推理:0.000s | 画图:0.000s | 保存:0.001s | 总计:0.003s | 阈值:0.3 | 缺陷:1个(暗斑x1)\r\n",
+      "stderr": "test_cpu_disables_half (__main__.PrecisionTests) ... 127.0.0.1 - - [23/Oct/2026 08:15:56] \"GET / HTTP/1.1\" 200 -\r\nok\r\ntest_device_identifiers (__main__.PrecisionTests) ... ok\r\ntest_explicit_fp32 (__main__.PrecisionTests) ... 127.0.0.1 - - [23/Oct/2026 08:15:56] \"GET / HTTP/1.1\" 200 -\r\nok\r\ntest_gpu_default_is_fp32_after_quality_regression (__main__.PrecisionTests) ... 127.0.0.1 - - [23/Oct/2026 08:15:56] \"GET / HTTP/1.1\" 200 -\r\nok\r\ntest_gpu_integer_enables_half (__main__.PrecisionTests) ... 127.0.0.1 - - [23/Oct/2026 08:15:56] \"GET / HTTP/1.1\" 200 -\r\nok\r\ntest_unknown_override_does_not_enable_half (__main__.PrecisionTests) ... 127.0.0.1 - - [23/Oct/2026 08:15:56] \"GET / HTTP/1.1\" 200 -\r\nok\r\n\r\n----------------------------------------------------------------------\r\nRan 6 tests in 1.320s\r\n\r\nOK\r\n",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "runtime/python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/test_web_ledger.py"
+      ],
+      "stdout": "均:13.0ms/张 | 缺陷:1个 | 阈值:0.157\r\n[Batch Done] 共3张 | 总耗时:0.03s | 平均:8.6ms/张 | 有缺陷:1张 | 无缺陷:1张 | 失败:1张 | 缺陷总数:1个\r\n[Batch Failed] 1 张检测失败：['B/正面/broken.jpg']\r\n[Image] single.jpg | 读取:0.000s | 推理:0.000s | 画图:0.000s | 保存:0.001s | 总计:0.002s | 阈值:0.2 | 缺陷:1个(暗斑x1)\r\n[Skip] 读图失败 C:\\Users\\HP\\AppData\\Local\\Temp\\web_ledger_lc_fbnll\\src\\A\\正面\\x.jpg: 无法解码图片\r\n[DetectTask] 3/3 | 缺陷图 1 | 1003.3张/s\r\n[DetectTask Done] 3/3 | 缺陷图 1 | 缺陷 1 | 状态 done\r\n[Skip] Cannot read x/a.jpg: cannot identify image file <tempfile.SpooledTemporaryFile object at 0x000001B6C11A7970>\r\n[Skip] Cannot read x/b.jpg: cannot identify image file <tempfile.SpooledTemporaryFile object at 0x000001B6C11A7AC0>\r\n[Batch Done] 共2张 | 总耗时:0.00s | 平均:0.0ms/张 | 有缺陷:0张 | 无缺陷:0张 | 失败:2张 | 缺陷总数:0个\r\n[Batch Failed] 2 张检测失败：['x/a.jpg', 'x/b.jpg']\r\n[Batch Chunk 1/1] 读取:0.000s | 推理:0.000s | 画图:0.000s | 保存:0.000s | 1张 | 平均:0.0ms/张 | 缺陷:0个 | 阈值:0.3\r\n[Batch Done] 共1张 | 总耗时:0.00s | 平均:0.0ms/张 | 有缺陷:0张 | 无缺陷:1张 | 失败:0张 | 缺陷总数:0个\r\n\r\n[PASS] Web 台账/失败态/阈值直传 全部通过\r\n",
+      "stderr": "",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "runtime/python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/kb.py",
+        "check"
+      ],
+      "stdout": "LESSONS.md  27 条\r\nFINDINGS.md 37 条（其中已证伪 4 条）\r\nDECISIONS.md 13 条\r\n\r\n[ok] 三个文件格式校验通过\r\n",
+      "stderr": "",
+      "exit_code": 0
+    }
+  ],
+  "earlier_matching_cache_tests": [
+    {
+      "args": [
+        "scripts/test_detection_metrics.py"
+      ],
+      "stdout": "",
+      "stderr": "test_confidence_priority_and_class (__main__.MatchingTests) ... ok\r\ntest_empty_and_threshold (__main__.MatchingTests) ... ok\r\ntest_mismatched_lengths_rejected (__main__.MatchingTests) ... ok\r\ntest_overlap_counterexample (__main__.MatchingTests) ... ok\r\ntest_real_entrypoints_share_counts (__main__.MatchingTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 5 tests in 0.174s\r\n\r\nOK\r\n"
+    },
+    {
+      "args": [
+        "scripts/test_eval_cache.py"
+      ],
+      "stdout": "",
+      "stderr": "test_corrupt_cache_rejected (__main__.CacheTests) ... ok\r\ntest_identical_reuse (__main__.CacheTests) ... ok\r\ntest_invalid_class_and_dropped_gt_rejected (__main__.CacheTests) ... ok\r\ntest_label_content_changes_key_without_count_change (__main__.CacheTests) ... ok\r\ntest_margin_changes_key (__main__.CacheTests) ... ok\r\ntest_missing_annotation_rejected (__main__.CacheTests) ... ok\r\ntest_source_drift_rejected (__main__.CacheTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 7 tests in 0.172s\r\n\r\nOK\r\n"
+    }
+  ],
+  "ast": [
+    "core/image_io.py",
+    "web/app.py",
+    "scripts/test_image_contract.py",
+    "scripts/test_web_precision.py",
+    "scripts/audit_precision_e2e.py",
+    "scripts/audit_color_path.py"
+  ],
+  "live": {
+    "current": "models/启用/20261019_V4/best",
+    "other_training": [],
+    "process": {
+      "ProcessId": 26316,
+      "CommandLine": "runtime\\python.exe  web\\app.py"
+    }
+  },
+  "temporary_measurement_directories_remaining": [],
+  "limitations": [
+    "同集数值回归，历史标注不独立",
+    "路径仅实测无检出分支，拒绝复制原始生产图",
+    "旧生产服务同时存活，无机器级GPU隔离",
+    "收尾只改默认精度与来源元数据；显式half=0/1数值路径沿用测量提交"
+  ],
+  "training_started": false,
+  "production_restarted": false,
+  "raw_modified": false
+}

@@ -1,0 +1,4833 @@
+{
+  "schema": "ct-stage5/1",
+  "created": "2026-10-23 08:04:09+0800",
+  "weights": "D:\\CT Detection-yolo\\models\\启用\\20261019_V4\\best.pt",
+  "weight_sha256": "cc54bf9a5d5db9f7ff88fd241d52645c6718b968060de5704b67a892c28d480c",
+  "spec": {
+    "imgsz": 1920,
+    "roi": false,
+    "roi_k": 0.0,
+    "source": "legacy-compat-1920:20261019_V4"
+  },
+  "manifest_sha256": "83ac4bdd370b62048aaed724a5a2b2aaff5caadc11b3ac0579be261a51048bf7",
+  "input_fingerprint": "af3e4f7b8a263af1168f5c8a428428842622a384fc64cf86a07f12b05d680f38",
+  "input_contract": {
+    "schema": "ct-eval-cache/2",
+    "inputs": [
+      {
+        "name": "0_0010",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0010.jpg",
+        "image_md5": "18afc03df6142a22ecd99880f85a7d33",
+        "size": "2129x1198",
+        "label_sha256": "e458f19f25ca352b1e380fe9cc17bfe1d9f68558c5ae2ddecd37a1c2a8bf1b5e"
+      },
+      {
+        "name": "0_0016",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0016.jpg",
+        "image_md5": "913e2d545f7422d1abbc649feb2b72a1",
+        "size": "2129x1198",
+        "label_sha256": "a36493d99639f543e344ca0351d59092f733cfa22cffad82558db835cb2a8faa"
+      },
+      {
+        "name": "0_0017",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0017.jpg",
+        "image_md5": "8693a27fdeb9b96def9579e70c20f3bd",
+        "size": "2129x1198",
+        "label_sha256": "732b94057aed781398d2c9d3c94b9bc430182d2dd78b2bb7ccd9337985e764e4"
+      },
+      {
+        "name": "0_0018",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0018.jpg",
+        "image_md5": "96745ee83c9859d68af9a8b2aabe9bb3",
+        "size": "2129x1198",
+        "label_sha256": "3cad5f67e0182932fb90aa3a9e63d224edfbb5a7afc18b3e34d900dd3583a07f"
+      },
+      {
+        "name": "0_0019",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0019.jpg",
+        "image_md5": "5ed443344bd4dc2adbd5bbb5e2380a0c",
+        "size": "2129x1198",
+        "label_sha256": "816b4bd9e515da9464366c039e583dd7dd9ec75e2b7daaba4232f8615431a4ab"
+      },
+      {
+        "name": "0_0025",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0025.jpg",
+        "image_md5": "1bf525791121c20930fc591817b685ab",
+        "size": "2129x1198",
+        "label_sha256": "4506ddc4dedfc5cfb024ebcbb7ae67fb339c42d6d9995d6fe98557b00ad00151"
+      },
+      {
+        "name": "0_0041",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0041.jpg",
+        "image_md5": "b40fbb4b69cf56a5f9c44273e304c2e0",
+        "size": "2129x1198",
+        "label_sha256": "8dd43a42bf3a901fd473803586b9f6fff638af3a1dbc59f08ea0f1df7784b8dd"
+      },
+      {
+        "name": "0_0078",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0078.jpg",
+        "image_md5": "bafdb4af726b04f410fcd8f80570fb6d",
+        "size": "1052x585",
+        "label_sha256": "2e7a0b5a69f635f858dcee5a01162fa5439eee4f64d83424d3e65c876065fc3f"
+      },
+      {
+        "name": "0_0079",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0079.jpg",
+        "image_md5": "cb81fe6f6f7d38c962e8064e8e56623e",
+        "size": "1052x585",
+        "label_sha256": "590e65f5895b3cbc7215c872284c88e09bfcdc72a04523b26295bf11ac30e399"
+      },
+      {
+        "name": "0_0083",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0083.jpg",
+        "image_md5": "34321dad3bc025933062604112801b4f",
+        "size": "1052x585",
+        "label_sha256": "7bebb09d3201c86152f7a6af314f89784675384d4ba89a029c4e165e3e9b87a3"
+      },
+      {
+        "name": "0_0107",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0107.jpg",
+        "image_md5": "e9f7f32db940aece9e7932221b3075a6",
+        "size": "1052x585",
+        "label_sha256": "df8fe113276d6b64a71dc492bc7035a5a6aea3570cbb170fd081da0b1de35954"
+      },
+      {
+        "name": "0_0108",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0108.jpg",
+        "image_md5": "fb623f4d87fae2c05df5839755eb3004",
+        "size": "1052x585",
+        "label_sha256": "70b1225389364622e99c63755193445df6401ba1644b01900af41f655d3676b4"
+      },
+      {
+        "name": "0_0109",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0109.jpg",
+        "image_md5": "d3694a692e010741b26593d8872c3520",
+        "size": "1052x585",
+        "label_sha256": "d8bcaeb77a14922e410d3e57ed30ba1557c305d6a6476809347bdce47dcc915e"
+      },
+      {
+        "name": "0_0110",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0110.jpg",
+        "image_md5": "d988880e296e0dc11c29264150479f99",
+        "size": "1052x585",
+        "label_sha256": "cd2cef93f6e67f6bf739e703dd31679189f022b73528959bad52aff87b50aa61"
+      },
+      {
+        "name": "0_0111",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0111.jpg",
+        "image_md5": "26902a44286b91b0788fa91fe2903188",
+        "size": "1052x585",
+        "label_sha256": "9c9dd595d6fa24652baa9e31c9f34ea5593254a217d337f147ca30e25fad1653"
+      },
+      {
+        "name": "0_0117",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0117.jpg",
+        "image_md5": "f4b2fa07a82471d9337c721885a77d8f",
+        "size": "1052x585",
+        "label_sha256": "4e7a43d10df935aa3e6d1488afb83c497340b3db4af698e3f0e51585ed316ab5"
+      },
+      {
+        "name": "0_0124",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0124.jpg",
+        "image_md5": "c48a2d04c69300b7b14a2ab502a6c9f9",
+        "size": "2129x1198",
+        "label_sha256": "ed8c0c814ab4e9a832cca8bf6d23d6121caa800fc15e103eaa3de7eb27a8e513"
+      },
+      {
+        "name": "0_0125",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0125.jpg",
+        "image_md5": "04b9ede5f3714997cbc1510e7598f0fa",
+        "size": "2129x1198",
+        "label_sha256": "772ee5a3c0f7a4da5647347ca2caf851ce2244f58512f2352eda912de2be6d18"
+      },
+      {
+        "name": "0_0126",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0126.jpg",
+        "image_md5": "e740ff826100adc1afdf63e1dc028743",
+        "size": "2129x1198",
+        "label_sha256": "71f4eed092f711676972efcba40832259e18ee6e9443abf1d52ff5c7d3bfb9f8"
+      },
+      {
+        "name": "0_0133",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0133.jpg",
+        "image_md5": "75c0788263911675b71f9beeb3800c3e",
+        "size": "2129x1198",
+        "label_sha256": "e6aa8b75898d87ed5fd0fbb355bbfe093e16405774768f9f1a0acfcc87a3b8d2"
+      },
+      {
+        "name": "0_0134",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0134.jpg",
+        "image_md5": "e96e855abfc28dde0c33f1cbefd575b3",
+        "size": "2129x1198",
+        "label_sha256": "180a2cdf4ee1ced0f726ad9ae745555b4081925094847ba8dca883dbd1ad92a5"
+      },
+      {
+        "name": "0_0137",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0137.jpg",
+        "image_md5": "77797405318d0a38c233f3fd01da7a47",
+        "size": "1052x585",
+        "label_sha256": "c31ab4ee156efc89206007838f704437f9f20aa5019200fc87e275784bc87992"
+      },
+      {
+        "name": "0_0138",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0138.jpg",
+        "image_md5": "c19a9ee203548d8d77bafbe74fd08e37",
+        "size": "1052x585",
+        "label_sha256": "24658571d6da93fd120edb57e8507795b534fcf20ec50410dbec055ef9a31bb2"
+      },
+      {
+        "name": "0_0139",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0139.jpg",
+        "image_md5": "429d522975dc2aea94baab13ba1c5c02",
+        "size": "1052x585",
+        "label_sha256": "31d194cfe3082e67d59755f5567bd05d6d36c8ecc77079d6215d532f216ff9ca"
+      },
+      {
+        "name": "0_0140",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0140.jpg",
+        "image_md5": "4e3c398683e2dedcc25ad225d15fc362",
+        "size": "1052x585",
+        "label_sha256": "a6d7c02deb7c07ed1ef2496685cf2abec0125302e0a69347937830525c8ed85e"
+      },
+      {
+        "name": "0_0141",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0141.jpg",
+        "image_md5": "c6c406c34240b297a54a6f121a7db121",
+        "size": "1052x585",
+        "label_sha256": "f40ee23f02d0393dc2ab04b91038dd5ec7ea9e209024d91f19247af4555e6f58"
+      },
+      {
+        "name": "0_0150",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0150.jpg",
+        "image_md5": "4eb1ce71b15b57abd69a54354b028756",
+        "size": "1052x585",
+        "label_sha256": "aa4cbd4067d2d53443f526ccc04f33f7dc22e0e3b9c78208d54bab24c6767a5c"
+      },
+      {
+        "name": "0_0151",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0151.jpg",
+        "image_md5": "ea397a596e0c2ca03661476132014b8c",
+        "size": "1052x585",
+        "label_sha256": "88f23c3ba84269c1be86065b52200d7839c60898519909f610c6c2b4a43bb7c4"
+      },
+      {
+        "name": "0_0152",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0152.jpg",
+        "image_md5": "ae2e2a94f77bf40150f3043315157cb7",
+        "size": "1052x585",
+        "label_sha256": "27c3acdef3c93badee95683abdee9f2f4a6f4d7cdb23c7d2f3bdc1b7d4038c3f"
+      },
+      {
+        "name": "0_0153",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0153.jpg",
+        "image_md5": "74270b491367d2fb4dc0bec65d801bc1",
+        "size": "1052x585",
+        "label_sha256": "e79fb7c92d06512d1d9b9af7c83af82da93d004dfbef1fdd1039df2d387a7e70"
+      },
+      {
+        "name": "0_0156",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0156.jpg",
+        "image_md5": "ff04b80f083dcd437ffd5250f5136e6c",
+        "size": "2129x1198",
+        "label_sha256": "aa32a034d40e7c6204a382021c051020f40ca621ed87f69d1b30aa1f0e84ef41"
+      },
+      {
+        "name": "0_0197",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0197.jpg",
+        "image_md5": "e77013db590db4a51b5aab65e0cc3904",
+        "size": "2129x1198",
+        "label_sha256": "f019063e377a8dc5e66f6c04dea5fa776003160d2aef02f5d7c5e65bc27c2328"
+      },
+      {
+        "name": "0_0207",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0207.jpg",
+        "image_md5": "59f50f362190a06fcd9df928d96b2ac5",
+        "size": "1052x585",
+        "label_sha256": "fa0facc396ffdda37976b0653bfd6b3a30903802dc43a157538a14ab721dbfc0"
+      },
+      {
+        "name": "0_0208",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0208.jpg",
+        "image_md5": "da8a7dc889257b4e15893e4b9a6e175a",
+        "size": "1052x585",
+        "label_sha256": "491cb08a66feef448313c2aa809772c2a872cee7644e95bab70ef18d29ac8026"
+      },
+      {
+        "name": "0_0209",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0209.jpg",
+        "image_md5": "41ac28607be6744e7585c7458ebe71e0",
+        "size": "1052x585",
+        "label_sha256": "2285a1c42ca954002faf27a5474abed3b44744b9b4eb4118be5e12754261e492"
+      },
+      {
+        "name": "0_0244",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0244.jpg",
+        "image_md5": "47bf1dc6a00868bf9658f9cb71301f26",
+        "size": "2129x1198",
+        "label_sha256": "511c8cb2ffa48ee6aba9387bb6a7b94f0385b9484402b7136767da7405ded71c"
+      },
+      {
+        "name": "0_0257",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0257.jpg",
+        "image_md5": "c58c7510e88c3fa0700706784d063ad3",
+        "size": "2129x1198",
+        "label_sha256": "78784d9737a7d568e1c280e106a9d2b99ad904fb3f5b3b0d06753470fe6934de"
+      },
+      {
+        "name": "0_0258",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0258.jpg",
+        "image_md5": "882a297b54aa29a40345ed9ac951aebd",
+        "size": "2129x1198",
+        "label_sha256": "b3079ffa19e4f52ef40b47c45118470439f701b217d7751d0027922f1c28bada"
+      },
+      {
+        "name": "0_0259",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0259.jpg",
+        "image_md5": "37e7422ff10091e34cf9a74a8a2200a4",
+        "size": "2129x1198",
+        "label_sha256": "fc32165922bee4fcc919bfb40a048b394894a26c831b05f243c64c00e2593f2f"
+      },
+      {
+        "name": "0_0260",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0260.jpg",
+        "image_md5": "58a16f27cae507022e7766e71486084b",
+        "size": "2129x1198",
+        "label_sha256": "091af1e2a14f00bc206031d7adce562e1f98396d36a165cf629aa1db69f606d1"
+      },
+      {
+        "name": "0_0261",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0261.jpg",
+        "image_md5": "c41b14f2f68d3c79ec0a5e0ffcc82c5b",
+        "size": "2129x1198",
+        "label_sha256": "b6f2ef262c71ef1afb27ffbbf476f0c8800f334843b588c2dc7e6ad712e4045d"
+      },
+      {
+        "name": "0_0262",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0262.jpg",
+        "image_md5": "10ac95358f79b02b7e375474bf92d2a7",
+        "size": "2129x1198",
+        "label_sha256": "255a7f2a7b2bdb8f9cce489d061a00db123eaaf647f6710d00f52663a8bbed0e"
+      },
+      {
+        "name": "0_0263",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0263.jpg",
+        "image_md5": "3d5cff3e14190728a55b0a5b4f808cb0",
+        "size": "2129x1198",
+        "label_sha256": "738c27113ee195af09b6f0bc5dffbd404acf645b17ecd20436f17bc6ae4aab3a"
+      },
+      {
+        "name": "0_0264",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0264.jpg",
+        "image_md5": "e7c65d429a8c13523bad6d2bfb2f58e2",
+        "size": "2129x1198",
+        "label_sha256": "2fa52e447a97b4c999892273770c042dff33007a19836af0147a52f7a2ed5dd1"
+      },
+      {
+        "name": "0_0265",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0265.jpg",
+        "image_md5": "47f34d8758a3018f7962f7fe7bd4cfe6",
+        "size": "2129x1198",
+        "label_sha256": "60366faa4c067d4ff964cc3a7f83e92724077a4f80dad982d930583df553cb6a"
+      },
+      {
+        "name": "0_0282",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0282.jpg",
+        "image_md5": "1dbf5af8134ffc4ac756c0ec4ae203e2",
+        "size": "2129x1198",
+        "label_sha256": "8688239a2b4aa243d6dae06678a5b88b566e600ce4b7a753c9622a01f092cc27"
+      },
+      {
+        "name": "0_0290",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0290.jpg",
+        "image_md5": "0b324bd4b04487364c8f97d202ab931e",
+        "size": "2129x1198",
+        "label_sha256": "eefb7df05d629529d29ab37e116911e5efba225212e70eecc66719d3da70992b"
+      },
+      {
+        "name": "0_0330",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0330.jpg",
+        "image_md5": "9d28b583a503eb5b7a9fd5e3d71a7416",
+        "size": "2129x1198",
+        "label_sha256": "cac7fb36f771f7dd8980d89354f6c2f463f041f176acc07b2fc668e6381906ac"
+      },
+      {
+        "name": "0_0331",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0331.jpg",
+        "image_md5": "302a85fc234f5a60e38237093a7e01bd",
+        "size": "2129x1198",
+        "label_sha256": "aa2460ebbdef2fdf80f63d35ce98589b924a3e55d7c22d980da53af7b096b222"
+      },
+      {
+        "name": "0_0332",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0332.jpg",
+        "image_md5": "3ef686daeab1348e7eaa3be693ddb96e",
+        "size": "2129x1198",
+        "label_sha256": "c2aa9df0c775f0ac5d5c1d9b4235563d19e2f737ece9a7a90ff14b5b5f027da4"
+      },
+      {
+        "name": "0_0349",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0349.jpg",
+        "image_md5": "4b087bdd1adb19c7a67c3c0d3afda890",
+        "size": "2129x1198",
+        "label_sha256": "3c4e88f5cbaa4805f401758e7ba6a85c4153a96361c43290f277ada554f1eaee"
+      },
+      {
+        "name": "0_0350",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0350.jpg",
+        "image_md5": "506a75719660e58559ba4d6d7b07098e",
+        "size": "2129x1198",
+        "label_sha256": "12043db93cba249827d547a712c38e091013f8dfdac0ba546051e22fc65bc340"
+      },
+      {
+        "name": "0_0351",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0351.jpg",
+        "image_md5": "3d847ca0b17b3cce5345212df4b10a4e",
+        "size": "2129x1198",
+        "label_sha256": "9aaefc0f99c5d22274cee53ade314fe6bc8ec9e5a32ed110187a36fffa37c5d4"
+      },
+      {
+        "name": "0_0352",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0352.jpg",
+        "image_md5": "ad05dd7c4fffe13586a46cefc3e57eff",
+        "size": "2129x1198",
+        "label_sha256": "f498bb1b6a019c9efcc528ed6e7823d08d229bd37e6435b18357566eb86628e0"
+      },
+      {
+        "name": "0_0353",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0353.jpg",
+        "image_md5": "74386cf2db2a353b755eac99784ab7b0",
+        "size": "2129x1198",
+        "label_sha256": "7b95eb8aeff92a4493c55b9fcb5d211f7091c458448be9f9995f2b71159b8cea"
+      },
+      {
+        "name": "0_0354",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\0-极片损伤\\0_0354.jpg",
+        "image_md5": "b32a436c0dc406274aeacc0dc17a9d49",
+        "size": "2129x1198",
+        "label_sha256": "e5fe22498fd3fd93bdfe73be418b36e2e5c0073492c3bb6f92a1281b9ea6d87d"
+      },
+      {
+        "name": "1_0003",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0003.jpg",
+        "image_md5": "275f2ad83f1039a2adb84f8084d00472",
+        "size": "2129x1198",
+        "label_sha256": "af596d804c8d0999e4d9475004fa5ae0cdb8a8ea0f2bc631055739d8742a44fd"
+      },
+      {
+        "name": "1_0004",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0004.jpg",
+        "image_md5": "da523b3113f42fbedd297957c67fc2dc",
+        "size": "2129x1198",
+        "label_sha256": "aa5c8e210efc4613eb78a85bd0b604788aa49e3bcf39922f70ca019671aa3514"
+      },
+      {
+        "name": "1_0043",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0043.jpg",
+        "image_md5": "c3e65e93682ce2e6a6aabeee145158bd",
+        "size": "2129x1198",
+        "label_sha256": "9528d1f03d3cc5b6d9ead4f93b41412ef6e4148bed3c874890df51f896b58bcd"
+      },
+      {
+        "name": "1_0044",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0044.jpg",
+        "image_md5": "60a9a4af08f62542744bc214ce9605f2",
+        "size": "2129x1198",
+        "label_sha256": "7b007238ae97b30705e29c703bc2516e8a9dd06d088970444854bc42550f6114"
+      },
+      {
+        "name": "1_0082",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0082.jpg",
+        "image_md5": "4c55942ed1c72841a1a96ec339a592c5",
+        "size": "2129x1198",
+        "label_sha256": "d33221990657726d57b4a262f58481c4d7eba9ebb2b8856c2f25207f003f72fd"
+      },
+      {
+        "name": "1_0083",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0083.jpg",
+        "image_md5": "cdd0fc6bf2160c777e471b6e9bf7db60",
+        "size": "2129x1198",
+        "label_sha256": "057cc0791403ec4797143f713878c2340b30f4206127160ca534c66577b96f7b"
+      },
+      {
+        "name": "1_0084",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0084.jpg",
+        "image_md5": "40fa184855c9da02b070d1692a1b3b3b",
+        "size": "2129x1198",
+        "label_sha256": "1fe5f51b59d164304d0c10b99d4d360af1e86dc7a9edd802aa4c3f3f8d88d390"
+      },
+      {
+        "name": "1_0106",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0106.jpg",
+        "image_md5": "2b83e9b3798cc1d290a7fd3c0c12b5e7",
+        "size": "2129x1198",
+        "label_sha256": "b94d0150cd35c8673446dc163949ad12b0efaccf22d6adfc638c13ed82a417c4"
+      },
+      {
+        "name": "1_0107",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0107.jpg",
+        "image_md5": "9cd01f5fd638666725c4884119b3bcfb",
+        "size": "2129x1198",
+        "label_sha256": "66cd2d89f6c1a7fa62df149fdce296bb46a8e104c7bccacd2b47e7a106acf43d"
+      },
+      {
+        "name": "1_0108",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0108.jpg",
+        "image_md5": "9712a61c266e33d336b6af5f5d2e6d87",
+        "size": "2129x1198",
+        "label_sha256": "e87060598a3e47117f440d84b9fb355f1ec9e565c055a46d29e158869a7c50b7"
+      },
+      {
+        "name": "1_0113",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0113.jpg",
+        "image_md5": "1d7b0b916e9dde1017b13450b889564f",
+        "size": "2129x1198",
+        "label_sha256": "0417ac859735bc12fb52593ea86f2c306f594f52730291495c25c935fe34f785"
+      },
+      {
+        "name": "1_0122",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0122.jpg",
+        "image_md5": "9224351b5b83f884ef2aadc178455b6d",
+        "size": "2129x1198",
+        "label_sha256": "8ed6ce8367a3db2505dd4dff5eb5792ea0e1bafa389591156bf234a691daab03"
+      },
+      {
+        "name": "1_0123",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0123.jpg",
+        "image_md5": "be4f2f171cd45bc90dd13d8901fef7cd",
+        "size": "2129x1198",
+        "label_sha256": "6c15276f560ee2e5c60c30fdd07354ea0c283681b6fe3417977990ded7a64413"
+      },
+      {
+        "name": "1_0124",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0124.jpg",
+        "image_md5": "9beb01ce63c2d226d79792bcb45ae350",
+        "size": "2129x1198",
+        "label_sha256": "ae0d29e3e9e510c7df274739182349df1f96d167269dfdf95f4685031c715c6b"
+      },
+      {
+        "name": "1_0145",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0145.jpg",
+        "image_md5": "2b8042008fc6705ff5826f6a1cfdcc98",
+        "size": "1052x582",
+        "label_sha256": "cc2db0a03bf4bcfd68c9ebf5a83bb228d8888efbd41fb5f886ca1267c0f30e09"
+      },
+      {
+        "name": "1_0146",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0146.jpg",
+        "image_md5": "05803953afebafead1521a5c47735085",
+        "size": "1052x582",
+        "label_sha256": "1165f940bfe375caf02f32fc6141577f8a319a63bb6bfe50c026e51b2758d125"
+      },
+      {
+        "name": "1_0150",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0150.jpg",
+        "image_md5": "92c281268d52d981438d7c73d877d132",
+        "size": "2129x1198",
+        "label_sha256": "df5fbdf8727812aad1c7ba9368ca4494b97b52febaf287cf39f1c1c4317ff9d9"
+      },
+      {
+        "name": "1_0151",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0151.jpg",
+        "image_md5": "c7ff9835300ddbe441ce502593a5d290",
+        "size": "2129x1198",
+        "label_sha256": "5443bd945e450c4b3b583bc5ab1855e99ffbd7b55318e469fc05c764faec69f9"
+      },
+      {
+        "name": "1_0152",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0152.jpg",
+        "image_md5": "6894d35ca6315ac70f75718c8b867866",
+        "size": "2129x1198",
+        "label_sha256": "594a374596df1dfd761cbc3b47b3f0c99d7f2d64a84bfd575295d3beb071f145"
+      },
+      {
+        "name": "1_0153",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0153.jpg",
+        "image_md5": "62668e459089599532d7975ef84d5f0d",
+        "size": "2129x1198",
+        "label_sha256": "3954990c224af250b27645bd41bdffb04c5e531ab4a736602a9592e4abe4d348"
+      },
+      {
+        "name": "1_0168",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0168.jpg",
+        "image_md5": "e230eec2b2b2aa6989b1ac5bee53c0b2",
+        "size": "2129x1198",
+        "label_sha256": "6f5066a641619e0274aa5f57dfb3f131e26dc28ee39dbaef3949530f0a3d027d"
+      },
+      {
+        "name": "1_0169",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0169.jpg",
+        "image_md5": "d5729aaa6f1d608ef316ba0c2bb89fc6",
+        "size": "2129x1198",
+        "label_sha256": "4b70c87f055ee71651fa7fe5d8f879e9821ae3c76852d616600d4b6a6220afb9"
+      },
+      {
+        "name": "1_0172",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0172.jpg",
+        "image_md5": "bf37b110f91513905113d396cb2779b0",
+        "size": "2129x1198",
+        "label_sha256": "47e5417e3a268672ffce357b5cd4fa8d4464e7e72c49d8339063d249d236d659"
+      },
+      {
+        "name": "1_0173",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0173.jpg",
+        "image_md5": "6e8a83d100a37d4a400acb19bbd9c95d",
+        "size": "2129x1198",
+        "label_sha256": "7269146250f3687c9ebdf524593f994b49fb4a133a7ce168fbb7d5ef6142edf8"
+      },
+      {
+        "name": "1_0174",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0174.jpg",
+        "image_md5": "8f15f45bc21863aa9e53034438230e21",
+        "size": "1052x582",
+        "label_sha256": "89c5575e6d4224f65546f16371a9da3b4b9812745249f6d25fdb99720c968537"
+      },
+      {
+        "name": "1_0175",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0175.jpg",
+        "image_md5": "184774d1cf309fec7b403181cfd7d482",
+        "size": "1052x582",
+        "label_sha256": "cc87bdc69f824a00fed4665cca3298ba458cc7846c586c07e39c67eaf53aebb9"
+      },
+      {
+        "name": "1_0176",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0176.jpg",
+        "image_md5": "cd03a2d246d5aab3fb40ba3b16864a96",
+        "size": "1052x582",
+        "label_sha256": "23b12b5bb7b2f4ce7af56b36cc42fc65bdea11c803a56d81120bce83e1ee7b05"
+      },
+      {
+        "name": "1_0198",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0198.jpg",
+        "image_md5": "792efe8e5b9ae63657e4f24825bb55c3",
+        "size": "1052x585",
+        "label_sha256": "98c8405a55bb761906eea3b05d65d8f54a237d07b0271aceefdf07b6ed610f08"
+      },
+      {
+        "name": "1_0199",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0199.jpg",
+        "image_md5": "b2a4b9730f50f50aa087dd44a98177b0",
+        "size": "1052x585",
+        "label_sha256": "b45f6fba316c488a506e14519e2150789962f32245accebf5286af2b6f39fec1"
+      },
+      {
+        "name": "1_0200",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0200.jpg",
+        "image_md5": "4c4da5c621845987a90a63994e767c69",
+        "size": "1052x585",
+        "label_sha256": "6585a123b8559feb9d2a3a9962a4a72e8ab544a76763d232daaeb6fbc97a4eee"
+      },
+      {
+        "name": "1_0204",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0204.jpg",
+        "image_md5": "0ed8c19b67dfee76552e4ba79914165a",
+        "size": "1052x585",
+        "label_sha256": "eb2a2fd85a3540d6bacce43c950aee701285cc34adcc8ce430868f1fee2c7a8e"
+      },
+      {
+        "name": "1_0223",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0223.jpg",
+        "image_md5": "d303c47e4de65f44e6d477ad6c1d2486",
+        "size": "2129x1198",
+        "label_sha256": "06e28a67a25b30d9641e6dc5d9c978bfd1467ef139fcd3c41b15edf476d228c8"
+      },
+      {
+        "name": "1_0225",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0225.jpg",
+        "image_md5": "315b16719959c62d5a6be584b1ae223b",
+        "size": "2129x1198",
+        "label_sha256": "080f997b44c2198a54e2ed473a2e77362815b2fd94ddfd2cae6471cd0472f900"
+      },
+      {
+        "name": "1_0234",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0234.jpg",
+        "image_md5": "89bd71c7d8f75a2bf9bfa8651eb15318",
+        "size": "2129x1198",
+        "label_sha256": "8bf146a89bfbee3e94f994acd9d7532f1f1d57a5d936ea5f740e0550d5372d1f"
+      },
+      {
+        "name": "1_0235",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0235.jpg",
+        "image_md5": "8811a0c53c69c2a6d2c23f3ca35ab5a2",
+        "size": "2129x1198",
+        "label_sha256": "f65fe02cf7b899c75649f57361a207845e1cf2d3f5242c2b513dd5e25029cf5d"
+      },
+      {
+        "name": "1_0236",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0236.jpg",
+        "image_md5": "c1a5500dca29b1931f8cc8e240bc9858",
+        "size": "2129x1198",
+        "label_sha256": "2fe4d272994c73dda2d63124741765ca5d7bc9e1b727f42e0472cec095130b28"
+      },
+      {
+        "name": "1_0237",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0237.jpg",
+        "image_md5": "a8084abbaccd16f3083a89f3fcf73eaa",
+        "size": "2129x1198",
+        "label_sha256": "3aae326a16cec5cc297b7b6a02ca6489b499d1e4ddca4cac820b05b203325980"
+      },
+      {
+        "name": "1_0249",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0249.jpg",
+        "image_md5": "a40f9c041ba3d471aa8dc223ea09b3fc",
+        "size": "1052x582",
+        "label_sha256": "9db801b25fbbc6392c8eeba7b527b8e7a03bf9de88e2865899f46964785666c5"
+      },
+      {
+        "name": "1_0256",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0256.jpg",
+        "image_md5": "a297811b3091dce551047804e4c92e85",
+        "size": "1052x582",
+        "label_sha256": "da8aa52e81dd5b41aadc647ce85f55cdeeacf1dd4ca8be6e7dbf3ee2bc22fbf2"
+      },
+      {
+        "name": "1_0257",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0257.jpg",
+        "image_md5": "37582812fb8359aec1ff7599d924bb22",
+        "size": "1052x582",
+        "label_sha256": "0f03ebad6b161861f14d439eff0f7f42d2e2115be3c96f61590eca4e531fa388"
+      },
+      {
+        "name": "1_0272",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0272.jpg",
+        "image_md5": "ddc85a27208da706a142820b6eaa7dd5",
+        "size": "1052x582",
+        "label_sha256": "d58e4b63719cc471f77f0bfbfcf6ac8b324e658f7ef3437f25c46a3ec32848c7"
+      },
+      {
+        "name": "1_0273",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0273.jpg",
+        "image_md5": "f464d15972a87b70b363d011d21afba2",
+        "size": "1052x582",
+        "label_sha256": "33a6cd9a07390723f09a51cedd0740c0b0833448148548349749de2e6222c8b6"
+      },
+      {
+        "name": "1_0288",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0288.jpg",
+        "image_md5": "f0864d756f981da221b6739d30b41b7c",
+        "size": "2129x1198",
+        "label_sha256": "246445d16f1409a0ed64ef891982e2d127c215e7f2cbd0a08269d8c6e4d82c88"
+      },
+      {
+        "name": "1_0289",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0289.jpg",
+        "image_md5": "d72c23c329cee4729e3ee65c779f8cad",
+        "size": "2129x1198",
+        "label_sha256": "c598e9c527c398a7452c7494a5e6750eba1ac12760d9e10ba9ac4111f34da792"
+      },
+      {
+        "name": "1_0292",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0292.jpg",
+        "image_md5": "7135ac226921da675c9b3b95c303413b",
+        "size": "2129x1198",
+        "label_sha256": "3816d71f8a408a0448fad54a5238cd845234f536fcb54f3ed74c0fdb2a05cb2b"
+      },
+      {
+        "name": "1_0293",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0293.jpg",
+        "image_md5": "962f5ccdbd52c49c2e1eaf39b959cbf9",
+        "size": "2129x1198",
+        "label_sha256": "f4f09b48bba073783ade9504a913b53f32590f841dcb58746d6cf850fd74e46f"
+      },
+      {
+        "name": "1_0294",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0294.jpg",
+        "image_md5": "e68f573eba7496aed971354a45870af0",
+        "size": "2129x1198",
+        "label_sha256": "8c05f10761c6fc2f36f1cbf5ea9b2fec5ff8909b970360b83fb9ee273780bb4e"
+      },
+      {
+        "name": "1_0295",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0295.jpg",
+        "image_md5": "18f56f7b5f99f66d30d70e2705fe88ad",
+        "size": "2129x1198",
+        "label_sha256": "86897f37c586afab8a3abd06953af7d8ee24a79dd0a94cce5a8fd7e4f45238f0"
+      },
+      {
+        "name": "1_0296",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0296.jpg",
+        "image_md5": "91cf7ac7e378937837f3f80ee1ca4893",
+        "size": "2129x1198",
+        "label_sha256": "87d05fd4935eb3eb192ba32326434a43aebea6dcb44a2279f4579b68a68d2e65"
+      },
+      {
+        "name": "1_0297",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0297.jpg",
+        "image_md5": "72e51e052f2419cbb8c2825cb46dd63e",
+        "size": "2129x1198",
+        "label_sha256": "5a3188a21b9436f167b509bcfd1b2f5cb1d8868418c52b93991f7b05915fcafb"
+      },
+      {
+        "name": "1_0298",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0298.jpg",
+        "image_md5": "0a4d669eeaa0dcc85b5f17ef0ea84b6d",
+        "size": "2129x1198",
+        "label_sha256": "d3d5bafbb20228f808f07f94a4ebb58bd6f7723ff79ad5b3bbcbd456c307e737"
+      },
+      {
+        "name": "1_0304",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0304.jpg",
+        "image_md5": "0f60f5baff798e1197a0a256fc30aebd",
+        "size": "2129x1198",
+        "label_sha256": "5a5fcd5b37ae453cf1edf5a19cf7f9cbfda3f2250f62771c3fa37fce919dafbb"
+      },
+      {
+        "name": "1_0305",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0305.jpg",
+        "image_md5": "01cc2358c28bb2fda89879c68bc70f15",
+        "size": "2129x1198",
+        "label_sha256": "c2bbe762bdbcf0ad9ba66eb52f61ca7ffc5cfc6e239c64b283f3e3a81892e2f7"
+      },
+      {
+        "name": "1_0331",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0331.jpg",
+        "image_md5": "dd2827506825ea3aa9753b8bf9c987cb",
+        "size": "2129x1198",
+        "label_sha256": "fb353904dbbe9e8c5af7cf973a2c262d4e9c161cff4aff86bf5ef0071a7ac0e6"
+      },
+      {
+        "name": "1_0340",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0340.jpg",
+        "image_md5": "062a89f135c332f7f0beaed48a877f92",
+        "size": "2129x1198",
+        "label_sha256": "03a210afa7b585d169aca6e19b2af30d88a970c0d7c9eb2572850ac2fc84a4bd"
+      },
+      {
+        "name": "1_0341",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0341.jpg",
+        "image_md5": "625295ff599ac4518aa85b29377126cc",
+        "size": "2129x1198",
+        "label_sha256": "5f4d04b03e02f112095244a40d5f74ba7c1d2c0ba72ceb2091c804a197c0ce13"
+      },
+      {
+        "name": "1_0342",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0342.jpg",
+        "image_md5": "ada8c3c072ee185900774a79ae5d9a22",
+        "size": "2129x1198",
+        "label_sha256": "68163505e7001b1f3d07ee8afcbd0c08e04a033223a14680495b578cea8ee2a7"
+      },
+      {
+        "name": "1_0343",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0343.jpg",
+        "image_md5": "a09625d9483456c1b3d9b64f7904c753",
+        "size": "2129x1198",
+        "label_sha256": "5056261e7a6712f4d4447f04512e709b4e2cc8a54ab6bcde9523bd921f67a998"
+      },
+      {
+        "name": "1_0344",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0344.jpg",
+        "image_md5": "aed538ecb1e16803ea5642931d1c05ee",
+        "size": "2129x1198",
+        "label_sha256": "622db900d0105d64a1cf49b46e171e833872ccc0f2f4758c5fc5cc92fe37f5e8"
+      },
+      {
+        "name": "1_0345",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0345.jpg",
+        "image_md5": "83b0ce0103134cfd01978f0ef9b8c811",
+        "size": "2129x1198",
+        "label_sha256": "5a2100fc42af58803bfe3bcb8a0053901f1899794c1341fb6a29f47689971e8c"
+      },
+      {
+        "name": "1_0346",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0346.jpg",
+        "image_md5": "f77494583af9777a5b4c7343084eef9d",
+        "size": "2129x1198",
+        "label_sha256": "435b5ca1038657885eb7b93318e19a62fa4a3b65fab7823deed539b64c406c0d"
+      },
+      {
+        "name": "1_0347",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0347.jpg",
+        "image_md5": "17ed76d7f9a6c2adcfee7bf947a32ab3",
+        "size": "2129x1198",
+        "label_sha256": "6f789c4e8d6f7abd23eccefdd73f3676a2ed61f4c4bea65f153ea577d05731f3"
+      },
+      {
+        "name": "1_0379",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0379.jpg",
+        "image_md5": "740158f65b849e005dbb3ec6d8aa12cb",
+        "size": "2129x1198",
+        "label_sha256": "1fa69d0b90a31de422b78b539fe5b248b50ec039264984b20cd64b7b31ae818e"
+      },
+      {
+        "name": "1_0380",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0380.jpg",
+        "image_md5": "9b549e323337cd6518528b947e921f2c",
+        "size": "2129x1198",
+        "label_sha256": "9bac82a9c3e476625a3fd987b9e13b6f50639023311c1faa415d2d6953e787d9"
+      },
+      {
+        "name": "1_0381",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0381.jpg",
+        "image_md5": "fa1dc2f5d9406ba09132e510374bcfaf",
+        "size": "2129x1198",
+        "label_sha256": "3e182a71f1d11a4e6afa64462d2c3e61b1a922b4c631037a04e9b7dbb58f3c5b"
+      },
+      {
+        "name": "1_0382",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0382.jpg",
+        "image_md5": "02fbd717b6fc31665b31a626207f2e8d",
+        "size": "2129x1198",
+        "label_sha256": "18c1c0d9c2c8f75c2082999c356dcf937b976f7aed6c717eb7eb8eb784b3601a"
+      },
+      {
+        "name": "1_0383",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0383.jpg",
+        "image_md5": "e0fd735ab2a68c35e418b925a166065b",
+        "size": "2129x1198",
+        "label_sha256": "98b4ae17612f15562fed53df069dcc491a5a82d2e1bf8ca3e7de2a2868c8c668"
+      },
+      {
+        "name": "1_0384",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0384.jpg",
+        "image_md5": "e1902a16b200cce2ae9843f003636b54",
+        "size": "2129x1198",
+        "label_sha256": "2c837ff102f4e58b57b3bd68e6905878d3d811779a33bfdfd0dfc56daf9e37d5"
+      },
+      {
+        "name": "1_0385",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0385.jpg",
+        "image_md5": "9a3f088511103c53c6e6d045df3b7dd8",
+        "size": "2129x1198",
+        "label_sha256": "ebfd37c0be8bd852219ddeffafc4dae4004f6994f21b90ff904d1cae01c9ac54"
+      },
+      {
+        "name": "1_0386",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0386.jpg",
+        "image_md5": "9243abb347d8de4ee07611057b0e09e3",
+        "size": "2129x1198",
+        "label_sha256": "48bff368c43509494cc846c6b746ad61aed857aeb2838c2308b42a988795258f"
+      },
+      {
+        "name": "1_0389",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0389.jpg",
+        "image_md5": "fd2dbf5bb7161495175cfd1244802594",
+        "size": "2129x1198",
+        "label_sha256": "6e72d602ffd7755cfae3b67aef1f5d4b7a533df7c551242c4da4a160add12711"
+      },
+      {
+        "name": "1_0390",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0390.jpg",
+        "image_md5": "47c017808776de51f68bff499a477a8d",
+        "size": "2129x1198",
+        "label_sha256": "2a3b5e8c6d46332132b62db5dcf7389f71f39615deb8751f7eb4e1339a4e0502"
+      },
+      {
+        "name": "1_0400",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0400.jpg",
+        "image_md5": "e23a6bdb759068023832ffa5c29d92bb",
+        "size": "2129x1198",
+        "label_sha256": "e83bbb52a376477abaa200f1c4633e58b177fb2d33c177c90dd64571dee86f1e"
+      },
+      {
+        "name": "1_0401",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0401.jpg",
+        "image_md5": "c6bd167192779692b43958e5f2ec09bc",
+        "size": "2129x1198",
+        "label_sha256": "dd52dc93eab5a17fbde273338cec2e73b430f36de7b13f847a5d07d89589dfe0"
+      },
+      {
+        "name": "1_0402",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0402.jpg",
+        "image_md5": "d8dc7558bf7549d850a902633ec723b8",
+        "size": "2129x1198",
+        "label_sha256": "3dc3745943c74b38a1f40c76594fa15888c62669ffb398eaff581401b814ee70"
+      },
+      {
+        "name": "1_0437",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0437.jpg",
+        "image_md5": "901e75cbf43e2238f9cf7b9d5b82e54e",
+        "size": "2129x1198",
+        "label_sha256": "7497beff73c2b566c449f5426636875da095be7723d46c69c5ad081fb11820d9"
+      },
+      {
+        "name": "1_0438",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0438.jpg",
+        "image_md5": "d5644db88645039340e9217fb5a74f27",
+        "size": "2129x1198",
+        "label_sha256": "7922a801307bd681d8c9b2c185e7f0ead324d36bf3cf2232f3ab61a2422f9b4c"
+      },
+      {
+        "name": "1_0439",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0439.jpg",
+        "image_md5": "2a79c7c81b4227cac8510ab3e74f9913",
+        "size": "2129x1198",
+        "label_sha256": "96188a98455e78271b24fa0c7a5da9fa413902f99f41647623ba3b4626f606bc"
+      },
+      {
+        "name": "1_0440",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0440.jpg",
+        "image_md5": "037cd4f9193281fe186bf6739f3667f6",
+        "size": "2129x1198",
+        "label_sha256": "81afc06e788c32afbfe9ea1230729004ab757c170c9c902987919d4fc189ba9e"
+      },
+      {
+        "name": "1_0442",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0442.jpg",
+        "image_md5": "0b2d68b337c3713407cfe784a1b20687",
+        "size": "2129x1198",
+        "label_sha256": "dea665d489cd414b68fbf38655e91bd43edecba23605cd6fe6f996c7b210d261"
+      },
+      {
+        "name": "1_0443",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0443.jpg",
+        "image_md5": "a90b62f85df6434e9960779d583065d7",
+        "size": "2129x1198",
+        "label_sha256": "c380b9af6a2edb08464c4c08b7c1ef3cd7f36f9da04017079e3a116e3a0f301c"
+      },
+      {
+        "name": "1_0444",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0444.jpg",
+        "image_md5": "52d522fa76a90364964444466f0aedc1",
+        "size": "2129x1198",
+        "label_sha256": "ee1d37f5748637ee9717bcee6d4a75ad35d71f077f315a3476c38c7605e28c73"
+      },
+      {
+        "name": "1_0445",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0445.jpg",
+        "image_md5": "bb5d0bfd11be6bcb01c494248b3bbb8c",
+        "size": "2129x1198",
+        "label_sha256": "bd941f43186f7ea0ab0d52538210b8461ad36bbc24e1c904ae07366b9c42364a"
+      },
+      {
+        "name": "1_0446",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0446.jpg",
+        "image_md5": "5d775f6c9a4cc4f936a4975b3d3b141e",
+        "size": "2129x1198",
+        "label_sha256": "e8c749615cee27b3eed4955d38fa9dc6026f9d4d18d118b13b9347aefc66b5ab"
+      },
+      {
+        "name": "1_0460",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0460.jpg",
+        "image_md5": "fce1057e541c95c55b20f3212816554d",
+        "size": "2129x1198",
+        "label_sha256": "9f0e8ea2ef888777807a7159b5217a905b22efb0792ca0bf3645d299f1d8b892"
+      },
+      {
+        "name": "1_0461",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0461.jpg",
+        "image_md5": "4bffd0bcfb0f9e39a795f04528886b82",
+        "size": "2129x1198",
+        "label_sha256": "44eb61b57a64cac022e48d37192ab37f9ffaeafea60c353ab65fe1cb11dca361"
+      },
+      {
+        "name": "1_0462",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0462.jpg",
+        "image_md5": "c2d69e3e3382dde8aa003b551a7b98a2",
+        "size": "2129x1198",
+        "label_sha256": "a314b351c3673ea13fd0e1eaab177317c3430049ffb077c612232037bca26620"
+      },
+      {
+        "name": "1_0463",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0463.jpg",
+        "image_md5": "4cdd668d31d16eb7346fbfab64e307a3",
+        "size": "2129x1198",
+        "label_sha256": "5f8b376b51b9bdc81db390e5f191fc2626dea8982ccdf7dbac2859a997a711a2"
+      },
+      {
+        "name": "1_0464",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0464.jpg",
+        "image_md5": "5b40c7ae36f5c605374788a87dd3b399",
+        "size": "2129x1198",
+        "label_sha256": "d619fd47466df7451454bad1050b7f5e28ceaa5c7037a4005565e5b97d70b610"
+      },
+      {
+        "name": "1_0481",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0481.jpg",
+        "image_md5": "68c9a79a2c1106a6178fee96449ebd58",
+        "size": "2129x1198",
+        "label_sha256": "7329ac5f3000d3e2b61840f2603e92d8e9cd5fb233533856a3c38c4038b03106"
+      },
+      {
+        "name": "1_0482",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0482.jpg",
+        "image_md5": "5c62b3e9b9e10d2074206c7bf7a8ddca",
+        "size": "2129x1198",
+        "label_sha256": "c72f2ebb09d0e2d6cd1db8b684b3517059363047f6b177786d4df548223ec64e"
+      },
+      {
+        "name": "1_0483",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0483.jpg",
+        "image_md5": "284923b5bf7132cc0de2150d3cf86a32",
+        "size": "2129x1198",
+        "label_sha256": "68467bdbd8c9b34a591ed6910635d75899103d86dfd9fc6e1de745d276518d61"
+      },
+      {
+        "name": "1_0484",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0484.jpg",
+        "image_md5": "c266689e7ae1faf0d89e83b7d1c5d3a4",
+        "size": "2129x1198",
+        "label_sha256": "327446fed9a4020c4e38a80c5ddf2c58d66cb476011a307d3596d570ad9bf823"
+      },
+      {
+        "name": "1_0485",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0485.jpg",
+        "image_md5": "c698deed5fe8e1e80bc67ed7cbf6c592",
+        "size": "2129x1198",
+        "label_sha256": "21f312b2424eba7d781a99451bcb37229ea2d1785d6ba8488667a462971e08dd"
+      },
+      {
+        "name": "1_0486",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0486.jpg",
+        "image_md5": "c969aa62953882ed27940d83b34e7fae",
+        "size": "2129x1198",
+        "label_sha256": "b35d15290ad40e7988ed306a54a12962680c293dc5bf07e9b9f81e2302083ad0"
+      },
+      {
+        "name": "1_0487",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0487.jpg",
+        "image_md5": "c1363d7b247037ab327837109f194d7a",
+        "size": "2129x1198",
+        "label_sha256": "69c70f3c0a614a11284c4de2da535f8499236f83886dabb21372b4ec1c81e9c3"
+      },
+      {
+        "name": "1_0491",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0491.jpg",
+        "image_md5": "d4c3407db8dfa35bb4d6d8234bb7e1d1",
+        "size": "2129x1198",
+        "label_sha256": "f153bdf004d2f3b51221b21d347f3315e78ba53b78e4002ff7d5b80a4fe7f797"
+      },
+      {
+        "name": "1_0492",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0492.jpg",
+        "image_md5": "f77ac8a7ca78fcd029144bf2eb154a04",
+        "size": "2129x1198",
+        "label_sha256": "b8321ef6a682f272d37df02f945290068f5e96621385f3e011c13f16ebe3ef8c"
+      },
+      {
+        "name": "1_0493",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0493.jpg",
+        "image_md5": "26f298d79a7c4b5079ab169923591d2e",
+        "size": "2129x1198",
+        "label_sha256": "1becebdd414b6e116e65b36f2da65aebff1fc7dc2c983ddf6bedc0863bac5ba2"
+      },
+      {
+        "name": "1_0498",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0498.jpg",
+        "image_md5": "8b86e256dde7508b6474b4f704aecfce",
+        "size": "2129x1198",
+        "label_sha256": "e9b7550d0e2fff0638886d6831e17aee40a1748241ca341f7fe7969fbd1c3d78"
+      },
+      {
+        "name": "1_0499",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0499.jpg",
+        "image_md5": "9df6b4388353930a4f60b914ac5d0362",
+        "size": "2129x1198",
+        "label_sha256": "35f14c7e7a3a6a86d45fc31eb2556b0023a930d8678bfd988673a2340ef26435"
+      },
+      {
+        "name": "1_0500",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0500.jpg",
+        "image_md5": "f9042f0d2ff325a17a851eacbba801b2",
+        "size": "2129x1198",
+        "label_sha256": "671082771366e0bac23e890e5defee6c64ee5eca48866fd664c33cab0f978264"
+      },
+      {
+        "name": "1_0501",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0501.jpg",
+        "image_md5": "931978e8e5e06eb225e30b5307932ff3",
+        "size": "2129x1198",
+        "label_sha256": "e024b1f37a03180c6535e2350bea6dcb660388c6efc08a488cb7f8edbff8d48b"
+      },
+      {
+        "name": "1_0502",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0502.jpg",
+        "image_md5": "99f6b690ff0d9acfe468ed0fc420a460",
+        "size": "2129x1198",
+        "label_sha256": "5f8c07882d3416619544e861b511853ebfdaabf4c429bd7e399bdee91c63dd50"
+      },
+      {
+        "name": "1_0503",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0503.jpg",
+        "image_md5": "79964a52df35666266ab0c3a0b24a922",
+        "size": "2129x1198",
+        "label_sha256": "52c14d6e99c93caa4f848246037f42593aeeaa9b479f5c694f34329035702c9b"
+      },
+      {
+        "name": "1_0504",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0504.jpg",
+        "image_md5": "e6294f4d6bb8d5fee2a2944e7dff13b1",
+        "size": "2129x1198",
+        "label_sha256": "d30ec4af0c6204251cad9541be7a0ce14c8030f36f25eb0e481f3c09d3537c66"
+      },
+      {
+        "name": "1_0519",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0519.jpg",
+        "image_md5": "7d138150d6bfa9af945523ace2b43e3c",
+        "size": "2129x1198",
+        "label_sha256": "de1bacdcf451ce9e548798dad93c737cb44a6c8bd26bedb36726cb0b927c7a0d"
+      },
+      {
+        "name": "1_0520",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0520.jpg",
+        "image_md5": "1a7592cdc34fc7754bed2b5449b9a135",
+        "size": "2129x1198",
+        "label_sha256": "f694ae227ecfc5a51473441bc8b4a2bff6e7ec902b54342e0d30c7ba0d68b332"
+      },
+      {
+        "name": "1_0536",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0536.jpg",
+        "image_md5": "ccf0803a285f9bbed5dff6a877780d49",
+        "size": "2129x1198",
+        "label_sha256": "ba7dcc827d8fdd7c82d411cebde59ee6cbf045660cba6d58ceae16327ac19e36"
+      },
+      {
+        "name": "1_0537",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0537.jpg",
+        "image_md5": "b8150660bc9e50698e3c8a0432f0cb06",
+        "size": "2129x1198",
+        "label_sha256": "b6b3848e6e456d37e48a45db050d3aee03c5dbc57d55bfffaca9a0e9080e4dc0"
+      },
+      {
+        "name": "1_0579",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0579.jpg",
+        "image_md5": "a43c4a1db05439f517a593bbb743217d",
+        "size": "2129x1198",
+        "label_sha256": "7cd0b4a73fad4dbc9db5371b3b45d7d95c542a3c864575c66444ecf15e69571d"
+      },
+      {
+        "name": "1_0585",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0585.jpg",
+        "image_md5": "de77f9a197304cb15853f5c0f247faf4",
+        "size": "2129x1198",
+        "label_sha256": "bdd18ead6f3f4e478baa655e829a4b0f4c5d40e9f4aa450a19fc170ae676e08d"
+      },
+      {
+        "name": "1_0586",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0586.jpg",
+        "image_md5": "8c69f8b2d698e8fba50174b4f7e67574",
+        "size": "2129x1198",
+        "label_sha256": "6e06dfe0ed3cdc29d3c8056af1f2c4d70b2c014ccde8ca79831bdff020821b44"
+      },
+      {
+        "name": "1_0587",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0587.jpg",
+        "image_md5": "bd16fe6f440321e207136b0a99ea3c80",
+        "size": "2129x1198",
+        "label_sha256": "b4b9c9ed7bccf30eb76bdfc48d70b0ac560453afd23ee2e1c58b7e10eb80ecc9"
+      },
+      {
+        "name": "1_0588",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0588.jpg",
+        "image_md5": "614eff263e591c70029e00c3ba760a48",
+        "size": "2129x1198",
+        "label_sha256": "e10daa422c11850c38a6071478e7152254aed1e949e033075bea4ac7f24393a5"
+      },
+      {
+        "name": "1_0589",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0589.jpg",
+        "image_md5": "b28ca7f027c5e2ac51d859258cd4367d",
+        "size": "2129x1198",
+        "label_sha256": "28db4893fa1312726efc365c284244e00543b96d0b7274206ac89e27171da61d"
+      },
+      {
+        "name": "1_0611",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0611.jpg",
+        "image_md5": "8d9ee03cbc922b8ec483f24e625f124c",
+        "size": "2129x1198",
+        "label_sha256": "126e1410e632379a905c8cb00c52e6de685243936053cf2019147884ccb85fb0"
+      },
+      {
+        "name": "1_0612",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0612.jpg",
+        "image_md5": "4ed8dbd1400d767ac4b78c59f327bdd1",
+        "size": "2129x1198",
+        "label_sha256": "91b5d6995467b89ff5b7db2b75a41a89b1287c7afa2fde4d134c2394bc9c404b"
+      },
+      {
+        "name": "1_0613",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0613.jpg",
+        "image_md5": "6617afa5ceeeb223c060f21eb9efeb7d",
+        "size": "2129x1198",
+        "label_sha256": "15ddf5894b769e5f65acc7df0d36dc011837591e11f25511721768e9346edf6f"
+      },
+      {
+        "name": "1_0614",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0614.jpg",
+        "image_md5": "317ed1fad3e87cc74a5d40fcde4626a8",
+        "size": "2129x1198",
+        "label_sha256": "804d4db70381e3412b8d3c6c64d51a429031da4877fab5c80e83aee51ad613a8"
+      },
+      {
+        "name": "1_0628",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0628.jpg",
+        "image_md5": "d301ecf7cdcba08e3ac6d0143a902fdd",
+        "size": "2129x1198",
+        "label_sha256": "73580f197df6a8dd859bac5e26e95a4e4a949383f493fa5d7ed109075cb482d8"
+      },
+      {
+        "name": "1_0629",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0629.jpg",
+        "image_md5": "7c8adc6e6452762d0ab049b5ab6c9613",
+        "size": "2129x1198",
+        "label_sha256": "237f775979c8d169c265a9e21227f1fa44670df4462bee6f62b54cd7e5d202d5"
+      },
+      {
+        "name": "1_0640",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0640.jpg",
+        "image_md5": "cb1771dbc6c66f97874e90ad93e96268",
+        "size": "2129x1198",
+        "label_sha256": "72d3c9bf98e1491cfb98c08a3daa174be42e2779457f707bbae89fcf8743c00b"
+      },
+      {
+        "name": "1_0645",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0645.jpg",
+        "image_md5": "2041512679a8f94115b65389a7a3e6ed",
+        "size": "2129x1198",
+        "label_sha256": "4bfe51d75c6e74fb5ba080d785a5bef1a9b26dfcf11041fcd17f4b0e0ad9700c"
+      },
+      {
+        "name": "1_0672",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0672.jpg",
+        "image_md5": "c7ef20824be00fb4bd3768278ec0ad91",
+        "size": "2129x1198",
+        "label_sha256": "5fc9508ebb10d063ade0fcbde91d279b8c4204a1ac4096f2c30c9d26a94967bb"
+      },
+      {
+        "name": "1_0673",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0673.jpg",
+        "image_md5": "09b552fd263c2d6bc4b6dad33953436b",
+        "size": "2129x1198",
+        "label_sha256": "da55914eb03a2dd52564a1b273578b19ba831671b2df0cacd866fbfaf0a774e3"
+      },
+      {
+        "name": "1_0674",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0674.jpg",
+        "image_md5": "49fd160f61bed8e704af930a2e7bc90f",
+        "size": "2129x1198",
+        "label_sha256": "53b1378da88f4a483d1a2d142f7b9bde73221ca39217e12fec89785e81ba896f"
+      },
+      {
+        "name": "1_0675",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0675.jpg",
+        "image_md5": "b6ba7b8632104db89d224be3044815a6",
+        "size": "2129x1198",
+        "label_sha256": "82d4a43f0e64338ce09bf0b749ce40875f80bfebc93218b48af9e3f44bba42f9"
+      },
+      {
+        "name": "1_0676",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0676.jpg",
+        "image_md5": "af1c98fcafd6767ad23e216b9e5532ab",
+        "size": "2129x1198",
+        "label_sha256": "962c379c44e8ddb2e4c15a17b4f9b248a729a757d90792782f5918ba8b91d844"
+      },
+      {
+        "name": "1_0677",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0677.jpg",
+        "image_md5": "1ec8ea03f8adfc922d7e96a2d3279705",
+        "size": "2129x1198",
+        "label_sha256": "be1518dc273d8b88ac7b298d84e31d7b9fbb0e7cb300d92acb56aa416462d076"
+      },
+      {
+        "name": "1_0678",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0678.jpg",
+        "image_md5": "81ce807a95cbad8292203aa556702ac5",
+        "size": "2129x1198",
+        "label_sha256": "15f20c2c9e7c9ed9b18f01b35fd07aa583066fd4b7c4bc21054b4681981ea5a2"
+      },
+      {
+        "name": "1_0679",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0679.jpg",
+        "image_md5": "79ddad4f60f3eb067259d493b6df5b99",
+        "size": "2129x1198",
+        "label_sha256": "3ba05a0c3ba1329584a5bf332bf2d7f3adf41f8b27e0f4ff397794b1e06b0bbf"
+      },
+      {
+        "name": "1_0680",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0680.jpg",
+        "image_md5": "cc49ab5ccf0a4523be01289b6f2d3c4e",
+        "size": "2129x1198",
+        "label_sha256": "8ae370d0d945b50cd1adccc923c999680cb9d9adaa92d25c21a1170a4a54b3ee"
+      },
+      {
+        "name": "1_0681",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0681.jpg",
+        "image_md5": "3f6dfb0f4e2ebaa3f0e663c66638bb37",
+        "size": "2129x1198",
+        "label_sha256": "8224122bc15034c6fee91683857ba8831ca349ea7794d67d645b83092538b4c7"
+      },
+      {
+        "name": "1_0682",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0682.jpg",
+        "image_md5": "242832ffd9ba764eedcc32b5ecce43d7",
+        "size": "2129x1198",
+        "label_sha256": "68b636bb8dd32d13b5fddaf960731a2379b2c97953b0d72ad710053bc5490944"
+      },
+      {
+        "name": "1_0697",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0697.jpg",
+        "image_md5": "e9e20330f1f5206952e920df08d6087f",
+        "size": "2129x1198",
+        "label_sha256": "69a9237b0578a1f10a5af0b6836aeeee47911c8f9c4ca0877a79122988f89d35"
+      },
+      {
+        "name": "1_0698",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0698.jpg",
+        "image_md5": "3ee50bf726912e75f65680feb41ce960",
+        "size": "2129x1198",
+        "label_sha256": "521d4780dc2442fc50b1be1b12fcfa1a5d87e12d142b2f55b13efcb2aefc2dcc"
+      },
+      {
+        "name": "1_0766",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0766.jpg",
+        "image_md5": "5fa17d46b266d09a95c1866769b0ea6a",
+        "size": "2129x1198",
+        "label_sha256": "2f16885e45cd6befa0c69166d21be28ac90f45f8cc2dec10196503de7533f6db"
+      },
+      {
+        "name": "1_0767",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0767.jpg",
+        "image_md5": "c709c80dff193b6332277ac9272155dc",
+        "size": "2129x1198",
+        "label_sha256": "ac3514240f536cc16dcc11e949f5c99db7330005e8b15265304dde11e2e6b3ab"
+      },
+      {
+        "name": "1_0794",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0794.jpg",
+        "image_md5": "e467961d4e052b3370f37d487aba2cc7",
+        "size": "2129x1198",
+        "label_sha256": "89ef580cefce9ecb159065d2ed0be4244c2b48049e0e5b56c0ec454ef5bc490d"
+      },
+      {
+        "name": "1_0795",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0795.jpg",
+        "image_md5": "9055e84e66f429f8763d9e8b50bc4ee0",
+        "size": "2129x1198",
+        "label_sha256": "a47288062c6e40ddcb2f1410bdf1dd8d2fcb88103e41df1b529b183812f589a9"
+      },
+      {
+        "name": "1_0796",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0796.jpg",
+        "image_md5": "9e911c97439ef3feab488dd2d8eb6096",
+        "size": "2129x1198",
+        "label_sha256": "c178d8b408f433ffaff4ea54d0f3ce361a6b68321a98567911bb13d322988f15"
+      },
+      {
+        "name": "1_0797",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0797.jpg",
+        "image_md5": "9ceee06c2a98535f81b47f0f31f18458",
+        "size": "2129x1198",
+        "label_sha256": "ec961eb311d5c4b0a9b1a0c07a654bdf86e3353949f710185bce42f66da882ba"
+      },
+      {
+        "name": "1_0819",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0819.jpg",
+        "image_md5": "dbf8c5880acf12b4f7b3c107bd6e87cf",
+        "size": "2129x1198",
+        "label_sha256": "c54cadf5b72be7505571a164451ff5f0c2701bd2ed8655719755f082a74460e6"
+      },
+      {
+        "name": "1_0820",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0820.jpg",
+        "image_md5": "06afb570bcaa7107b5fd5cb1c338cffc",
+        "size": "2129x1198",
+        "label_sha256": "1158d5b28beb4312eae0ca2fce0ce7d449ea36e5125932394389b15fa28f0ac3"
+      },
+      {
+        "name": "1_0821",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0821.jpg",
+        "image_md5": "1abcd4480f45b445ab59710103985476",
+        "size": "2129x1198",
+        "label_sha256": "33a06230976d7692132fc01461c6eadda44e4d38f744a010813c7aca205d2681"
+      },
+      {
+        "name": "1_0822",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0822.jpg",
+        "image_md5": "b31551305d6a2fac23f876930fb8dc93",
+        "size": "2129x1198",
+        "label_sha256": "98c0dd86f31e1f14c1321e65bc289a45c24c21e1f8dab1414aee9e495f3a9122"
+      },
+      {
+        "name": "1_0823",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0823.jpg",
+        "image_md5": "0a922b8a29f4268539b7388864fa918f",
+        "size": "2129x1198",
+        "label_sha256": "c8b39ce0895c904f66d8acc328c11cf369d87866fa440bfce1fb5e4adb9d5495"
+      },
+      {
+        "name": "1_0824",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0824.jpg",
+        "image_md5": "71b45506a8400e3b95fb3242a6de911b",
+        "size": "2129x1198",
+        "label_sha256": "07c7c8bdbdc2c20ea237c7910ddbcd88e43829314281e1b150f4a9692f331870"
+      },
+      {
+        "name": "1_0833",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0833.jpg",
+        "image_md5": "a064983086a7989d711ba2d07d6f941e",
+        "size": "2129x1198",
+        "label_sha256": "8dfb9b0d166a6bf77c6868854a7effb0f44522d286e62aa469f7ca9c9dfac521"
+      },
+      {
+        "name": "1_0850",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0850.jpg",
+        "image_md5": "723b59c7e4e5c68cfc1c833d09e7e9ad",
+        "size": "2129x1198",
+        "label_sha256": "6784c963d7e029bb37e9c056a1e0157d96b4e885afc97b9131a02a0bf84afc2e"
+      },
+      {
+        "name": "1_0851",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0851.jpg",
+        "image_md5": "92ba89496696e1c5f3c11518ab915670",
+        "size": "2129x1198",
+        "label_sha256": "a5d2ccc41e5cecb1ed91314ba8919915ff3207fa17f7178eab7c63f3416d7f34"
+      },
+      {
+        "name": "1_0852",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0852.jpg",
+        "image_md5": "ccb87c2142f4b50dd38ae3e91f2ae78a",
+        "size": "2129x1198",
+        "label_sha256": "31b9e392569ae991c8a5a3cad2e9acbc504e2bd637d9ca0bf56f428524dd664d"
+      },
+      {
+        "name": "1_0853",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0853.jpg",
+        "image_md5": "94396cbd3139ae217f3857170456e9b7",
+        "size": "2129x1198",
+        "label_sha256": "568151786b86e5239112ce60fe6abaa556cbe8b5d1959e9d0d5c474d94fe0dc2"
+      },
+      {
+        "name": "1_0854",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0854.jpg",
+        "image_md5": "3371848486d64988777f3fdccd54bd96",
+        "size": "2129x1198",
+        "label_sha256": "5655ee6d68bcb56330ff81485af729e248561a2097660691bb9f218e2f46b5a8"
+      },
+      {
+        "name": "1_0855",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0855.jpg",
+        "image_md5": "e542d0de1357ca2af7531c1968be59ac",
+        "size": "2129x1198",
+        "label_sha256": "04003e72f2b28039c21d8d211dc396a4a844ab3867903554a9187a09c007baea"
+      },
+      {
+        "name": "1_0856",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0856.jpg",
+        "image_md5": "a900f8186711b58f0a032019ac86ce19",
+        "size": "2129x1198",
+        "label_sha256": "312bcc4ff8c6aea75331cb9a94f56282e7ca3835bea8bf609aaafae13f61199d"
+      },
+      {
+        "name": "1_0857",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0857.jpg",
+        "image_md5": "57f7787a88ca00226d5f90f656292a74",
+        "size": "2129x1198",
+        "label_sha256": "3be2e19c188b672ab8f23a3dc67f3cd84b585fdb3874442d6a82da8d5addc182"
+      },
+      {
+        "name": "1_0858",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0858.jpg",
+        "image_md5": "43155494fd059f8eeaa8b1aeea0599e8",
+        "size": "2129x1198",
+        "label_sha256": "3fdb84d88b1bef0af5b086ab75051f99066832d1ca65af4fb2dcf8d996c44195"
+      },
+      {
+        "name": "1_0859",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0859.jpg",
+        "image_md5": "0b0a239115909724428a62ba66dd0d1f",
+        "size": "2129x1198",
+        "label_sha256": "ad7ef2b6820ad52d3e6896a49946b497638c86ad7b92c0ed8c3b7b036db68583"
+      },
+      {
+        "name": "1_0860",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0860.jpg",
+        "image_md5": "53652d72b90b2ddf3ca88169090bce33",
+        "size": "2129x1198",
+        "label_sha256": "241ca9d710390b4ea25ce40232ddbf54bc34602a23f5f1c4f955d670fae1e83f"
+      },
+      {
+        "name": "1_0861",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0861.jpg",
+        "image_md5": "43c4f33ca80cdcc0906c836f0f47b041",
+        "size": "2129x1198",
+        "label_sha256": "8c92031ee546ef5f85ef1c4f3095823dadbf76fea9ba33a39a237b2a31238512"
+      },
+      {
+        "name": "1_0892",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0892.jpg",
+        "image_md5": "3b3fe6678849710c0a5684d24b0290bf",
+        "size": "2129x1198",
+        "label_sha256": "0172a83fe9c9f584ef9d9c9488abc789e81f2584d0614275bcfe03d72773ac89"
+      },
+      {
+        "name": "1_0893",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0893.jpg",
+        "image_md5": "cd20e334373f4487c391783c33513b77",
+        "size": "2129x1198",
+        "label_sha256": "60a3685a5c92be1ee4023b501e060f4cf3d09dd4c68883e065942f736c672161"
+      },
+      {
+        "name": "1_0894",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0894.jpg",
+        "image_md5": "9d28b583a503eb5b7a9fd5e3d71a7416",
+        "size": "2129x1198",
+        "label_sha256": "f1bd14bbf919aa7e560c9898cb8b952e3d8674273f818097aa7946f80f94e708"
+      },
+      {
+        "name": "1_0895",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0895.jpg",
+        "image_md5": "302a85fc234f5a60e38237093a7e01bd",
+        "size": "2129x1198",
+        "label_sha256": "6938369dbdc2470800d2b189b2801b44ce5aff8b835065bdbd968e6bbc42ed99"
+      },
+      {
+        "name": "1_0896",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0896.jpg",
+        "image_md5": "e562b3b019ea7a35c4e4f01376ef2e18",
+        "size": "2129x1198",
+        "label_sha256": "bb4da48eb3fde2d254a9d2c01c9ad8f90a0f16a775ba2933f5d9bd174b370040"
+      },
+      {
+        "name": "1_0927",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0927.jpg",
+        "image_md5": "7e38a3aae24c32f834aec2deef70e6e1",
+        "size": "2129x1198",
+        "label_sha256": "4c29681f8a954e68a9cf918aa91f0f583c2db05da954556539a61b0338bae8ed"
+      },
+      {
+        "name": "1_0992",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0992.jpg",
+        "image_md5": "41937dc32ecf3f508e20b744a36eaad6",
+        "size": "2129x1198",
+        "label_sha256": "f55d255e7a1a2152d1db89bc6b8e77309ebcfaca35abbaa6b762e1a5a4e5661e"
+      },
+      {
+        "name": "1_0993",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_0993.jpg",
+        "image_md5": "9a8a410d83a7913016ec9560d2cf176f",
+        "size": "2129x1198",
+        "label_sha256": "5bcff42e54e852f5389906c58fc1b81dd87b953700b3eb24fee9902f51116158"
+      },
+      {
+        "name": "1_1004",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1004.jpg",
+        "image_md5": "bcb6150e2a61fc5d674ed11217e57b93",
+        "size": "2129x1198",
+        "label_sha256": "f1a90bd302adb85563d1fb2b20ab8396e4eb56578b0f00d944e09a22fb85fa62"
+      },
+      {
+        "name": "1_1005",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1005.jpg",
+        "image_md5": "2b7305f8f02cde85b22e2cf8f2025f7b",
+        "size": "2129x1198",
+        "label_sha256": "b0ec53c57c7c9f6ef72400b1135a29509cc9f42726bdef25c9b87071e2914606"
+      },
+      {
+        "name": "1_1006",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1006.jpg",
+        "image_md5": "18da91bd2f748c0ab918d56596ae0359",
+        "size": "2129x1198",
+        "label_sha256": "b9835bcbce92b9c9623fd45ca5fe815dae8af981ddc3efa565e5aa4fcb99e512"
+      },
+      {
+        "name": "1_1007",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1007.jpg",
+        "image_md5": "c964066dd4395a06e13d9974b61e6c67",
+        "size": "2129x1198",
+        "label_sha256": "60bbc7f2d6c190d846a10e77a2a84824a1757ef3f5eb30c4514a0ae02993ad24"
+      },
+      {
+        "name": "1_1110",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1110.jpg",
+        "image_md5": "fe841fba4f29f82b9fb31c77d05adee8",
+        "size": "2129x1198",
+        "label_sha256": "4ae0d315cab6838de2ead6195cd1e9876aa66e06f6c50b9371522437343e0948"
+      },
+      {
+        "name": "1_1111",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1111.jpg",
+        "image_md5": "cfb03de59829f5e4cbced7b86101a264",
+        "size": "2129x1198",
+        "label_sha256": "dc6dd17e3a19a76c3cd4863e7d75324544cb61e631163c0c909645fe39f3f05c"
+      },
+      {
+        "name": "1_1112",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1112.jpg",
+        "image_md5": "308656565ddd74f7f870cce6048116ba",
+        "size": "2129x1198",
+        "label_sha256": "4c7b5e7b8a9a57f8b15d8ed829a624392939bdb0d1ca47b4eb20f74f4bf21a92"
+      },
+      {
+        "name": "1_1147",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1147.jpg",
+        "image_md5": "21771f3f5a395a10063c9d850d841915",
+        "size": "2129x1198",
+        "label_sha256": "93b35ecf20e4fb5b5945dda722d11e9710c6b85ccaffc3e38ef1dda84aed2851"
+      },
+      {
+        "name": "1_1159",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1159.jpg",
+        "image_md5": "b109fb174c6303a0fc8c86df3908ee76",
+        "size": "2129x1198",
+        "label_sha256": "bdb870f5f2fb17258f851077141ba59b252f71d4ed71e28d60c507ff480685b9"
+      },
+      {
+        "name": "1_1160",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1160.jpg",
+        "image_md5": "612499d98a0c5158cff9b1c77487cf03",
+        "size": "2129x1198",
+        "label_sha256": "651af6e46ce0167b6d59f328a53f63abc9fee280443470fc2fa67b121396cf8f"
+      },
+      {
+        "name": "1_1161",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1161.jpg",
+        "image_md5": "7b4fb5c2c73f2cf4fdb1fe42ddfe7f96",
+        "size": "2129x1198",
+        "label_sha256": "508a02c78de34810964f2aa74eb5fda8ddbe599f4e770c0aa9217d85bb6e9f25"
+      },
+      {
+        "name": "1_1165",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1165.jpg",
+        "image_md5": "18fb0553e70c5518c36740978eb79fad",
+        "size": "2129x1198",
+        "label_sha256": "959bd379c622de1f5feb0c7da99534384014ea962f6307f72f71d23af8fc7737"
+      },
+      {
+        "name": "1_1166",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1166.jpg",
+        "image_md5": "6de228d747a6f4b79c9eb5b095826555",
+        "size": "2129x1198",
+        "label_sha256": "fe5f668721b6cfc6d498b693ba0182dc8d0ba0f2558c4218f27e2d9e72ee7a07"
+      },
+      {
+        "name": "1_1173",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1173.jpg",
+        "image_md5": "3146c0e8ebea8040b425098f39f547f5",
+        "size": "2129x1198",
+        "label_sha256": "56f1505ad0c1dc0955d255a82f72dae018d8d60ef98a89d0fa9429ce17335c4e"
+      },
+      {
+        "name": "1_1174",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1174.jpg",
+        "image_md5": "814c25684460c2f4588540a1a3607418",
+        "size": "2129x1198",
+        "label_sha256": "bde3efed0fd20238a08333b7da0673ca0a79938e914823efe07d8fff93537a5b"
+      },
+      {
+        "name": "1_1175",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1175.jpg",
+        "image_md5": "06c61175a1fd8c15eb836dc490c86af6",
+        "size": "2129x1198",
+        "label_sha256": "6d75ba48e4a4104acc225ac406147bf9325e7da52dd5c955a0128c969afcdba9"
+      },
+      {
+        "name": "1_1234",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1234.jpg",
+        "image_md5": "98de3e127b4b919fbf5def1613369131",
+        "size": "2129x1198",
+        "label_sha256": "5d0b17210cfdce53ca8be06c57a01e560b200c762a004eed80a0a18512f53ddc"
+      },
+      {
+        "name": "1_1278",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1278.jpg",
+        "image_md5": "475cb6ca6703e00771a6774960240422",
+        "size": "2129x1198",
+        "label_sha256": "700c473c0f2062566aa9fff609ab6e26dcd9200256d4c0cba3f1844ec8d93127"
+      },
+      {
+        "name": "1_1279",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1279.jpg",
+        "image_md5": "d6e8bbf467e7ce487c3a6918cdc59c43",
+        "size": "2129x1198",
+        "label_sha256": "ad6365fd48f7d74d396607ee23101e7f7fc078d81e13281c735327bda384b98c"
+      },
+      {
+        "name": "1_1280",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1280.jpg",
+        "image_md5": "dd50a3f5c19d3212e103314f1e31908e",
+        "size": "2129x1198",
+        "label_sha256": "b3b41aa434645ae027a1220680484ba33b9d63c129ee10d5902ebd9e83d2d1ab"
+      },
+      {
+        "name": "1_1281",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1281.jpg",
+        "image_md5": "c80615086fb2d35a211d4e8c5193f19c",
+        "size": "2129x1198",
+        "label_sha256": "fefc52178f9fa5a84c16feb8aebf949fa7bb3020ec24499c1b92016408c55a3c"
+      },
+      {
+        "name": "1_1307",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1307.jpg",
+        "image_md5": "e198b049c65fec3a4b10feb48774e676",
+        "size": "2129x1198",
+        "label_sha256": "35e2598c4cf9e698077ef0685f758a3f03265cbb7f43f59393fe4e38ec16ea89"
+      },
+      {
+        "name": "1_1317",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1317.jpg",
+        "image_md5": "863adb15e7698f509c8eb6a5c0d96c36",
+        "size": "2129x1198",
+        "label_sha256": "35c5042b05dd7a0586227268eba1e4ed87bbf1a1f0543758916052ae8855c2df"
+      },
+      {
+        "name": "1_1318",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1318.jpg",
+        "image_md5": "20c338cc19ed5fe87b00de296c7abf42",
+        "size": "2129x1198",
+        "label_sha256": "844f0fa2080933d1f72a179c7b47b966e9aa9e6d82f540719ac4fd897b47eb35"
+      },
+      {
+        "name": "1_1334",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1334.jpg",
+        "image_md5": "3bf86207cb38c8529126c513e453e637",
+        "size": "2129x1198",
+        "label_sha256": "45c39faeec6651d86b69f011323372127a2e9c615f554f432e4e3770234ae6e3"
+      },
+      {
+        "name": "1_1352",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1352.jpg",
+        "image_md5": "ad8fb17c5ab98c1ec09f0a8d42db7a8f",
+        "size": "2129x1198",
+        "label_sha256": "66a527d000451fc2306ac0a92b96b89680c13d7d93fc6c2c1fbe97a02728815c"
+      },
+      {
+        "name": "1_1353",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1353.jpg",
+        "image_md5": "4c86b93a7d4e89d9b2d5647c67b9322a",
+        "size": "2129x1198",
+        "label_sha256": "34cf27eb78abd5234ce83be00b33b1a44f82170679cfb976158993a0ce7a71d8"
+      },
+      {
+        "name": "1_1354",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1354.jpg",
+        "image_md5": "a6afc8a2bdab4178b6b882ddffd43505",
+        "size": "2129x1198",
+        "label_sha256": "b2ae199efdec6b05b8dab77c869179016172503080f18453eeb7909ab2180c14"
+      },
+      {
+        "name": "1_1355",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1355.jpg",
+        "image_md5": "6874ada30096ff69d40aaec18984e175",
+        "size": "2129x1198",
+        "label_sha256": "1870cbd620ee830a6bcd75ccab7ff8513f352a40967e13754d660b5412f4dfbd"
+      },
+      {
+        "name": "1_1356",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1356.jpg",
+        "image_md5": "b4e3f6454ba6fdd262b032f06780d1bb",
+        "size": "2129x1198",
+        "label_sha256": "417b8398a7c13599672062cfbc3909cec17f01c6dacf669434dd2b8150a3e3f0"
+      },
+      {
+        "name": "1_1370",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1370.jpg",
+        "image_md5": "c0d12ef63d286548bc5370af67ab7483",
+        "size": "2129x1198",
+        "label_sha256": "9ecdb72409e24accb16fd5ce9ba2c2916747d384e66cb150d723e5d49f48b76a"
+      },
+      {
+        "name": "1_1371",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1371.jpg",
+        "image_md5": "915fb73e2fe3c452caaa447d0328382a",
+        "size": "2129x1198",
+        "label_sha256": "183d8b21ebbe744a9daef483903f6eb6b4b21375794d14c71b673943655204bd"
+      },
+      {
+        "name": "1_1372",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1372.jpg",
+        "image_md5": "30bb74e355d0d45915e2b515ff27f12e",
+        "size": "2129x1198",
+        "label_sha256": "815794f0b396946495a90f29d5ec20038cf8ece41644c37c8a1db0c527f081b3"
+      },
+      {
+        "name": "1_1373",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1373.jpg",
+        "image_md5": "5ac48664641b89c3a215cee4ac2d0281",
+        "size": "2129x1198",
+        "label_sha256": "39bd1bf7dcd1b92c1d78180cd038731f953ef52be2908ce652b7fa6b498595f9"
+      },
+      {
+        "name": "1_1410",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1410.jpg",
+        "image_md5": "27f320c47358a762674872ceb4915a50",
+        "size": "2129x1198",
+        "label_sha256": "0967bab3c4b2bee82a291b9474aaf4d9471fbd73479a2c06cd66f4641952c48f"
+      },
+      {
+        "name": "1_1411",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1411.jpg",
+        "image_md5": "b2baf756191d585a7eeb9fa01fe7b444",
+        "size": "2129x1198",
+        "label_sha256": "30f41951832e446920e09663980ca5d1cc3956d0009df9576f7a2c6d9a28a91f"
+      },
+      {
+        "name": "1_1412",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1412.jpg",
+        "image_md5": "9c39cb2481560e45e8e2abed798fb8d7",
+        "size": "2129x1198",
+        "label_sha256": "51db4c54070fd5f244eff64359c43cf7dc24e17570bc3a024bc281feffdeeaa2"
+      },
+      {
+        "name": "1_1413",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1413.jpg",
+        "image_md5": "cc25aa7fc4ffdc88b38c4f7d79b72a2e",
+        "size": "2129x1198",
+        "label_sha256": "40365ef15ef2794ca32c1d2b4a35a378221ea8e48935e353c6e22c310c817c87"
+      },
+      {
+        "name": "1_1431",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\1-暗斑\\1_1431.jpg",
+        "image_md5": "4ad89d5cc2002405c5e853c0e17136a9",
+        "size": "2129x1198",
+        "label_sha256": "4fb991dcc5b48b49eec95f2fd2284de61f84445e4c0e608abe70fd33356fd212"
+      },
+      {
+        "name": "2_0008",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0008.jpg",
+        "image_md5": "72fd8a1e1488b4b0fa568d982fd34224",
+        "size": "2129x1198",
+        "label_sha256": "8b0d2191923330cc001f3e64691e1d68c1bf1ccafe075e803572fe4de61a33f8"
+      },
+      {
+        "name": "2_0009",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0009.jpg",
+        "image_md5": "5374ddd75e9206047c6e0116193c7af4",
+        "size": "2129x1198",
+        "label_sha256": "0d0344ddb0ffe83fdd10c72c18a55b917d61556082711e95c655f1abe8552b10"
+      },
+      {
+        "name": "2_0010",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0010.jpg",
+        "image_md5": "38f60657f43b43735f073669073e48f6",
+        "size": "2129x1198",
+        "label_sha256": "cc0b021e10d3a8b6b37d4bed55b55ce166c99972adefd93bf46c2512d12f6772"
+      },
+      {
+        "name": "2_0017",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0017.jpg",
+        "image_md5": "524b8d3d32aa6dab464788ede48412cd",
+        "size": "2129x1198",
+        "label_sha256": "385f61ad8a51ad1ee056a885b22d72fc096cf1510c61ef05e3ce6ba5587ec411"
+      },
+      {
+        "name": "2_0018",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0018.jpg",
+        "image_md5": "9cf233c4d638f4daa33f13ec08c7a878",
+        "size": "2129x1198",
+        "label_sha256": "f17428259a49da70206fe7b5a71ca4ad454c377a67327a4a2b9899540f6cbdfc"
+      },
+      {
+        "name": "2_0022",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0022.jpg",
+        "image_md5": "5eb378a3db12550be8a3f5732dc00be2",
+        "size": "1052x582",
+        "label_sha256": "0a2de3ec21bd526710823ae12025a07a0bc16f58367f3a88141a6e0a93db8f72"
+      },
+      {
+        "name": "2_0023",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0023.jpg",
+        "image_md5": "08fa771270859a9ab8eb432bdfcc54e8",
+        "size": "1052x582",
+        "label_sha256": "a98663417fb05ea1542b5855dc7e181f9f3c49a5932e324cb7ef322d097f2f4d"
+      },
+      {
+        "name": "2_0024",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0024.jpg",
+        "image_md5": "70f0173abe9273e27eee8d5bac2782a7",
+        "size": "2129x1198",
+        "label_sha256": "7f2bc9a9ca131a58c4baf0959aa2c7a2bc91787d0f2f19ad888d5fa2189ac89f"
+      },
+      {
+        "name": "2_0025",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0025.jpg",
+        "image_md5": "527f7f85803c4d77bab9ad283c4eb9b4",
+        "size": "2129x1198",
+        "label_sha256": "944768d4b939883b9bd265ffe8ad299331a85eee53b9f1b76ae7e30059081305"
+      },
+      {
+        "name": "2_0048",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0048.jpg",
+        "image_md5": "5957233dcae0d65f5f7d1e943733ab7b",
+        "size": "2129x1198",
+        "label_sha256": "1cfbb43c6f92107af3400b07886b7c966e06de2325102e2cb988b3a5f9b5e976"
+      },
+      {
+        "name": "2_0056",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0056.jpg",
+        "image_md5": "7705cda265932809a738b3d1e707a2e9",
+        "size": "2129x1198",
+        "label_sha256": "069e13a47b9e62121ec28ce80193a5f7c02fb3dba53d0239d22e0174880ef7e0"
+      },
+      {
+        "name": "2_0057",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0057.jpg",
+        "image_md5": "4cce775d0e55343c21159ee4a06aa332",
+        "size": "2129x1198",
+        "label_sha256": "21f48ff88e30133cd40e76b30129bd6b390d1dbf19938096ab9dc8695e986fd0"
+      },
+      {
+        "name": "2_0059",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0059.jpg",
+        "image_md5": "84b6e80c7f93f1a7e44e1995ecd5605f",
+        "size": "2129x1198",
+        "label_sha256": "ae01a72b21fd5a83450620d689cf706707cc9f54ba5e28ade40038a927594578"
+      },
+      {
+        "name": "2_0082",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0082.jpg",
+        "image_md5": "70f3e3e18eeb2227ddc53dc06205c654",
+        "size": "1052x585",
+        "label_sha256": "ae967b56080a7a44eb40d2e8aa35e460277c2b491aabf64ec8ad1e94aff43625"
+      },
+      {
+        "name": "2_0083",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0083.jpg",
+        "image_md5": "f25e05d9fc5a580acb5e562df53226e1",
+        "size": "1052x585",
+        "label_sha256": "374d5af1a325f4e34b4db05c6de8b31938212260e8d637017bcf14eb73b497ec"
+      },
+      {
+        "name": "2_0085",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0085.jpg",
+        "image_md5": "cc1ea4955eeb7151f3c5b86b78cb552f",
+        "size": "2129x1198",
+        "label_sha256": "9e69f25b740b094065deaf431b2336be37441113ca7eb08eda593d5ab6cbc81c"
+      },
+      {
+        "name": "2_0093",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0093.jpg",
+        "image_md5": "22701b9f8dbe9e68762ce7211b363ee7",
+        "size": "1052x585",
+        "label_sha256": "6915bc3d10079b330e696e5f33d09e96e7e42aa23010ec9d194250fd023375ca"
+      },
+      {
+        "name": "2_0101",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0101.jpg",
+        "image_md5": "5449b09b08a1128590447cfd29dcb582",
+        "size": "1052x585",
+        "label_sha256": "675cdd17a82c3a591d51d6355116da7171fc693c2e566ac89e9eaf42e5d4e469"
+      },
+      {
+        "name": "2_0104",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0104.jpg",
+        "image_md5": "765400d9932644eb090a21d360be0397",
+        "size": "1052x585",
+        "label_sha256": "b50b93b1233897ae172f4ace8ddff81b8704ca8660690ec2de8d795a2511899e"
+      },
+      {
+        "name": "2_0105",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0105.jpg",
+        "image_md5": "76f702d5426f1783162b125e320f1757",
+        "size": "1052x585",
+        "label_sha256": "64596580e785e078014de082948b85f35eb263628c263ca8d8ffd196aa229fa8"
+      },
+      {
+        "name": "2_0121",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0121.jpg",
+        "image_md5": "4cdc441132f05a80bac0f039d243acbb",
+        "size": "2129x1198",
+        "label_sha256": "69ee41399e7409f8aa71002d22b0d832c10b73f5e294d78f37b5790610c66594"
+      },
+      {
+        "name": "2_0122",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0122.jpg",
+        "image_md5": "cee303b52947ec4f2e472a583341f246",
+        "size": "1052x585",
+        "label_sha256": "e5db42109c830506256d31c4d6dec640e3736b09ca6864bff39f089de213d254"
+      },
+      {
+        "name": "2_0133",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0133.jpg",
+        "image_md5": "eba62c93d4e187f266caf8ae7400b292",
+        "size": "2129x1198",
+        "label_sha256": "e527e24c139172e4319c9609d928c49018e7542e95fcdee04c2cf9fce8439774"
+      },
+      {
+        "name": "2_0134",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0134.jpg",
+        "image_md5": "2a79e469abf4b6c97e92469f173407e2",
+        "size": "2129x1198",
+        "label_sha256": "fa44b58d5fd6c4454a8d6abf782a20c2e8b88b52e63cecf2f649d0ea9688a1da"
+      },
+      {
+        "name": "2_0146",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0146.jpg",
+        "image_md5": "801c121c303bc09f0f78401a4aa45702",
+        "size": "2129x1198",
+        "label_sha256": "9fec01b14cb7df0648e955dbcdefa436358edf63b279359266da78c3c1ce93ea"
+      },
+      {
+        "name": "2_0159",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0159.jpg",
+        "image_md5": "30ca7af01a356b27414d206dfb1cb9e6",
+        "size": "1052x582",
+        "label_sha256": "e39a1636b1268a6cb32ec79c2311b205ee52991cd0926b49871d9d80d45ce8de"
+      },
+      {
+        "name": "2_0160",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0160.jpg",
+        "image_md5": "aceaa959839c1e387855a579c5c9040d",
+        "size": "1052x582",
+        "label_sha256": "083d8dfd0834d6f2412aab2a12ad5be838d7219d2e3aa0fe980b3880522f7915"
+      },
+      {
+        "name": "2_0164",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0164.jpg",
+        "image_md5": "c09278d0396e4de277e2140034e7653e",
+        "size": "2129x1198",
+        "label_sha256": "5499ac1d77852ef6eae899ca18d437be7d18706e5286e047c879a840a0eb5937"
+      },
+      {
+        "name": "2_0192",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0192.jpg",
+        "image_md5": "c8434b13f2ae94e4a1d214461d69daa9",
+        "size": "1052x585",
+        "label_sha256": "20bb68fd65fa842db13dba3b8f886b882f548b6027408f03f8cdf1d9be728b38"
+      },
+      {
+        "name": "2_0193",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0193.jpg",
+        "image_md5": "4357eea788bbf8cbf256ca7a37408dc3",
+        "size": "1052x585",
+        "label_sha256": "2367e3e1ff667a472df1dd59bf3011f6091dd1c247679cb077bbbc07ccc70c71"
+      },
+      {
+        "name": "2_0243",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0243.jpg",
+        "image_md5": "99a4b52f3280de7d7289dd1c201cf93f",
+        "size": "2129x1198",
+        "label_sha256": "35c4175f0c9ecd1d65720a93ed77cfc2909375cdec0c82e0fbe95d9c404a6485"
+      },
+      {
+        "name": "2_0275",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0275.jpg",
+        "image_md5": "28825ae634b165cf165ac7957e701c4e",
+        "size": "1052x582",
+        "label_sha256": "afe09f7503f1a595fa2864d5ac442e3dd2355852de3a5a29cd4e956a0bc06789"
+      },
+      {
+        "name": "2_0284",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0284.jpg",
+        "image_md5": "8ab6d714563051afb6f434fb0dba9c1a",
+        "size": "2129x1198",
+        "label_sha256": "02830e0c1393390f942812f4ed56e8ada31f9c7986e41b60475ba93bece5c0f9"
+      },
+      {
+        "name": "2_0285",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0285.jpg",
+        "image_md5": "f6befc59830d22d97286d8e0734a57dc",
+        "size": "2129x1198",
+        "label_sha256": "62ca8465487934753074c8d63fbb45594f9a71d9183e97ce3f068afb73e6b95d"
+      },
+      {
+        "name": "2_0301",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0301.jpg",
+        "image_md5": "4f7ba02b1c4fe9f44aaf4d0bef69cdc8",
+        "size": "2129x1198",
+        "label_sha256": "a3c5f172b821381a49f696e2c2df13804e4590d65d0e2e53392ac3e8992d93a0"
+      },
+      {
+        "name": "2_0303",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0303.jpg",
+        "image_md5": "e97ae9237ef96ab22a54e7dc6b5ee1e9",
+        "size": "2129x1198",
+        "label_sha256": "9f2fead6134b438a873f748fa1ba851a45f08dd0481fd4c832dbea845d4d7204"
+      },
+      {
+        "name": "2_0304",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0304.jpg",
+        "image_md5": "8d431c75a57f2bfd3aba1c0a78d03653",
+        "size": "2129x1198",
+        "label_sha256": "410c3133d55431c6785c9ad1b0aa5956378bf62701794628cb691c87dc7b4572"
+      },
+      {
+        "name": "2_0315",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0315.jpg",
+        "image_md5": "d6437191c2707a96740935a551e06f7f",
+        "size": "2129x1198",
+        "label_sha256": "11528f0a86fc69dad6b1563f4abd364286aa0ed76e153dc5cc575dffb70d85f4"
+      },
+      {
+        "name": "2_0322",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0322.jpg",
+        "image_md5": "c3d4630f09378bbbbc290010f0ca6a83",
+        "size": "2129x1198",
+        "label_sha256": "3585378010929c12c677879896aebc8d020f796bd7866e3ade1b6f797ccab54b"
+      },
+      {
+        "name": "2_0324",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0324.jpg",
+        "image_md5": "ad090f3b2c434997b686aa56a96997a5",
+        "size": "2129x1198",
+        "label_sha256": "d3f5071e7ce93c0c0992a0bdbab6c48b72e65d3a2e6c8d5fbf6565d7b033bb7b"
+      },
+      {
+        "name": "2_0336",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0336.jpg",
+        "image_md5": "03c1c0ee9c76385731ea10052db9a1eb",
+        "size": "2129x1198",
+        "label_sha256": "7085f43661704b1ecc3ab1faceab002a1bba176949dc98b0cebd16cb35091e90"
+      },
+      {
+        "name": "2_0340",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0340.jpg",
+        "image_md5": "9299198188d255e0eb0abe37f6322ecc",
+        "size": "2129x1198",
+        "label_sha256": "e31c404a58230f05c3c1d625cf9fc76f6fd267fe3adbe6fec4ce21c809aca7f1"
+      },
+      {
+        "name": "2_0341",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0341.jpg",
+        "image_md5": "9f3b13b2356b5f12249b943ba0c18661",
+        "size": "2129x1198",
+        "label_sha256": "259e4f4220b72865735eab1a19eccebd068118df317312a830e2b3f5ed8540a3"
+      },
+      {
+        "name": "2_0342",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0342.jpg",
+        "image_md5": "257010123b59ed83329217f1ec836188",
+        "size": "2129x1198",
+        "label_sha256": "02710ed4e6c4a59e37dd483588e7807fd587ec77c17d7713a3b81f72f0634ce6"
+      },
+      {
+        "name": "2_0343",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0343.jpg",
+        "image_md5": "4ac9a79554d9e1b576d3754815c57c39",
+        "size": "2129x1198",
+        "label_sha256": "5a90e27054fae3b92fb5b1b3c51377c09114760a511d32a9d869d238a7cfd3d1"
+      },
+      {
+        "name": "2_0406",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0406.jpg",
+        "image_md5": "a80f0a7913bc3f965ef0ae43772551d0",
+        "size": "2129x1198",
+        "label_sha256": "f35fa32ad80fc0fde82fdabb8d7c47e3e849ef6bb00a7ed45fd0744c28b43be2"
+      },
+      {
+        "name": "2_0418",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0418.jpg",
+        "image_md5": "3ea74b7d0ba472a7a4e1b30515e2ec7c",
+        "size": "2129x1198",
+        "label_sha256": "683d324da49eb7a8e95aace6ec81039759b5cbc86a4a20f59dd0389ce5c8af43"
+      },
+      {
+        "name": "2_0419",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0419.jpg",
+        "image_md5": "78723a015431af39f0d15ac1d6dcc803",
+        "size": "2129x1198",
+        "label_sha256": "53882b0d07801c59c8cf5a457b3798cef93487f82e9da4bd5345ac5e99aa9fa8"
+      },
+      {
+        "name": "2_0423",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0423.jpg",
+        "image_md5": "5c966c834a43266066e456dcf49797ee",
+        "size": "2129x1198",
+        "label_sha256": "01d09d869126e4e804a1ad7bec82c3eb991fb18c5e13c304015daba05d2f9985"
+      },
+      {
+        "name": "2_0427",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0427.jpg",
+        "image_md5": "95d02023e1a2e981d0d8134796257ba4",
+        "size": "2129x1198",
+        "label_sha256": "b6f2791522a436009f9950781f4065663149ff1d1ceba512cf470cff9dc0fade"
+      },
+      {
+        "name": "2_0431",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0431.jpg",
+        "image_md5": "634228e827dc1e501a0a3b35fad0af78",
+        "size": "2129x1198",
+        "label_sha256": "eb490bedcd7611b2c21af72d9b17c4da10e844c4660d0051863138bb643faed9"
+      },
+      {
+        "name": "2_0437",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0437.jpg",
+        "image_md5": "318ae725588efd2969b4b031ac8207a1",
+        "size": "2129x1198",
+        "label_sha256": "81668d5d21570be722cd5063feea148bc831e02067fbc9e7c505244944b7cd47"
+      },
+      {
+        "name": "2_0449",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0449.jpg",
+        "image_md5": "19222dfc1885b720f3b25a277b139d77",
+        "size": "2129x1198",
+        "label_sha256": "83bf36bba80748e41accdb5ab94be9ee6628a49acd4d83ee66bcdf7ca5552894"
+      },
+      {
+        "name": "2_0454",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0454.jpg",
+        "image_md5": "863e9e5bca56eb7e1dccb836dd8d371a",
+        "size": "2129x1198",
+        "label_sha256": "5f6788c7007bd1669b16ff5577a782b2de89dba02638a4b645ff36a22749e6b0"
+      },
+      {
+        "name": "2_0458",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0458.jpg",
+        "image_md5": "bbfab0a5d9ce0e02db6c1a09d1b53bba",
+        "size": "2129x1198",
+        "label_sha256": "aa98a99c3dd93faec7390f8807d982d9e45f02b1c09aa446172244c54f2dc046"
+      },
+      {
+        "name": "2_0459",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0459.jpg",
+        "image_md5": "ccd0e640d7a21858ca7f365aff622830",
+        "size": "2129x1198",
+        "label_sha256": "309e58d8886f2c444bb2133d798ee114f780eca40e247083018b581f51597dae"
+      },
+      {
+        "name": "2_0460",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0460.jpg",
+        "image_md5": "c3adec4d78ddbae420ae191bde02bead",
+        "size": "2129x1198",
+        "label_sha256": "5a890015d7f5ab41aceb76e134ee5558f0a344e99396c8a53e2b84d597441850"
+      },
+      {
+        "name": "2_0472",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0472.jpg",
+        "image_md5": "3e4a48194c926d491ac03aa39f8d9b6f",
+        "size": "2129x1198",
+        "label_sha256": "0e743aa9a87391bb4c88c809c9136dd6808c465c94c507767eebe737d883ca0d"
+      },
+      {
+        "name": "2_0473",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0473.jpg",
+        "image_md5": "33b35f306d0ca045557e88f468e51004",
+        "size": "2129x1198",
+        "label_sha256": "5bfdaa7d2a573bf4a50ff5cfb22cda21fc69ca6599aaa1d430e79d1799fcdb55"
+      },
+      {
+        "name": "2_0506",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0506.jpg",
+        "image_md5": "d5dde0d16348a01339d6809b0e31ce8d",
+        "size": "2129x1198",
+        "label_sha256": "aa7a65d895f6b7026cbe0015d66ba5942570bdfb9dafe32e5a1c5b572b93985f"
+      },
+      {
+        "name": "2_0513",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0513.jpg",
+        "image_md5": "1c411ff126ca7f444c512f89f7a9d977",
+        "size": "2129x1198",
+        "label_sha256": "0b820fc57af5f814b3483b0a9810505aff64c9348706dd1d3d585a8b8dbf8f8c"
+      },
+      {
+        "name": "2_0514",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0514.jpg",
+        "image_md5": "7b99afaefd5a65bcb98270f0a8f7e616",
+        "size": "2129x1198",
+        "label_sha256": "8ac7aeb0928eacbb94d398b06d51ce01e83ca00fe2c28094f89c2f10778e78d6"
+      },
+      {
+        "name": "2_0546",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0546.jpg",
+        "image_md5": "c5587aeb16bb7c0e67b8ced6062cf267",
+        "size": "2129x1198",
+        "label_sha256": "fd52bab7d2287c8f7c274f8fc687f547301be5ecb25ff8ba8f3865c044133cf4"
+      },
+      {
+        "name": "2_0547",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0547.jpg",
+        "image_md5": "1fe4541653b0b0cd885cdc8a883c1d56",
+        "size": "2129x1198",
+        "label_sha256": "eb58209972b6c8ae433a99367d5e3457fdd5c7456fc427eae9d45d8caf9df624"
+      },
+      {
+        "name": "2_0556",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0556.jpg",
+        "image_md5": "10d04b4c32cb0221f50882ad9863285f",
+        "size": "2129x1198",
+        "label_sha256": "5d43929b34750888f6aa1b14cdcb16b34fdf253e1334f38102fb8b17002ab9ff"
+      },
+      {
+        "name": "2_0557",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0557.jpg",
+        "image_md5": "6994025d0ce18d2e7920bef808b85d6d",
+        "size": "2129x1198",
+        "label_sha256": "333feb58d4efd20c5b469c76e3a46247c65efa769468ca3aa39ba4852f31b7cc"
+      },
+      {
+        "name": "2_0558",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0558.jpg",
+        "image_md5": "889152bea2119f8726829726b11b5b8c",
+        "size": "2129x1198",
+        "label_sha256": "673e63353d776ddd99254c5dbab2c56d85a991f1792c176b4e229d2582d5b8b1"
+      },
+      {
+        "name": "2_0559",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0559.jpg",
+        "image_md5": "05e839d4175e65f7102771e9c23fabe5",
+        "size": "1052x580",
+        "label_sha256": "235cc90fbc570c81b3b75f2181df7d18a9ea88fd56b4eef9a8f3036cfa57e2b5"
+      },
+      {
+        "name": "2_0562",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0562.jpg",
+        "image_md5": "5ece1994b3505ada0897fda1991db690",
+        "size": "2129x1198",
+        "label_sha256": "bf6a49efb4b19992101115188cc21eb0e1f98b1ea89c46b34cf58d93215d0c37"
+      },
+      {
+        "name": "2_0563",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0563.jpg",
+        "image_md5": "ba6552fa0d18066855d93a6ab320b1b3",
+        "size": "2129x1198",
+        "label_sha256": "8e4668a7c396d86712576dade3aa51e53d2297b0baa27350aa5f718dc645f57d"
+      },
+      {
+        "name": "2_0566",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0566.jpg",
+        "image_md5": "8f844e702d0db1fb66a7f951279b6a7a",
+        "size": "2129x1198",
+        "label_sha256": "3e556a9b1697dc98e65d82b94ef88c3d95bc11b0feb89946743e54c1a3625ec4"
+      },
+      {
+        "name": "2_0569",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0569.jpg",
+        "image_md5": "704acd46fdbee9be3cdd13070f20b9c5",
+        "size": "2129x1198",
+        "label_sha256": "d77aed5f5455965b8cb13b672656dd3c330c496008c594eafde6583d9ac77bd3"
+      },
+      {
+        "name": "2_0593",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0593.jpg",
+        "image_md5": "6c27912f9b88d5b8ce895b0a9ebeb555",
+        "size": "2129x1198",
+        "label_sha256": "214f2602b371edb1c12ae5a6bc23ef49adee4bf2aeb74fa7db56231ac5b5bfd1"
+      },
+      {
+        "name": "2_0594",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0594.jpg",
+        "image_md5": "f99e41c5e4c6ec41d63bfa1f91de2f91",
+        "size": "2129x1198",
+        "label_sha256": "0e95b551fae4d052ab829e483caa09dc474f0c4ebc46d4ed6012c0016c405a15"
+      },
+      {
+        "name": "2_0601",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0601.jpg",
+        "image_md5": "dd5a3770ab5c010387a7b8f9160c8ab6",
+        "size": "2129x1198",
+        "label_sha256": "7b220b8f7a263cc17599cb00e626e9498568502f486951b49f0c54aa5fc379de"
+      },
+      {
+        "name": "2_0609",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0609.jpg",
+        "image_md5": "9a0155c2ec6cc8dd821abd58e74ca512",
+        "size": "2129x1198",
+        "label_sha256": "a63d1220639ba32ece8cd2f533db7bbc09349daa2d316e07cb4c4b28e27edd2a"
+      },
+      {
+        "name": "2_0641",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0641.jpg",
+        "image_md5": "86cef22864141392b50e20a1e3bf460f",
+        "size": "2129x1198",
+        "label_sha256": "7a12040b957b3f3b4aeddf70efc0d2b453555df043221c9ff1847fd52995987c"
+      },
+      {
+        "name": "2_0650",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0650.jpg",
+        "image_md5": "ca9da7cb580cbe8f8bb0aa89086b058b",
+        "size": "2129x1198",
+        "label_sha256": "d51fc5be868df22be30b8de476506b35a705ef187484c969f0819dad3254c9ea"
+      },
+      {
+        "name": "2_0651",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0651.jpg",
+        "image_md5": "036a8c0fa95569aed88d879c941f9399",
+        "size": "2129x1198",
+        "label_sha256": "e0dfc271517342a9605be88cbc94134b99107a4bb3d6bdc5b9871f54bb0a0aeb"
+      },
+      {
+        "name": "2_0653",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0653.jpg",
+        "image_md5": "4d4b64ded133e2faae043d54c9e38d66",
+        "size": "2129x1198",
+        "label_sha256": "c0f861912dbea5d017ea2ae1a3000c861ffe32653c71a296d413ad83cad06a36"
+      },
+      {
+        "name": "2_0656",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0656.jpg",
+        "image_md5": "57ef1e088c13704789775b0ee1adef33",
+        "size": "2129x1198",
+        "label_sha256": "7d7e01aadec96f1b29a98d661b1f8b4c159aac9e639ae6713ae4106c1f9df8d9"
+      },
+      {
+        "name": "2_0657",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0657.jpg",
+        "image_md5": "526bed541f358f68d12d8148134b3e1c",
+        "size": "2129x1198",
+        "label_sha256": "12a80f981791ca75c82fe2f337bf35ef5007f68dd37aa04c2ef2dad2dbc40f5c"
+      },
+      {
+        "name": "2_0658",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0658.jpg",
+        "image_md5": "9d90a4332c62852ade8bfc7673db16ac",
+        "size": "2129x1198",
+        "label_sha256": "cd827bd9f20570b8f876b0f0e12eb25ed42163a814431c4475f60b0305c0567d"
+      },
+      {
+        "name": "2_0662",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0662.jpg",
+        "image_md5": "fce2732c2cdd71d4389de1bed00bcb39",
+        "size": "2129x1198",
+        "label_sha256": "7e09ecb9599f3d3449fde8fe6bb8e2a11b4752c08e81303401b7163dd53db881"
+      },
+      {
+        "name": "2_0663",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0663.jpg",
+        "image_md5": "bfe23e6d4fb264c4437055fce2c32d88",
+        "size": "2129x1198",
+        "label_sha256": "f56d1c1b1b8a61af7425873bbdf49e69207884ff3fe263dbb519c4d38c1ba7ec"
+      },
+      {
+        "name": "2_0671",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0671.jpg",
+        "image_md5": "820f646dd3d84561d4171b0c447d435c",
+        "size": "2129x1198",
+        "label_sha256": "6ab8f2152ab2948dc8abf0bac71161ef171f8225b237c4a8b481922e9b33df4c"
+      },
+      {
+        "name": "2_0683",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0683.jpg",
+        "image_md5": "d3afdf965274a01ab6a49cda7d300844",
+        "size": "2129x1198",
+        "label_sha256": "f43c695cfb6d9b286fecda798532d17f56196b17f2bea8c3402507b41f8db225"
+      },
+      {
+        "name": "2_0697",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0697.jpg",
+        "image_md5": "aa9ed03bc37e841d1e6fd8fbe3194376",
+        "size": "2129x1198",
+        "label_sha256": "95be1f34b2bc7f4bad2cd32da3a493fa0d14b51ee4a8879a98d1faced901b46e"
+      },
+      {
+        "name": "2_0699",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0699.jpg",
+        "image_md5": "d9b939b92da2bf1869602045627f087e",
+        "size": "2129x1198",
+        "label_sha256": "64dd198a0e635bb6e96dd7229951df68a46fbf6708b510bcd536aaa9dcb9e509"
+      },
+      {
+        "name": "2_0700",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0700.jpg",
+        "image_md5": "63c8f6abbaa6f781216d77c65e6a6dcb",
+        "size": "2129x1198",
+        "label_sha256": "0fce6a36f9fa58eb716d892780413cd4610d85611cf01cf5cb443cc773897c3c"
+      },
+      {
+        "name": "2_0701",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0701.jpg",
+        "image_md5": "4b6261da6c1b704905bfc88a040c6f99",
+        "size": "2129x1198",
+        "label_sha256": "d80d42871511def63c37e4408dec50c12ec5f341931b42b1576c6f129e6d7196"
+      },
+      {
+        "name": "2_0703",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0703.jpg",
+        "image_md5": "9392e0fa203b350ccc4c0d1190b34b15",
+        "size": "2129x1198",
+        "label_sha256": "d0faf191856d6c877f037dc2cd2e2f6f95816c4f96f0c1863caa4782250a40c8"
+      },
+      {
+        "name": "2_0709",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0709.jpg",
+        "image_md5": "c3a103b19c8f3847a17ff67c30b02c29",
+        "size": "2129x1198",
+        "label_sha256": "d7a147a833136fb5f8a872d752956b62d867b5894dddd5ccc7693a4867cd6dc8"
+      },
+      {
+        "name": "2_0747",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0747.jpg",
+        "image_md5": "32d23e942067b1601a91e47a6c66a205",
+        "size": "2129x1198",
+        "label_sha256": "cdd706b6ebe9ddcdfddc5453d644245a8e3da218d59b2e9a20a701c549e90cb7"
+      },
+      {
+        "name": "2_0748",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0748.jpg",
+        "image_md5": "1115d8f630df1ee927b897f0fcdf0e75",
+        "size": "2129x1198",
+        "label_sha256": "5a4db6a87c0cf6d23987899be2ffe59f4a52f18e17aa86b2fc1322ae9053b333"
+      },
+      {
+        "name": "2_0762",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0762.jpg",
+        "image_md5": "b18e55ac8945e4b2de62892838b56d36",
+        "size": "2129x1198",
+        "label_sha256": "3a6eeb0811837fbf31214cec935c3c7c6ecb034ec6bb7412bbc53985feafe94a"
+      },
+      {
+        "name": "2_0773",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0773.jpg",
+        "image_md5": "7eed0bca02d0377d478fb22ad3d879d0",
+        "size": "2129x1198",
+        "label_sha256": "e647b0dc2d327126c11d968a8cde7f3324f553a0b68a6a13412e60d8f82d33f7"
+      },
+      {
+        "name": "2_0774",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0774.jpg",
+        "image_md5": "e75f551492cd647eca5e2871cfdfd29c",
+        "size": "2129x1198",
+        "label_sha256": "1e49a884487faa00ca0074d42fc48cfb3917222903fb3f06a049e87e3ca231d3"
+      },
+      {
+        "name": "2_0776",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0776.jpg",
+        "image_md5": "2bdaefbb254ff6dc4107c519e440b2e0",
+        "size": "2129x1198",
+        "label_sha256": "02818e0d048d4fcb3d0c8d4a2e91021ba50e5bc6427375d6d3dc0f43d2e826c3"
+      },
+      {
+        "name": "2_0796",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0796.jpg",
+        "image_md5": "0b8f1e801ebdaa452780ea47857a0c96",
+        "size": "2129x1198",
+        "label_sha256": "3785f00998774891562eb339d5ae097529897cad53608bc51fa7313e89582e98"
+      },
+      {
+        "name": "2_0801",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0801.jpg",
+        "image_md5": "5e74f64ec26e7e55f223f2cfb62bec46",
+        "size": "2129x1198",
+        "label_sha256": "5c5f20ad0f77c5538aedca5fcc130fcc79f6fe2a13e55990574a53d0654a8b99"
+      },
+      {
+        "name": "2_0802",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0802.jpg",
+        "image_md5": "807984a90382b1a2eb006d6c0fb18f71",
+        "size": "2129x1198",
+        "label_sha256": "ad85b20af3eff016e2630683d43ae416af1dc25f3e91c6b82d7543e8bcac370b"
+      },
+      {
+        "name": "2_0803",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0803.jpg",
+        "image_md5": "36395f5792f7c71f2c8e1321a9b5cb68",
+        "size": "2129x1198",
+        "label_sha256": "dd87a7b2f0e38be62221f39a6492f221509128b6b8ffa0d03e9d3ade0f1a89f5"
+      },
+      {
+        "name": "2_0804",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0804.jpg",
+        "image_md5": "ac33592455b0c2a425e2e6d57f94b4b8",
+        "size": "2129x1198",
+        "label_sha256": "46dd19b03d28a7ae8bb722f1c2ce4ab087f02889e5bc935a94f0baa01627d797"
+      },
+      {
+        "name": "2_0805",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0805.jpg",
+        "image_md5": "ff2c222fe0dd98ffbb6d10358807deb2",
+        "size": "2129x1198",
+        "label_sha256": "b1537c558617dfcf383b2ebefcf1b88315aa3b354db8e5021cccd009b0c6b091"
+      },
+      {
+        "name": "2_0806",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0806.jpg",
+        "image_md5": "a2fc88cd4d065bc80a6fa61fa365ddf4",
+        "size": "2129x1198",
+        "label_sha256": "9cf0ac337b8aa10e033dee71ec29fa64526d3bd8c617c381808ade6c85159bec"
+      },
+      {
+        "name": "2_0807",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0807.jpg",
+        "image_md5": "15a15a1bed9eb18e4c276215f4f06cc8",
+        "size": "2129x1198",
+        "label_sha256": "2385b6599c81ccc886365ee1eee77636c6d616ee104bc3b12ba9b7d367e89b52"
+      },
+      {
+        "name": "2_0808",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0808.jpg",
+        "image_md5": "b487ecea0f0e691c55905cffba4f6dbc",
+        "size": "2129x1198",
+        "label_sha256": "842566b66b39cbb7876ec11ecaf4fb912f957060c153bfb7e8714ca2720f8684"
+      },
+      {
+        "name": "2_0809",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0809.jpg",
+        "image_md5": "b0dbed7cc987ddfac265878cf94a7b20",
+        "size": "2129x1198",
+        "label_sha256": "874de4849cffdc6ad46d962d58bf9c4f785fd562b92ca464795aead6c66d1b14"
+      },
+      {
+        "name": "2_0810",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0810.jpg",
+        "image_md5": "5da2e7205a56602dfced95988ef8a60c",
+        "size": "2129x1198",
+        "label_sha256": "a7c237f18dc785db054ba0a9d88e3a2a5fb25aaeae0a9e4a3ec4e6b323c4caab"
+      },
+      {
+        "name": "2_0811",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0811.jpg",
+        "image_md5": "ece3f08a49e479bab239a67d84d11e4f",
+        "size": "2129x1198",
+        "label_sha256": "06c38e4cc5d4fc46ec21c2493d6a3a7045ae1a8328aa091015f02e54b3f44b9b"
+      },
+      {
+        "name": "2_0812",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0812.jpg",
+        "image_md5": "27f773767ae0144e80b3cb2bfe1a42c7",
+        "size": "2129x1198",
+        "label_sha256": "0037b6bf99234003c3f073010c464c61cf65ace1229bc9761f02e64d6561df84"
+      },
+      {
+        "name": "2_0813",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0813.jpg",
+        "image_md5": "a27039d8069de6ee85ee26437eade3bb",
+        "size": "2129x1198",
+        "label_sha256": "ce06c12e063760a75f00911842d06c2e012b3e8fc1bfe07800d79e44c3c52e69"
+      },
+      {
+        "name": "2_0814",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0814.jpg",
+        "image_md5": "b416779970f6ca83b139e20fd38a3b0f",
+        "size": "2129x1198",
+        "label_sha256": "01d2a20a276c192684b3b311f31c280e2e2c8f0d005bf2eb5ea5ed857015dd63"
+      },
+      {
+        "name": "2_0815",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0815.jpg",
+        "image_md5": "03ba92abde4fb8ef2edc59fce5da50ba",
+        "size": "2129x1198",
+        "label_sha256": "abe4d16bb597a596b2680643e2f288ddfab98164a5d211000a8dbec161dbc4ae"
+      },
+      {
+        "name": "2_0816",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0816.jpg",
+        "image_md5": "9bf283452c0c3c3dc04fb17ae4c3f55b",
+        "size": "2129x1198",
+        "label_sha256": "ed67eea66a8e52bf24b2c49c89cd03cb393c8a2b36f79f165063f6efde0cf3cf"
+      },
+      {
+        "name": "2_0817",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0817.jpg",
+        "image_md5": "cb833b796f36c5e931e9e8f4fd99c733",
+        "size": "2129x1198",
+        "label_sha256": "67efe8b3dda8a84b61b1e511cef1d51e8b434b0d7e3afbc51b7c213e47fd0185"
+      },
+      {
+        "name": "2_0818",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0818.jpg",
+        "image_md5": "a87b22b31e3ce614b729b39e6b95e3c1",
+        "size": "2129x1198",
+        "label_sha256": "babf6a0b96fcac79e3bd4ae367e2d0da8a39bf1c2494c47394d51d1348df9f6f"
+      },
+      {
+        "name": "2_0819",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0819.jpg",
+        "image_md5": "057eb498227c2bddcdf1ae8b65c2ba41",
+        "size": "2129x1198",
+        "label_sha256": "92b145a9e1b9f38b8174d605fc6c9825325d02dab6db4f1ced7e555bf8cb361f"
+      },
+      {
+        "name": "2_0826",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0826.jpg",
+        "image_md5": "6b35270e122cc220a5a4b60c6e96e935",
+        "size": "2129x1198",
+        "label_sha256": "ee97f69d28127efbdcf2bbe0dd98079a475bd009f83fde1f36164ff7ed39c976"
+      },
+      {
+        "name": "2_0827",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0827.jpg",
+        "image_md5": "59221338e935e2113dd6f69330adef2d",
+        "size": "2129x1198",
+        "label_sha256": "c355524522393bd957c4fb0fd3eb37dff256884b14663af2dd136e051bc9e4b0"
+      },
+      {
+        "name": "2_0842",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0842.jpg",
+        "image_md5": "b0658a1cd26765286168254dbc3b9d87",
+        "size": "2129x1198",
+        "label_sha256": "17995667afa2ba5892afe12fd10f2faa3395b3c8d41bbca4c9039c26699de9ba"
+      },
+      {
+        "name": "2_0843",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0843.jpg",
+        "image_md5": "878843ed0b0f7d52c406eec1c67c6233",
+        "size": "2129x1198",
+        "label_sha256": "ac73ded0aa8f6b030d81a9ed759393ebea905c3d7352ccfe121712aee3df2b83"
+      },
+      {
+        "name": "2_0849",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\2-亮斑\\2_0849.jpg",
+        "image_md5": "c4dccd8a62320a1d617c7eea6723eec4",
+        "size": "2129x1198",
+        "label_sha256": "185fea8b9033d5338a84ca49e2d75e87dcc96f88c47add61a6e8d9260f1a5445"
+      },
+      {
+        "name": "9_0430",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0430.jpg",
+        "image_md5": "c9cbc996d497d46be3272dad6e273771",
+        "size": "1052x582",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0859",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0859.jpg",
+        "image_md5": "cccdea4dd2e5b67164e1feb600a08c58",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0860",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0860.jpg",
+        "image_md5": "9b1348c8b2ae5431349c03b03f1abd44",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0861",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0861.jpg",
+        "image_md5": "df842860094503286e572efdaf18f754",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0862",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0862.jpg",
+        "image_md5": "e202931bc09e45a14e08a1430663294b",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0863",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0863.jpg",
+        "image_md5": "e0551b12cfe7eb10faf851b8c4343466",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0864",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0864.jpg",
+        "image_md5": "84bd92718905bf0b9f2e38bab1d8f942",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0869",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0869.jpg",
+        "image_md5": "f45c696af8ff74505c61d301ba350e78",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0914",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0914.jpg",
+        "image_md5": "80f870cf67d8a8e75589fe900fa620d4",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0915",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0915.jpg",
+        "image_md5": "42684ca7343c074906b30bfcca90f6e1",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0916",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0916.jpg",
+        "image_md5": "b3b357403cafc15dfa0f239a331d3a0f",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0917",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0917.jpg",
+        "image_md5": "a2e1d336e4d03e33e9472ec83b1e717a",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0918",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0918.jpg",
+        "image_md5": "750f30f0a25da70e298ecfe6ac1dc997",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0919",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0919.jpg",
+        "image_md5": "ec336c9b56cd7d542a335002893411d4",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0920",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0920.jpg",
+        "image_md5": "c81bbfa421f85d42815c2f4d00c932d5",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0929",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0929.jpg",
+        "image_md5": "df0bdeb6ce6d83e0ad6d702d87bbfc27",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0930",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0930.jpg",
+        "image_md5": "e51a1d0bc152562e0455e2e63a25b1d6",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0931",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0931.jpg",
+        "image_md5": "9c722cf7fc88d60c809172b0604ecd17",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0932",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0932.jpg",
+        "image_md5": "d4fd80a230adbb2e9528e8808080c995",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0933",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0933.jpg",
+        "image_md5": "85c3298c11bbecd174dcd6e3c8fc7eaf",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0934",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0934.jpg",
+        "image_md5": "1e22f4f63a3f86b56bcf0fd02bbbfafe",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0935",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0935.jpg",
+        "image_md5": "10e6d8a4ea75a3938cd0263eb77c5852",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0936",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0936.jpg",
+        "image_md5": "43f507fae199a4b258dfe0a3f34d0330",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0937",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0937.jpg",
+        "image_md5": "0112bcc2bbe77f098c0a80bc136190a8",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0938",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0938.jpg",
+        "image_md5": "588805bd3ced9a65eb466ef1afeedd96",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0939",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0939.jpg",
+        "image_md5": "d2abd6d645b38265b31327b1a2854044",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0940",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0940.jpg",
+        "image_md5": "4bf4983438aa1419190a7262c6f04424",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0941",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0941.jpg",
+        "image_md5": "243cfe92f242507b13214bd0f72a5246",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0942",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0942.jpg",
+        "image_md5": "ab471550aa4c0a5d9069496d1362bd75",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0943",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0943.jpg",
+        "image_md5": "ac33a3ad0eb4978451b0a86ae3c1b4c9",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0944",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0944.jpg",
+        "image_md5": "4251454ba9435c389e43e567189d1d3f",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0945",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0945.jpg",
+        "image_md5": "8a5c0b8ec05f4980fcec1afd75e26c07",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0970",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0970.jpg",
+        "image_md5": "c316133b7f65bd3e7ea5b171c03ee369",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0971",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0971.jpg",
+        "image_md5": "7f1264572d826857ab3bd2551cd28335",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0972",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0972.jpg",
+        "image_md5": "4c137e3e7ee84acf7138cd2a4d74017f",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0973",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0973.jpg",
+        "image_md5": "58c37a9eeea6e74ec8f78949c1faffe1",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0974",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0974.jpg",
+        "image_md5": "c74d83bc98064565ae2e2ea203176c36",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0975",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0975.jpg",
+        "image_md5": "3d4bb2eb91f241e33cdc878a45f16f53",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0976",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0976.jpg",
+        "image_md5": "2c61b828b47613ee28368a67e6377a4f",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0977",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0977.jpg",
+        "image_md5": "65184cec46593880c4603e85f0035e4b",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0978",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0978.jpg",
+        "image_md5": "17eba89ee143b53e771c18069a735e80",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0979",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0979.jpg",
+        "image_md5": "53d70c14b36321d3d6088c26a7c83816",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0980",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0980.jpg",
+        "image_md5": "31565efdc05f656be5de0425a92b2fa2",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0981",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0981.jpg",
+        "image_md5": "ed986b47731fa71e74485e917cb48e1b",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0982",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0982.jpg",
+        "image_md5": "e81dd52e75abb3ebb572010ebb51bfae",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0983",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0983.jpg",
+        "image_md5": "22bbee114bb50cf6733a62cb7a83b264",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0984",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0984.jpg",
+        "image_md5": "401075b0ae91e3f053df8ec6431aac70",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0985",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0985.jpg",
+        "image_md5": "89cf6fc50a521031ad244332b83688d5",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0986",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0986.jpg",
+        "image_md5": "00be36b6addf381650e4bd6e05ec8f05",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0989",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0989.jpg",
+        "image_md5": "861e341bcab1782c7b4598b3a8cdf0cd",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0990",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0990.jpg",
+        "image_md5": "935ff6bb8d95252977c79c1e3e40511d",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0991",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0991.jpg",
+        "image_md5": "adc3b10c9b14af7d7f091edb6aa68908",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0992",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0992.jpg",
+        "image_md5": "ab3203289ae44c2a92f589b000b55fc7",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0993",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0993.jpg",
+        "image_md5": "c634e2d743f805e8048c3bc2a4c5e50a",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0994",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0994.jpg",
+        "image_md5": "f424a1ab7c0934df05a2e1a19e796661",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0995",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0995.jpg",
+        "image_md5": "2f818a8d14d5a497257faa608ef99234",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_0996",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_0996.jpg",
+        "image_md5": "621eec6e36402be06fa08aa7f129d236",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1002",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1002.jpg",
+        "image_md5": "f02708fc550c201efd58c792b465bfab",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1003",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1003.jpg",
+        "image_md5": "6ad0c55bbf58420a14a03afbbab7f19f",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1065",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1065.jpg",
+        "image_md5": "c38c7a39e694d728caf3377f0fe0fb23",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1073",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1073.jpg",
+        "image_md5": "29150691215ba550cda332b634543ace",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1074",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1074.jpg",
+        "image_md5": "ab38676ed37ab8332674a8a25479e80c",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1075",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1075.jpg",
+        "image_md5": "1b6c76b1c43547588b5143fa75f307fe",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1076",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1076.jpg",
+        "image_md5": "05bf9a23871c3848e7566f9850a7f005",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1077",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1077.jpg",
+        "image_md5": "5e121ebc0683492f9d56d0fbbea8cc38",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1078",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1078.jpg",
+        "image_md5": "e9c2c1612562551c2a3fc9d045e94105",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1079",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1079.jpg",
+        "image_md5": "1e796b6422dbea7f399a0c5b6a568ddf",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1080",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1080.jpg",
+        "image_md5": "205210d974ddcccf1c9ae5ffaff57925",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1081",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1081.jpg",
+        "image_md5": "2f806ee8d994d3e40695973314ed1e90",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1082",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1082.jpg",
+        "image_md5": "fdcbe838f05eb40dbf0e9c9baefab796",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1083",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1083.jpg",
+        "image_md5": "f5ceceeb515731dc18032aa2eab93df2",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1084",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1084.jpg",
+        "image_md5": "c3b9b4a5ed1547a02b932c6af0887e26",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1085",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1085.jpg",
+        "image_md5": "1755588362c04bf0af3ceaf34cd04a5d",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1086",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1086.jpg",
+        "image_md5": "379a1a92a5fd59ea62900205cc819cf7",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1104",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1104.jpg",
+        "image_md5": "c8f3102b976a737122c9f6b09a8e20b8",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1135",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1135.jpg",
+        "image_md5": "5dae91037b3b2f1fd725c4c90620f33b",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1156",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1156.jpg",
+        "image_md5": "d7da1e45f680fcd410ccd5cce47fad10",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1160",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1160.jpg",
+        "image_md5": "e92f6565bbd8a58219de10497d03069f",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1164",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1164.jpg",
+        "image_md5": "45a900aeb039b4d43324cefd533aeb52",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1215",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1215.jpg",
+        "image_md5": "c5d831f3f8eb555841d3a33469a1ac6d",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1252",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1252.jpg",
+        "image_md5": "80bb88c14b3237d68ed2eb9a124e4efb",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1253",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1253.jpg",
+        "image_md5": "ba7105ef9b347691485b846934be386a",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1254",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1254.jpg",
+        "image_md5": "ff56093f040b121a64fc2b1866d48aa1",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1297",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1297.jpg",
+        "image_md5": "d3d35c0968386672d714f71528564635",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1298",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1298.jpg",
+        "image_md5": "d1ad394c3e84ce0b4399fe4ea8a6ce9c",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1299",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1299.jpg",
+        "image_md5": "0a6b6539ee4da8ee19586ed734ce28fd",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1300",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1300.jpg",
+        "image_md5": "9841dfeadbb9eb90b805b3165f7d51b3",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1301",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1301.jpg",
+        "image_md5": "5a4185bbbbaeb4ed9a8afbb8e1778d00",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1302",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1302.jpg",
+        "image_md5": "a4953ef292b3267042043e60e915eaed",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1303",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1303.jpg",
+        "image_md5": "d11a501e9492541f524c6b33603f3175",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1304",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1304.jpg",
+        "image_md5": "7b05dae6991ec25bc12a986a6b5a139e",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1305",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1305.jpg",
+        "image_md5": "19bc09fa9103a5528ecfd6421b498e5b",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1306",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1306.jpg",
+        "image_md5": "96840813bd0052de65a36fcef12b6c20",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1307",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1307.jpg",
+        "image_md5": "9e21f612387c0dab80453e3baf8e1aae",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1308",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1308.jpg",
+        "image_md5": "1dd679eeab5200e055072b7497a1ba42",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1309",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1309.jpg",
+        "image_md5": "397a5f97c2033dbe2b942138e045c164",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1310",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1310.jpg",
+        "image_md5": "4051c78ffdf673aed033123d477feb82",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1311",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1311.jpg",
+        "image_md5": "53ff498f6cd3b5d08e797327f6219399",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1345",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1345.jpg",
+        "image_md5": "754ddb60439f1f27e00ef47f96e78e35",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1353",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1353.jpg",
+        "image_md5": "8e0835f6b394e7c67e9acb38b093f589",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1446",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1446.jpg",
+        "image_md5": "c0fada9d188a84712447676f9e78b8cc",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1447",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1447.jpg",
+        "image_md5": "2a07496ca55aebed0ff4fb5a3c0a4f37",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1448",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1448.jpg",
+        "image_md5": "f8b401448b87d424baea0d5d49865dbd",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1449",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1449.jpg",
+        "image_md5": "08dc9b4735721917a88d0b123d47808a",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1450",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1450.jpg",
+        "image_md5": "4ddf99fe080ec09c9fd2d652e52a5e3d",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1451",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1451.jpg",
+        "image_md5": "327345c442b393cbef00f7da9200dbf4",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1452",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1452.jpg",
+        "image_md5": "aebd9ed913467b45b1faeb874d48a43c",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1453",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1453.jpg",
+        "image_md5": "97485392cfd6e4eb4f31ba4781619067",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1454",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1454.jpg",
+        "image_md5": "d385a2b7fefbd36e7cc25f7dcaeedab0",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1483",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1483.jpg",
+        "image_md5": "b5c85fb46422c915252ca3a50cee5b5b",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1485",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1485.jpg",
+        "image_md5": "3be983ad03e6911ab52bd95bf04e7743",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1486",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1486.jpg",
+        "image_md5": "a1cca8d2bb0968f3166032e7a59c20f9",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1497",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1497.jpg",
+        "image_md5": "2830787c8e6cf45b5ec2c32e722ee78d",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1498",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1498.jpg",
+        "image_md5": "9074e0d780c7b917903613ef85ff196d",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1499",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1499.jpg",
+        "image_md5": "b3811660b8aa5a9c63271bcea2ef4d6b",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1500",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1500.jpg",
+        "image_md5": "9a83cec497d8df276812c392c9ad382b",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1501",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1501.jpg",
+        "image_md5": "23a4e17fb904381d7ac6d716db8735a8",
+        "size": "1052x585",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1616",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1616.jpg",
+        "image_md5": "18d752cc14558432aaba761dd2ece9cb",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1654",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1654.jpg",
+        "image_md5": "668e454c5f53bb91fcc8d996252c9eb3",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1655",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1655.jpg",
+        "image_md5": "d3ee914fc825bfadb4ed397cf0625859",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1656",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1656.jpg",
+        "image_md5": "2378db8fb43948bb2e78890ead2b8460",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1657",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1657.jpg",
+        "image_md5": "3102b7b5e38dffb29c39f3b4508620b0",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1658",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1658.jpg",
+        "image_md5": "8c6077887c35bae990b8d49dc79fe273",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1659",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1659.jpg",
+        "image_md5": "39fa28419210542b507f7d98bef37b8e",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1662",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1662.jpg",
+        "image_md5": "23f2512db1e49e9ac8dfc6798a012536",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1663",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1663.jpg",
+        "image_md5": "a490468f2777ebb0e346e43e5e559455",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1664",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1664.jpg",
+        "image_md5": "1bc40b26de99081c49c4ce2baecc4661",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1665",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1665.jpg",
+        "image_md5": "6d1d065139ca96b1f6f78c1bb800e76e",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1666",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1666.jpg",
+        "image_md5": "4c295c4e588e5314e450163e7686b2cd",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1667",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1667.jpg",
+        "image_md5": "486738e735fa4f5853271f76ad732f3c",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1668",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1668.jpg",
+        "image_md5": "0d1962b5c13eca78ebbb2833b166df88",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1669",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1669.jpg",
+        "image_md5": "41e06959b51675f54979852247e8b19b",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1671",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1671.jpg",
+        "image_md5": "0713e66ccc5325d09527de7150b26000",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1672",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1672.jpg",
+        "image_md5": "bdd1ba88c78d9b6da9014d27db251d15",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1673",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1673.jpg",
+        "image_md5": "f89d32423be0329937f2c0a072c0c5e7",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1674",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1674.jpg",
+        "image_md5": "586d408ddef51ba71d4fa4746cd8afd4",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1727",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1727.jpg",
+        "image_md5": "18600a38da3ef3d33a4bcc0e1e9ad0aa",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1728",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1728.jpg",
+        "image_md5": "3af28b55474c9dbc0011c98dc0499f3c",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1729",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1729.jpg",
+        "image_md5": "1c84bb1f63934fbec1264b05a5d5d2ff",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1730",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1730.jpg",
+        "image_md5": "e81f19d7308cb80f6bc556649698fda2",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1731",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1731.jpg",
+        "image_md5": "97e1cda3d533ffdba82ced7488b0eaf6",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1732",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1732.jpg",
+        "image_md5": "7f2c406ad2c5be198335d2794e653340",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1733",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1733.jpg",
+        "image_md5": "51967d8eedbcc4ccc5bb22f839779ff0",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1734",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1734.jpg",
+        "image_md5": "de23538697d2e87c1429d8c28a6622bc",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1735",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1735.jpg",
+        "image_md5": "cc923ac8587c2835f98a41f895173ae3",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1736",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1736.jpg",
+        "image_md5": "8d7597f98817589361f2cfe8de0d9d47",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1737",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1737.jpg",
+        "image_md5": "9bec4e362679890057f67dcfc8770772",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1738",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1738.jpg",
+        "image_md5": "b27b4d6b4a737eeb71c7e54413af0fc8",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1739",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1739.jpg",
+        "image_md5": "062e4e312dd147df417c2022abc24312",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1740",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1740.jpg",
+        "image_md5": "3e9a62088d7c4a8b8cbb3019392cce8e",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1741",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1741.jpg",
+        "image_md5": "5df6891614f06634b1717d78bb173885",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1742",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1742.jpg",
+        "image_md5": "3317abf74a270a9746d5c3559ffefaf4",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1743",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1743.jpg",
+        "image_md5": "054ed583c122f0cb9c8818b71e971d8e",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1744",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1744.jpg",
+        "image_md5": "6ece644108fa434de5594dc2d56fe128",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1745",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1745.jpg",
+        "image_md5": "07c2206464401a9a53c06d58bd7b618f",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1746",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1746.jpg",
+        "image_md5": "4ec9e0f460ed1fd15eb8b0d4a1c76332",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1747",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1747.jpg",
+        "image_md5": "61445b3df768e1bc4df7fcc77a314c90",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1748",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1748.jpg",
+        "image_md5": "0479c675754badffe30f076a0e510a8e",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1749",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1749.jpg",
+        "image_md5": "fa32cefe61cfd0eecdfc925b6ffe1aad",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1750",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1750.jpg",
+        "image_md5": "8cfeb475a174f5018ea5ee1b5552c9e7",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1751",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1751.jpg",
+        "image_md5": "74a4df04f35708456477f92dc13fb135",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1752",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1752.jpg",
+        "image_md5": "146d43122b5c203bc8bacf03c715006b",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1753",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1753.jpg",
+        "image_md5": "0bcf47f139309598cd5f02497dda0adb",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1754",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1754.jpg",
+        "image_md5": "76a3b1ac7071ea9b9d0b2beab64b7aea",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1755",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1755.jpg",
+        "image_md5": "8e362569e0aa7bcbfdcc59f1e196ea6a",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1756",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1756.jpg",
+        "image_md5": "dcfb2e0201c09fb429d45ed9ecff5956",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1757",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1757.jpg",
+        "image_md5": "36de693f2fef78d04ced25c54850cdb1",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1758",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1758.jpg",
+        "image_md5": "e42a234f03b758fe56ea46da272ae6a1",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1759",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1759.jpg",
+        "image_md5": "6c75c5adda13c2769f74bed040eedf55",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1760",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1760.jpg",
+        "image_md5": "76de1c7649c816fb6194b4fd0cccb436",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1761",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1761.jpg",
+        "image_md5": "c39eaca79aad2521940fcc3b608dba68",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1762",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1762.jpg",
+        "image_md5": "dbaa408857c81b719249ad486a4eb01e",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1763",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1763.jpg",
+        "image_md5": "67ea10cfb7dd95b748b366a115e6c7f7",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1764",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1764.jpg",
+        "image_md5": "f8d88a3513c0985f945f2fa073ba110e",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1765",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1765.jpg",
+        "image_md5": "452b7ea0be5fee8ecff41e5d81c20c96",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1766",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1766.jpg",
+        "image_md5": "e537a464a58d247d31a5f787f4756e44",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1767",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1767.jpg",
+        "image_md5": "58bb4ad795e7117e82988a6bb63229ac",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1768",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1768.jpg",
+        "image_md5": "04fdfe991663bbb729d95d7ab71378d5",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1769",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1769.jpg",
+        "image_md5": "67a2ed4ac376333b9d40cb57a57f53f8",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1770",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1770.jpg",
+        "image_md5": "6e9d9b60cab8dca29672e2aba0998dff",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1771",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1771.jpg",
+        "image_md5": "f6fbc004c1daa5e2d3841d6d541bf592",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1772",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1772.jpg",
+        "image_md5": "cf25d2d2000183f1944b83a779716854",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1773",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1773.jpg",
+        "image_md5": "077d7380b78d066173ec560befca755e",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1774",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1774.jpg",
+        "image_md5": "edc9704650ce5a57c19fa0f6e3ddb397",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1775",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1775.jpg",
+        "image_md5": "35be11509740ef3271ff3d8036493312",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1776",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1776.jpg",
+        "image_md5": "a4045dace1d11dcd68d27624a935e420",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1777",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1777.jpg",
+        "image_md5": "5831c496d03f570ab9027063b1f983d0",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1778",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1778.jpg",
+        "image_md5": "9f5ab50e048f00815e39121578fda52f",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1779",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1779.jpg",
+        "image_md5": "b4535aacde82415583a7242d89b58978",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1780",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1780.jpg",
+        "image_md5": "9023d0b3726cf9221b2a25258298a862",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1781",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1781.jpg",
+        "image_md5": "ea6d2eb2cd330cbeb2df630daa7c7f78",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1782",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1782.jpg",
+        "image_md5": "68031efdb7c159cdc5c46d05edf40538",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1783",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1783.jpg",
+        "image_md5": "7011bd61145f078179746be7f3955798",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1784",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1784.jpg",
+        "image_md5": "38fcde3869bcd1ae47dc781f5a1dc257",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1785",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1785.jpg",
+        "image_md5": "cd7a4260ca38e81c62d092fafa45d8c8",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1786",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1786.jpg",
+        "image_md5": "028f4b374a6cc6cc0d2136e5df42f9dd",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1787",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1787.jpg",
+        "image_md5": "17d7f1809001a47e1ea2907e711700d8",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1788",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1788.jpg",
+        "image_md5": "303d35e7b8779eb119ded6fc72a8d561",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1789",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1789.jpg",
+        "image_md5": "c2535c51898430c6fea2db28c67612f0",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1790",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1790.jpg",
+        "image_md5": "761080c2104a72255e8383a59003ee9e",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1791",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1791.jpg",
+        "image_md5": "0ca7596bc89f295a1142fe733f44c6af",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1792",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1792.jpg",
+        "image_md5": "7df65108554b98c99421cddf3b933408",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1793",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1793.jpg",
+        "image_md5": "2b431baaeca6e63a7b7c98dac57d66d6",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1794",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1794.jpg",
+        "image_md5": "7a821e8be7e98b7a1295cdd4811d5eb4",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1795",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1795.jpg",
+        "image_md5": "e4bcf0669acd36666d8af55b9f123d61",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1796",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1796.jpg",
+        "image_md5": "f21c3d0a668d34ee4b8037ff7e01acc2",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1797",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1797.jpg",
+        "image_md5": "8811347c797d16595cd7133c33398544",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1798",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1798.jpg",
+        "image_md5": "7865781c6df5282485f16043351d7a06",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1799",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1799.jpg",
+        "image_md5": "6f9d0f2372bc9ef39b8e390e79e72f1e",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1800",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1800.jpg",
+        "image_md5": "084620686d06a71079145da651331d61",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1801",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1801.jpg",
+        "image_md5": "f5dc5bec59d1b4bd714e3948c14a2221",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1802",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1802.jpg",
+        "image_md5": "b6b489bf24f583c6fcd752cb62949172",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1803",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1803.jpg",
+        "image_md5": "f5d899d7fd4d370b261055c926a2e119",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1804",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1804.jpg",
+        "image_md5": "f0d50e370a9d6cc8b566b475814c4609",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1805",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1805.jpg",
+        "image_md5": "81bca5ba92f8d6d098905ad17a1d3451",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1806",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1806.jpg",
+        "image_md5": "509c771b67042a27a3cea7e476efea9a",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1807",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1807.jpg",
+        "image_md5": "457b19148e0dd06abdf7440419e268ac",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1808",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1808.jpg",
+        "image_md5": "6267c3f72784ae93226d74d5abcc2425",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1809",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1809.jpg",
+        "image_md5": "7df56b887d96cdaa2139fa592a43fd94",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1810",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1810.jpg",
+        "image_md5": "ee50e251615d35c386ad1d16f058c45b",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1811",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1811.jpg",
+        "image_md5": "be11a66db6d59a4a3b9e39a2edac83e9",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1812",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1812.jpg",
+        "image_md5": "b97ecb0122436847470886f40f4e44e5",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1813",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1813.jpg",
+        "image_md5": "6929d843dbaaa9b2ff0972ada21d3442",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1814",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1814.jpg",
+        "image_md5": "e418b2b86bb737d1cfcf3fc4d3132ce2",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1815",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1815.jpg",
+        "image_md5": "c044a31c0da11c56657ec63e60f5cc48",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1816",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1816.jpg",
+        "image_md5": "6b91a6eeee68bd5c4d819cf10aae7226",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1817",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1817.jpg",
+        "image_md5": "f80252a862445c132ae69569a5b5403b",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1818",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1818.jpg",
+        "image_md5": "5cf38280855d1f4a7bf5c1ee8ee1efc5",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1819",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1819.jpg",
+        "image_md5": "265c952f840ecf607681400969593c42",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1820",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1820.jpg",
+        "image_md5": "5dbdd3652e5c95669e03c4ed04b22e7f",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1821",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1821.jpg",
+        "image_md5": "66bf16ad512d0047e8d2fa0e3f605d0a",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1822",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1822.jpg",
+        "image_md5": "3d49ceaaf234f7fc69ff4e782b96effe",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1823",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1823.jpg",
+        "image_md5": "1ec6c4b73e58697957d426727a4a2b97",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1824",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1824.jpg",
+        "image_md5": "f5448041546cf01bbef80355d0b8ece9",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1825",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1825.jpg",
+        "image_md5": "ce06c10c8dd052c37aafe0e27c8fc0db",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1826",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1826.jpg",
+        "image_md5": "e0fc05c38d701d99eedce87d12144b54",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1827",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1827.jpg",
+        "image_md5": "541ce3f4c4231ab82461145f1aa546f7",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1828",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1828.jpg",
+        "image_md5": "c4fbbaa682621182591c6e42d074b660",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1829",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1829.jpg",
+        "image_md5": "1c458f157622b0aed07520723fa1b28a",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1830",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1830.jpg",
+        "image_md5": "69af8aaf8cc7b3fbd6212d286582a361",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1831",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1831.jpg",
+        "image_md5": "a639982f21fab49cada3c87dbef2ef58",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1832",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1832.jpg",
+        "image_md5": "604add935d58279a87515c9be84e1fb7",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1833",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1833.jpg",
+        "image_md5": "c5b4e84c27f025cfff7128fd0eb8d5bf",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1834",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1834.jpg",
+        "image_md5": "93c6f0f9dbe75cdb019b607f026d0b79",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1835",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1835.jpg",
+        "image_md5": "927b807cddb3ade6c2bf5a93cc16f284",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1836",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1836.jpg",
+        "image_md5": "6cb08644fc2ca2ed318e586a4c3f629b",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1837",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1837.jpg",
+        "image_md5": "5bae6e7cb9b8eb81c7056e0313ecc0b7",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1838",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1838.jpg",
+        "image_md5": "77e52e32f9f7d7ab3a8b9bd6884db6d4",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1839",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1839.jpg",
+        "image_md5": "3940165042cec8af3864409c25eaba90",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1840",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1840.jpg",
+        "image_md5": "c7443aced39e9ec16d91dfa844ee9445",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1841",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1841.jpg",
+        "image_md5": "11cb38c017dd2416f849e749275cbe10",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1842",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1842.jpg",
+        "image_md5": "7a733bdc272f0d2fd05cc8b07f9fb8e7",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1843",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1843.jpg",
+        "image_md5": "3e629f4ee34c6f1e255575590eeee086",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1844",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1844.jpg",
+        "image_md5": "f5ca79516bda2b6e219bf6cd3c37f400",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1845",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1845.jpg",
+        "image_md5": "94cd1dd9c2103cf12db8d7085bf6184b",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1846",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1846.jpg",
+        "image_md5": "33a8fbb55c19ab6b37095f0bb8dba6e2",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1847",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1847.jpg",
+        "image_md5": "1fe18ba56322f1ac2212e6becc6aab65",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1848",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1848.jpg",
+        "image_md5": "651d46ff23221b4dc2df42482d5dfebe",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1849",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1849.jpg",
+        "image_md5": "f0868628dedc6fa854258920854feaf5",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1850",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1850.jpg",
+        "image_md5": "f7c8061644ce1ff1b83f17321a05bdb2",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1851",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1851.jpg",
+        "image_md5": "3ae37a300289343643215d7f64360f75",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1852",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1852.jpg",
+        "image_md5": "340c10890ae54bab79abd604c805f8bd",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1853",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1853.jpg",
+        "image_md5": "a234bc968e21951f4fcc6a45278954a5",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1854",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1854.jpg",
+        "image_md5": "18e2c2a54bf62a63020a4b8d42975672",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1855",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1855.jpg",
+        "image_md5": "4a53651dfb1e907f5809b155585ab005",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1856",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1856.jpg",
+        "image_md5": "07f152a834ca779dcfceb5576ac59e28",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1857",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1857.jpg",
+        "image_md5": "f3068fd1031c04206eb5efc7d9a338f2",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1858",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1858.jpg",
+        "image_md5": "f73f7d590049911488aceafa3e5210d5",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1859",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1859.jpg",
+        "image_md5": "8e0d5bbaa94bba1f8f046de9d02994d6",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1860",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1860.jpg",
+        "image_md5": "86cd71096bec55e23c946d511c5bb21f",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1861",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1861.jpg",
+        "image_md5": "1c50912051989bc20a8fb375804e7274",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1862",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1862.jpg",
+        "image_md5": "6ce0d737cf3bb8600a1223ceedefc333",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1863",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1863.jpg",
+        "image_md5": "ebe788566954527c6c66b95043412748",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1864",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1864.jpg",
+        "image_md5": "37b0bc983aba649465ab4d8066a5216d",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1865",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1865.jpg",
+        "image_md5": "96d3367344be58aa175c36fb010dee19",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1866",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1866.jpg",
+        "image_md5": "38ec6973d3597a25f3608038576f4a77",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1867",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1867.jpg",
+        "image_md5": "c9d57aaba36e84068da4f695fa2e73a0",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1868",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1868.jpg",
+        "image_md5": "db1bc0f5803532b04029f9c65baa1653",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1869",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1869.jpg",
+        "image_md5": "a5b22e79e112cc44284abe0d2b7f166a",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1870",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1870.jpg",
+        "image_md5": "6865fa5a9581e447446c6288b1b8e068",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1871",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1871.jpg",
+        "image_md5": "f3a8d70fa75aa28f96c6d3c596a39fe4",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1872",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1872.jpg",
+        "image_md5": "ac5687de8b80426a44ee665332c62b5b",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1873",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1873.jpg",
+        "image_md5": "798408c8e6214d43fd123939f125c0a7",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1882",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1882.jpg",
+        "image_md5": "36f8452b00e92dbeb4d975070777a1fb",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1883",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1883.jpg",
+        "image_md5": "6220ffeac02e32c3282a589861482825",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1884",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1884.jpg",
+        "image_md5": "3b5ae0adac2745486e2beea8afd4e58b",
+        "size": "2129x1198",
+        "label_sha256": null
+      },
+      {
+        "name": "9_1885",
+        "src": "D:\\CT Detection\\问题电芯图片汇总\\负样本\\9_1885.jpg",
+        "image_md5": "0321b41e72ea77a043623497b7f33f4f",
+        "size": "2129x1198",
+        "label_sha256": null
+      }
+    ],
+    "roi": false,
+    "jpeg_quality": 95,
+    "converter_sha256": "b9b961d30f602bc2d5e860a52b104f275422f8d81e588df2b857b2d47fc6c8da",
+    "preparer_sha256": "88ef9ab2619126a7bce65a4bb2bdaf9b2318086e620f622d65abed85e70d14eb",
+    "cv2_version": "4.8.1",
+    "roi_k": null,
+    "roi_code_sha256": null,
+    "roi_box": null
+  },
+  "sources": {
+    "scripts/audit_precision_e2e.py": "c958eace163f419505a965043f327f07124f712ee55e7d5c9a39f61bb9635b8b",
+    "web/app.py": "94ce501d375af975f7ea0789dd3a5a5de8ee2e4b34e0ed6efe1b027d4fbe94f1",
+    "core/image_io.py": "e3718aed9f44c24b46fe0123a1f3d5b0d6f195c4bf09aff27c97fe562d22382d",
+    "core/model_spec.py": "80485b1688cb2dcb17390fc0da15e76145a16c998f842cd407926bd2c66df6b9",
+    "core/detection_metrics.py": "5f7f1548ff4182cba473468959c9330146b4bc685c199fc4b8d31da063909653",
+    "core/eval_cache.py": "55ab62617803df505c4f1f7a7d0901730fb157c040cf434e8eed9989060c8a4f"
+  },
+  "ultralytics": "8.4.146",
+  "selected": [
+    "0_0078",
+    "0_0010",
+    "1_0145",
+    "0_0330",
+    "2_0022",
+    "0_0257",
+    "0_0016",
+    "0_0017",
+    "9_0430",
+    "9_0859",
+    "9_0860",
+    "9_0861",
+    "9_0862",
+    "9_0863",
+    "9_0864",
+    "9_0869"
+  ],
+  "predict": {
+    "conf": 0.3,
+    "iou": 0.7,
+    "max_det": 300,
+    "imgsz": 1920,
+    "rect": true,
+    "device": 0
+  },
+  "full_quality": {
+    "n": 676,
+    "batch_sizes": [
+      1,
+      16
+    ],
+    "decoder": "cv2 BGR uint8",
+    "matching": "max-iou-v2",
+    "match_iou": 0.5,
+    "precision_processes": "independent"
+  },
+  "perturbations": {
+    "gamma": 0.9,
+    "gaussian_sigma": 2.0,
+    "gaussian_seed": 20261023,
+    "jpeg_quality": 85,
+    "n": 16,
+    "batch": 1,
+    "meaning": "诊断幅度，未由工艺确认为生产容差；不改几何/GT"
+  },
+  "e2e": {
+    "route": "/api/detect/image + /api/detect/batch",
+    "transport": "loopback HTTP multipart",
+    "server": "本进程随机端口，独立结果目录，既有V4权重硬链接",
+    "singles": 32,
+    "batches16": 6,
+    "mixed_order": "冻结16图循环",
+    "state": "每次实际save_state，未清空台账",
+    "includes": "HTTP/表单/PIL解码/BGR转换/预处理/GPU/NMS/画图/编码/写盘/台账JSON/响应",
+    "excludes": "浏览器/外网/USB盘/队列竞争/路径任务原始文件备份",
+    "startup": "另计，不混入稳态"
+  },
+  "decision_rules": {
+    "quality": "逐类TP/FP/FN与成对框差异均报告；任何损伤TP下降或FP增加标为退化，不自动发布",
+    "speed": "报告p50/p95/样本数及原始值；只描述本机上传契约，不外推产线路径吞吐",
+    "robust": "逐变换报告基线与扰动TP/FP/FN；单变换不混合，不训练或调阈值",
+    "generalization": "同集数值回归；V4已见历史数据，不能作为独立质量验收"
+  },
+  "closure": "算力；发布/真值/物理容差为人力或判断关闭"
+}

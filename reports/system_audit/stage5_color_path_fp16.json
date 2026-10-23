@@ -1,0 +1,67 @@
+{
+  "schema": "ct-stage5-followup/1",
+  "half": true,
+  "plan_sha256": "7eb2a7a6062e56a0d47ead4884ec70dce3a07216767a7e8896bf356a5164c31b",
+  "start": "2026-10-23 08:09:56+0800",
+  "actual_dtype": "torch.float16",
+  "path": {
+    "timing_ms": {
+      "n": 6,
+      "p50": 506.92340004025027,
+      "p95": 526.8493499897886,
+      "values": [
+        511.5407999837771,
+        495.53049996029586,
+        531.9521999917924,
+        495.5403000349179,
+        510.9465999994427,
+        502.90020008105785
+      ]
+    },
+    "tasks": [
+      {
+        "status": "done",
+        "done": 16,
+        "errors": 0,
+        "defect_imgs": 0
+      },
+      {
+        "status": "done",
+        "done": 16,
+        "errors": 0,
+        "defect_imgs": 0
+      },
+      {
+        "status": "done",
+        "done": 16,
+        "errors": 0,
+        "defect_imgs": 0
+      },
+      {
+        "status": "done",
+        "done": 16,
+        "errors": 0,
+        "defect_imgs": 0
+      },
+      {
+        "status": "done",
+        "done": 16,
+        "errors": 0,
+        "defect_imgs": 0
+      },
+      {
+        "status": "done",
+        "done": 16,
+        "errors": 0,
+        "defect_imgs": 0
+      }
+    ],
+    "attempted_raw_copies": [],
+    "ledger_records": 96,
+    "sandbox_files": [
+      "_detect_task.json",
+      "_state.json"
+    ]
+  },
+  "end": "2026-10-23 08:10:02+0800"
+}

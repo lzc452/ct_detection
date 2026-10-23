@@ -46,7 +46,7 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, 'core'))
 import Config
 from device_utils import pick_device, is_cuda_device
 from model_spec import InferenceSpec, load_model_spec as read_model_spec
-from image_io import read_bgr_upload, read_bgr_disk, write_bgr
+from image_io import IMAGE_CONTRACT, read_bgr_upload, read_bgr_disk, write_bgr
 from ultralytics import YOLO
 import roi as roi_mod
 from PIL import Image, ImageFont
@@ -68,8 +68,8 @@ os.makedirs(RESULTS_FOLDER, exist_ok=True)
 DEVICE = pick_device(verbose=True)
 # FP16可减少GPU计算开销；框坐标/置信度存在数值差异，不能宣称与FP32零偏差。
 # pick_device 已验证驱动/架构，并返回整数 0，不能再按 'cuda' 字符串判断。
-# CT_FP16=0 可回退 FP32，供同输入条件下的精度/速度对照使用。
-USE_FP16 = is_cuda_device(DEVICE) and os.environ.get('CT_FP16', '1') != '0'
+# 阶段5完整回归发现损伤少1TP，默认保持FP32；CT_FP16=1仅供明确选择的对照/人工批准。
+USE_FP16 = is_cuda_device(DEVICE) and os.environ.get('CT_FP16', '0') == '1'
 INFER_SIZE = 1920   # ★必须与训练分辨率一致：1920训练的模型在640下几乎检不出缺陷（2026-10-14 实测）
 BATCH_SIZE = 16     # 2026-10-21 实测：5060 FP16 batch16 峰值显存仅 1.66G，20ms/张
 MAX_DET = 300
@@ -297,7 +297,8 @@ _STATE_SAVE_LOCK = threading.Lock()
 
 def _model_contract(bundle):
     return dict(model_id=bundle.model_id, model_sha256=bundle.model_sha256,
-                infer_spec=asdict(bundle.spec), half=USE_FP16, device=str(DEVICE))
+                infer_spec=asdict(bundle.spec), half=USE_FP16, device=str(DEVICE),
+                image_contract=IMAGE_CONTRACT)
 
 
 def _bind_batch_model(batch_id, bundle, default_info):
@@ -350,6 +351,7 @@ def add_file_record(batch_id, path, status, n_boxes=0, conf=None, model_id=None,
         "模型": model_id or bundle.model_id,
         "模型SHA256": bundle.model_sha256,
         "推理规格": asdict(bundle.spec),
+        "图像契约": IMAGE_CONTRACT,
         "半精度": USE_FP16,
         "设备": str(DEVICE),
         "阈值": conf if conf is not None else CONF_DEFAULT,

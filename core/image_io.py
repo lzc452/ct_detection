@@ -6,6 +6,8 @@ import cv2
 import numpy as np
 from PIL import Image
 
+IMAGE_CONTRACT = 'bgr-uint8-v1'
+
 
 def read_bgr_upload(stream):
     """保持原有PIL上传解码器，只纠正交给Ultralytics的通道顺序。"""

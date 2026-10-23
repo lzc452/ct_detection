@@ -1,0 +1,10 @@
+{
+  "schema": "ct-stage5-probe-failures/1",
+  "plan": "stage5_plan.json",
+  "failure": "AttributeError: predictor.args.half (Ultralytics 8.4.146将half转为quantize)",
+  "phase": "Web warmup后、质量/时延循环前",
+  "quality_measurements_created": false,
+  "correction": "仅记录quantize和实际网络dtype，不改推理参数；stage5_plan_v2.json及F-034在测量前登记",
+  "superseded_by": "stage5_fp32.json/stage5_fp16.json",
+  "source_log_sha256": "bc95bf517fd39f68113c551994f2194f6ab53ebbaa56bdb40cbdfc772e4b7c0e"
+}

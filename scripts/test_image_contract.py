@@ -106,6 +106,33 @@ class ImageContractTests(unittest.TestCase):
             self.assertEqual(self.records(helper)[0]['状态'], 'failed')
             self.assertFalse([r for r in self.web.detection_results if r['批次ID'] == helper])
 
+    def test_legacy_color_contract_cannot_continue_same_upload_batch(self):
+        old = self.web._model_contract(self.web.snapshot_model())
+        old.pop('image_contract')
+        self.web.batch_info['legacy-color'] = dict(model_contract=old)
+        for route in ('image', 'batch'):
+            response = self.client.post('/api/detect/'+route, data={
+                'file' if route == 'image' else 'files': (png_bytes(self.blank), 'a.png'),
+                'batch_id': 'legacy-color'}, content_type='multipart/form-data')
+            self.assertEqual(response.status_code, 409)
+        self.assertFalse(self.records('legacy-color'))
+
+    def test_legacy_color_contract_cannot_resume_path_task(self):
+        folder = self.base / 'input'
+        folder.mkdir()
+        (folder / 'a.png').write_bytes(png_bytes(self.blank).getvalue())
+        old = self.web._model_contract(self.web.snapshot_model())
+        old.pop('image_contract')
+        jobs = [(str(folder / 'a.png'), folder.name+'/a.png')]
+        prev = dict(root=str(folder), conf=.3, done=0, status='stopped', batch_id='old',
+                    model_contract=old, jobs_fingerprint=self.web._jobs_fingerprint(jobs))
+        with mock.patch.object(self.web, '_interrupted_task', return_value=prev), \
+             mock.patch.object(self.web.threading, 'Thread') as worker:
+            response = self.client.post('/api/detect/start', json={
+                'path': str(folder), 'conf': .3, 'resume': True})
+            self.assertEqual(response.status_code, 409)
+            worker.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='ImageContractTests', verbosity=2)

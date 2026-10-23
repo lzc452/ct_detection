@@ -44,11 +44,15 @@ class PrecisionTests(unittest.TestCase):
                 hyperparams=dict(imgsz=1920), roi=False, roi_k=0.0,
                 best_pt_sha256=hashlib.sha256(b'fake').hexdigest())), encoding='utf8')
             env = dict(CT_MODEL_DIR=str(model_dir), CT_RESULTS_DIR=str(base / "results"),
-                       CT_NO_BROWSER="1", CT_FP16=override)
+                       CT_NO_BROWSER="1")
+            if override is not None:
+                env['CT_FP16'] = override
             install_fake_ultralytics()
             FakeYOLO.calls.clear()
-            name = "precision_web_" + str(device) + "_" + override
+            name = "precision_web_" + str(device) + "_" + str(override)
             with mock.patch.dict(os.environ, env), mock.patch("device_utils.pick_device", return_value=device):
+                if override is None:
+                    os.environ.pop('CT_FP16', None)
                 spec = importlib.util.spec_from_file_location(name, ROOT / "web/app.py")
                 web = importlib.util.module_from_spec(spec)
                 sys.modules[name] = web
@@ -87,6 +91,12 @@ class PrecisionTests(unittest.TestCase):
 
     def test_explicit_fp32(self):
         self.run_route(0, "0", False)
+
+    def test_gpu_default_is_fp32_after_quality_regression(self):
+        self.run_route(0, None, False)
+
+    def test_unknown_override_does_not_enable_half(self):
+        self.run_route(0, 'unexpected', False)
 
 
 if __name__ == "__main__":

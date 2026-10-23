@@ -1,0 +1,48 @@
+{
+  "schema": "ct-stage5-followup/1",
+  "created": "2026-10-23 08:08:28+0800",
+  "base_plan": "D:\\CT Detection-yolo\\reports\\system_audit\\stage5_plan_v2.json",
+  "base_plan_sha256": "7fac605c95fccc794b864df3bf21f9a4b4212113a1d6cf9faa46d50ed7240be4",
+  "input_fingerprint": "af3e4f7b8a263af1168f5c8a428428842622a384fc64cf86a07f12b05d680f38",
+  "source_sha256": "3df1c46df11c24525feb0de1c12a6f4123efc497a521f2ccdbdf151e4780b7ab",
+  "baseline_sha256": {
+    "D:\\CT Detection-yolo\\reports\\system_audit\\stage5_fp32.json": "8dec454862e6eec2c3e8fe91a6317371368a69bc0d96a50250124bfe0377ffcb",
+    "D:\\CT Detection-yolo\\reports\\system_audit\\stage5_fp16.json": "11f32b8f36d4ddf9255e662cc3bceadb60fc8792fafdf096754ba7e8333705f2"
+  },
+  "color": {
+    "n": 676,
+    "half": false,
+    "batch": 1,
+    "contract": "cv2 BGR与同一数组交换通道的RGB；其它参数固定",
+    "decoder": "全676图同时比较PIL转BGR与cv2 BGR像素，若不同须披露解码混杂"
+  },
+  "path": {
+    "names": [
+      "9_0430",
+      "9_0859",
+      "9_0860",
+      "9_0861",
+      "9_0862",
+      "9_0863",
+      "9_0864",
+      "9_0869",
+      "9_0914",
+      "9_0915",
+      "9_0916",
+      "9_0917",
+      "9_0918",
+      "9_0919",
+      "9_0920",
+      "9_0929"
+    ],
+    "batch": 16,
+    "repeats": 6,
+    "worker": "web._detect_worker原函数",
+    "contract": "清单预建后从路径读图到处理完成，包含原读图/推理/台账/状态JSON；无检出分支",
+    "selection": "两精度两batch均无框的声明负例前16；条件性诊断，不代表全生产",
+    "precheck": "实际重新组成batch16后如出现框直接失败；sys.audit禁止shutil.copyfile原文件复制",
+    "excludes": "目录发现/问题图备份分支/外盘/并发队列/浏览器"
+  },
+  "decision": "报告颜色影响大小；不宣称修正颜色即改善泛化。路径仅给无检出分支，不据此宣称缺陷混合产线P95",
+  "closure": "算力，作为F-034补充，不改变其判据"
+}
