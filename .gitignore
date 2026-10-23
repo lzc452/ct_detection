@@ -81,3 +81,6 @@ runs/**/*.npy
 
 # ---------- 训练日志的临时文件（结束时归位为 <run>/train.log，Windows 上句柄未关会残留） ----------
 runs/detect/CT_pro/_*.train.log
+
+# 开源仓库参考代码（仅本地，不入库）
+/references/

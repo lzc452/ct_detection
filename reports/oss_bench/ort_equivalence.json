@@ -1,0 +1,16 @@
+{
+  "n_images": 60,
+  "n_pred_ort": 63,
+  "n_pred_torch": 63,
+  "matched_iou50": 63,
+  "agree_rate": 1.0,
+  "exact_iou99": 63,
+  "exact_rate_of_torch": 1.0,
+  "iou_median": 0.9998,
+  "latency_ms": {
+    "ort_cpu_p50": 99.7,
+    "torch_gpu_infer_p50": 9.6,
+    "torch_cpu_infer_p50": 176.1
+  },
+  "onnx_mb": 12.9
+}

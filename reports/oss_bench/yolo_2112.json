@@ -1,0 +1,66 @@
+{
+  "backend": "yolo",
+  "generated_at": "2026-10-23 11:47:21",
+  "weights": "runs/detect/CT_pro/V5_GROUPED_1021_80ep/weights/best.pt",
+  "split": "test",
+  "n_images": 676,
+  "workpoint": {
+    "conf": 0.25,
+    "match_iou": 0.5,
+    "nms_iou": 0.7,
+    "matching_version": "max-iou-v2"
+  },
+  "config": {
+    "imgsz": 2112,
+    "device": "0",
+    "batch": 16,
+    "slice": 960,
+    "slice_h": 960,
+    "slice_w": 960,
+    "overlap": 0.2,
+    "slice_batch": 8,
+    "onnx": "",
+    "ort_hw": [
+      1088,
+      1920
+    ],
+    "limit": 0
+  },
+  "latency_ms": {
+    "mean": 39.7,
+    "p50": 33.6,
+    "p90": 45.9
+  },
+  "wall_s": 28.7,
+  "elapsed_s": 28.8,
+  "per_class": {
+    "damage": {
+      "tp": 34,
+      "fp": 25,
+      "fn": 39,
+      "precision": 0.5763,
+      "recall": 0.4658
+    },
+    "dark": {
+      "tp": 199,
+      "fp": 44,
+      "fn": 35,
+      "precision": 0.8189,
+      "recall": 0.8504
+    },
+    "light": {
+      "tp": 125,
+      "fp": 14,
+      "fn": 10,
+      "precision": 0.8993,
+      "recall": 0.9259
+    }
+  },
+  "fp_per_1000img": 122.8,
+  "n_pred_total": 441,
+  "group_level": {
+    "n_defect_groups": 170,
+    "n_missed_groups": 42,
+    "miss_rate": 0.2471
+  }
+}

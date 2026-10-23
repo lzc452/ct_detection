@@ -1,0 +1,76 @@
+{
+  "weights": "runs/detect/CT_pro/V5_GROUPED_1021_80ep/weights/best.pt",
+  "split": "test",
+  "n_images": 20,
+  "full_image": {
+    "640": {
+      "scale": 0.301,
+      "boxes": 0,
+      "damage": 0,
+      "ms": 82.9
+    },
+    "960": {
+      "scale": 0.451,
+      "boxes": 0,
+      "damage": 0,
+      "ms": 6.9
+    },
+    "1280": {
+      "scale": 0.601,
+      "boxes": 6,
+      "damage": 6,
+      "ms": 8.8
+    },
+    "1600": {
+      "scale": 0.752,
+      "boxes": 12,
+      "damage": 12,
+      "ms": 12.1
+    },
+    "1920": {
+      "scale": 0.902,
+      "boxes": 20,
+      "damage": 20,
+      "ms": 14.8
+    },
+    "2112": {
+      "scale": 0.992,
+      "boxes": 17,
+      "damage": 17,
+      "ms": 17.6
+    },
+    "2560": {
+      "scale": 1.202,
+      "boxes": 6,
+      "damage": 6,
+      "ms": 24.2
+    }
+  },
+  "tile_960": {
+    "480": {
+      "scale": 0.5,
+      "boxes": 0,
+      "damage": 0
+    },
+    "720": {
+      "scale": 0.75,
+      "boxes": 4,
+      "damage": 4
+    },
+    "960": {
+      "scale": 1.0,
+      "boxes": 3,
+      "damage": 3
+    },
+    "1280": {
+      "scale": 1.333,
+      "boxes": 4,
+      "damage": 4
+    },
+    "1920": {
+      "scale": 2.0,
+      "boxes": 9,
+      "damage": 9
+    }
+  }
+}

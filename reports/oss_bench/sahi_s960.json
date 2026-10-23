@@ -1,0 +1,70 @@
+{
+  "backend": "sahi",
+  "generated_at": "2026-10-23 11:37:22",
+  "weights": "runs/detect/CT_pro/V5_GROUPED_1021_80ep/weights/best.pt",
+  "split": "test",
+  "n_images": 676,
+  "workpoint": {
+    "conf": 0.25,
+    "match_iou": 0.5,
+    "nms_iou": 0.7,
+    "matching_version": "max-iou-v2"
+  },
+  "config": {
+    "imgsz": 1920,
+    "device": "0",
+    "batch": 16,
+    "slice": 960,
+    "overlap": 0.2,
+    "slice_batch": 8,
+    "onnx": "",
+    "ort_hw": [
+      1088,
+      1920
+    ],
+    "limit": 0
+  },
+  "latency_ms": {
+    "mean": 186.4,
+    "p50": 200.0,
+    "p90": 204.8
+  },
+  "wall_s": 131.9,
+  "elapsed_s": 132.0,
+  "per_class": {
+    "damage": {
+      "tp": 12,
+      "fp": 228,
+      "fn": 61,
+      "precision": 0.05,
+      "recall": 0.1644
+    },
+    "dark": {
+      "tp": 44,
+      "fp": 164,
+      "fn": 190,
+      "precision": 0.2115,
+      "recall": 0.188
+    },
+    "light": {
+      "tp": 50,
+      "fp": 115,
+      "fn": 85,
+      "precision": 0.303,
+      "recall": 0.3704
+    }
+  },
+  "fp_per_1000img": 750.0,
+  "n_pred_total": 613,
+  "group_level": {
+    "n_defect_groups": 170,
+    "n_missed_groups": 134,
+    "miss_rate": 0.7882
+  },
+  "delta_vs_yolo": {
+    "fp_per_1000img": 661.2,
+    "group_miss_pt": 52.35,
+    "damage_recall_pt": -39.72,
+    "latency_p50_ratio": 6.51
+  }
+}

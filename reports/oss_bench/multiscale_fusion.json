@@ -1,0 +1,80 @@
+{
+  "nms": {
+    "per_class": {
+      "damage": {
+        "tp": 33,
+        "fp": 15,
+        "fn": 40,
+        "recall": 0.4521
+      },
+      "dark": {
+        "tp": 197,
+        "fp": 20,
+        "fn": 37,
+        "recall": 0.8419
+      },
+      "light": {
+        "tp": 119,
+        "fp": 8,
+        "fn": 16,
+        "recall": 0.8815
+      }
+    },
+    "fp_per_1000img": 63.6,
+    "group_miss": 0.2765,
+    "n_missed": 47,
+    "n_groups": 170
+  },
+  "wbf": {
+    "per_class": {
+      "damage": {
+        "tp": 34,
+        "fp": 18,
+        "fn": 39,
+        "recall": 0.4658
+      },
+      "dark": {
+        "tp": 196,
+        "fp": 29,
+        "fn": 38,
+        "recall": 0.8376
+      },
+      "light": {
+        "tp": 119,
+        "fp": 10,
+        "fn": 16,
+        "recall": 0.8815
+      }
+    },
+    "fp_per_1000img": 84.3,
+    "group_miss": 0.2824,
+    "n_missed": 48,
+    "n_groups": 170
+  },
+  "single_1920": {
+    "per_class": {
+      "damage": {
+        "tp": 32,
+        "fp": 11,
+        "fn": 41,
+        "recall": 0.4384
+      },
+      "dark": {
+        "tp": 194,
+        "fp": 16,
+        "fn": 40,
+        "recall": 0.8291
+      },
+      "light": {
+        "tp": 111,
+        "fp": 6,
+        "fn": 24,
+        "recall": 0.8222
+      }
+    },
+    "fp_per_1000img": 48.8,
+    "group_miss": 0.3471,
+    "n_missed": 59,
+    "n_groups": 170
+  }
+}
