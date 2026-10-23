@@ -3,7 +3,7 @@
 - 日期：2026-10-23
 - 分支：`feat/oss-reuse-validation`
 - 代码：`references/`（浅克隆，已 gitignore）· `scripts/oss_bench.py`（A/B 主脚手架）· `oss_scale_probe.py`（尺度探针）· `oss_ort_check.py`（运行时等价性）· `oss_map_crosscheck.py`（mAP 对拍）· `oss_fuse.py`（多尺度融合）
-- `references/` 落地情况：sahi 30 MB / supervision 51 MB / torchmetrics 7.4 MB / cleanvision 5.4 MB 均已完整检出；**onnxruntime 未检出工作树**（浅克隆中断，仅剩 `.git` 45 MB，后续 raw 文件下载也被网络中断），其复用面为 Python API，源路径见 §5.2，实验不受影响（pip 装的 1.23.2 即为同一实现）
+- `references/` 落地情况：sahi 30 MB / supervision 51 MB / torchmetrics 7.4 MB / cleanvision 5.4 MB 均已完整检出；onnxruntime 因整库 zip 过大（>1 GB）中断，改为**稀疏部分克隆**补全——`references/onnxruntime_src/`（`--depth 1 --filter=blob:none --sparse`，仅 `onnxruntime/python`，13 MB / 276 个 `.py`，含 `onnxruntime_inference_collection.py` 与 `tools/quantization/quantize.py`）。旧的 `references/onnxruntime/` 是失败残留（仅 `.git`，无工作树），Windows 句柄占用暂无法删除，重启后可手动清理；实验本身不受影响（pip 装的 1.23.2 即为同一实现）
 - 隔离环境：`references/.venv`（`--system-site-packages` 继承 runtime 的 torch 2.8.0+cu128 / numpy 1.26.1）。**`runtime/` 未被修改**
 - 权重：`runs/detect/CT_pro/V5_GROUPED_1021_80ep/weights/best.pt`（V5 全图@1920）
 - 考卷：`reports/splits/v5_split_manifest.csv` → `test`（676 张 / 442 框 / 73 损伤框 / 170 缺陷组）
