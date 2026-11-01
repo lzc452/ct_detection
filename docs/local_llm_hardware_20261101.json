@@ -1,0 +1,102 @@
+{
+  "scanned_at": "2026-11-01T22:51:26+08:00",
+  "cpu": [
+    {
+      "MaxClockSpeed": "2100",
+      "Name": "Intel(R) Core(TM) i7-14700F",
+      "NumberOfCores": "20",
+      "NumberOfLogicalProcessors": "28"
+    }
+  ],
+  "memory": [
+    {
+      "Capacity": "34359738368",
+      "ConfiguredClockSpeed": "2400",
+      "Manufacturer": "Kingston",
+      "PartNumber": "KF3600C18D4/32GX",
+      "Speed": "2400"
+    },
+    {
+      "Capacity": "34359738368",
+      "ConfiguredClockSpeed": "2400",
+      "Manufacturer": "Kingston",
+      "PartNumber": "KF3600C18D4/32GX",
+      "Speed": "2400"
+    }
+  ],
+  "os": [
+    {
+      "BuildNumber": "19045",
+      "Caption": "Microsoft Windows 10 专业版",
+      "FreePhysicalMemory": "43608068",
+      "OSArchitecture": "64 位",
+      "TotalVisibleMemorySize": "66938920",
+      "Version": "10.0.19045"
+    }
+  ],
+  "board": [
+    {
+      "Manufacturer": "Gigabyte Technology Co., Ltd.",
+      "Product": "B760M D2H DDR4"
+    }
+  ],
+  "disks": [
+    {
+      "Index": "0",
+      "InterfaceType": "SCSI",
+      "Model": "KINGSTON SNV3S2000G",
+      "Size": "2000396321280"
+    }
+  ],
+  "physical_disks": [
+    {
+      "BusType": "17",
+      "FriendlyName": "KINGSTON SNV3S2000G",
+      "HealthStatus": "0",
+      "MediaType": "4",
+      "Size": "2000398934016"
+    }
+  ],
+  "volumes": [
+    {
+      "DeviceID": "C:",
+      "DriveType": "3",
+      "FileSystem": "NTFS",
+      "FreeSpace": "155383726080",
+      "Size": "322124640256"
+    },
+    {
+      "DeviceID": "D:",
+      "DriveType": "3",
+      "FileSystem": "NTFS",
+      "FreeSpace": "176220573696",
+      "Size": "839668199424"
+    },
+    {
+      "DeviceID": "E:",
+      "DriveType": "3",
+      "FileSystem": "NTFS",
+      "FreeSpace": "630602706944",
+      "Size": "838272618496"
+    }
+  ],
+  "tools_on_path": {
+    "strata": null,
+    "llama-server": null,
+    "ollama": null,
+    "nvcc": null,
+    "wsl": "C:\\Windows\\system32\\wsl.EXE",
+    "docker": null
+  },
+  "python_version": "3.10.11",
+  "nvidia_gpus": [
+    {
+      "name": "NVIDIA GeForce RTX 5060",
+      "total_mib": 8151,
+      "used_mib": 7550,
+      "free_mib": 347,
+      "driver": "616.56"
+    }
+  ],
+  "errors": []
+}
