@@ -19,12 +19,6 @@ datasets/
 harvest_*.csv
 battlefield_*.csv
 
-# ---------- 模型权重（*.pt 一律不入库） ----------
-*.pt
-*.onnx
-*.engine
-*.tflite
-
 
 # ---------- 便携 Python 运行环境（~8 GB，严禁入库） ----------
 runtime/
