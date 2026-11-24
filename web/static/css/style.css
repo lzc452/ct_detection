@@ -1749,6 +1749,10 @@ select.input-elegant {
 .group-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:#3D3833;cursor:pointer;}
 .group-item .g-name{flex:1;}
 .group-item .g-count{color:#8A8580;font-size:12px;}
+.group-item .g-idx{width:34px;text-align:right;color:#B4ACA0;font-size:11px;flex-shrink:0;user-select:none;}
+.group-range{color:#8A8580;font-size:12px;}
+.group-range input{width:110px;margin:0 4px;padding:2px 6px;font-size:12px;border:1px solid #DDD5C8;border-radius:5px;background:#FFFEFC;color:#3D3833;}
+.group-range input:focus{outline:none;border-color:#C9A96A;}
 .btn-start-detect{width:100%;justify-content:center;}
 
 /* ── 后台检测浮动进度 ── */

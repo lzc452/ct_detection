@@ -137,6 +137,10 @@
         groupList: document.getElementById('groupList'),
         groupSelectAll: document.getElementById('groupSelectAll'),
         groupSelectNone: document.getElementById('groupSelectNone'),
+        groupSelectInvert: document.getElementById('groupSelectInvert'),
+        groupRangeInput: document.getElementById('groupRangeInput'),
+        groupRangeApply: document.getElementById('groupRangeApply'),
+        groupRangeClear: document.getElementById('groupRangeClear'),
         btnStartDetect: document.getElementById('btnStartDetect'),
         detectFloat: document.getElementById('detectFloat'),
         detectFloatFile: document.getElementById('detectFloatFile'),
@@ -862,12 +866,12 @@
         els.groupPanel.style.display = 'block';
         els.groupList.innerHTML = '';
         if (data.mode === 'groups') {
-            els.groupSummary.textContent = `识别到 ${data.groups.length} 个分组，共 ${data.total} 张（打勾选择要检测的组）`;
+            els.groupSummary.textContent = `识别到 ${data.groups.length} 个分组，共 ${data.total} 张（已按名称排序，支持 Shift 连选 / 序号范围勾选）`;
             els.groupOps.style.display = 'inline';
-            data.groups.forEach(g => {
+            data.groups.forEach((g, i) => {
                 const row = document.createElement('label');
                 row.className = 'group-item';
-                row.innerHTML = `<input type="checkbox" class="group-check" value="${escapeHtml(g.name)}" checked>
+                row.innerHTML = `<span class="g-idx">${i + 1}</span><input type="checkbox" class="group-check" value="${escapeHtml(g.name)}" checked data-idx="${i}">
                                  <span class="g-name">${escapeHtml(g.name)}</span>
                                  <span class="g-count">${g.count} 张</span>`;
                 els.groupList.appendChild(row);
@@ -885,6 +889,51 @@
     els.groupSelectNone.addEventListener('click', (e) => {
         e.preventDefault();
         els.groupList.querySelectorAll('.group-check').forEach(c => c.checked = false);
+    });
+    els.groupSelectInvert.addEventListener('click', (e) => {
+        e.preventDefault();
+        els.groupList.querySelectorAll('.group-check').forEach(c => c.checked = !c.checked);
+    });
+    // 范围快速勾选：按排序后的序号，支持 "1-50,80,90-100"
+    function parseRangeExpr(expr, maxN) {
+        const out = new Set();
+        expr.split(/[,，、\s]+/).filter(Boolean).forEach(tok => {
+            const m = tok.match(/^(\d+)\s*[-~—]\s*(\d+)$/);
+            if (m) {
+                let a = +m[1], b = +m[2];
+                if (a > b) [a, b] = [b, a];
+                for (let i = Math.max(1, a); i <= Math.min(maxN, b); i++) out.add(i - 1);
+            } else if (/^\d+$/.test(tok)) {
+                const n = +tok;
+                if (n >= 1 && n <= maxN) out.add(n - 1);
+            }
+        });
+        return out;
+    }
+    function applyRange(checkedVal) {
+        const n = els.groupList.querySelectorAll('.group-check').length;
+        const set = parseRangeExpr(els.groupRangeInput.value.trim(), n);
+        if (set.size === 0) { showToast('info', '提示', '范围为空或格式不对，示例：1-50,80'); return; }
+        els.groupList.querySelectorAll('.group-check').forEach(c => {
+            if (set.has(+c.dataset.idx)) c.checked = checkedVal;
+        });
+    }
+    els.groupRangeApply.addEventListener('click', (e) => { e.preventDefault(); applyRange(true); });
+    els.groupRangeClear.addEventListener('click', (e) => { e.preventDefault(); applyRange(false); });
+    els.groupRangeInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyRange(true); } });
+    // Shift+点击：连选/连取消一段
+    let lastGroupClickIdx = null;
+    els.groupList.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('group-check')) return;
+        const idx = +e.target.dataset.idx;
+        if (e.shiftKey && lastGroupClickIdx !== null && lastGroupClickIdx !== idx) {
+            const [a, b] = [Math.min(lastGroupClickIdx, idx), Math.max(lastGroupClickIdx, idx)];
+            els.groupList.querySelectorAll('.group-check').forEach(c => {
+                const i = +c.dataset.idx;
+                if (i >= a && i <= b) c.checked = e.target.checked;
+            });
+        }
+        lastGroupClickIdx = idx;
     });
 
     els.btnStartDetect.addEventListener('click', async () => {

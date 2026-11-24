@@ -355,7 +355,10 @@
             <div class="group-panel" id="groupPanel" style="display:none;">
                 <div class="group-panel-head">
                     <span id="groupSummary"></span>
-                    <span class="group-ops" id="groupOps" style="display:none;"><a id="groupSelectAll">全选</a> · <a id="groupSelectNone">全不选</a></span>
+                    <span class="group-ops" id="groupOps" style="display:none;">
+                        <a id="groupSelectAll">全选</a> · <a id="groupSelectNone">全不选</a> · <a id="groupSelectInvert">反选</a>
+                        <span class="group-range">｜范围 <input type="text" id="groupRangeInput" placeholder="如 1-50,80"><a id="groupRangeApply">勾选</a><a id="groupRangeClear">取消</a></span>
+                    </span>
                 </div>
                 <div class="group-list scroll-elegant" id="groupList"></div>
             </div>

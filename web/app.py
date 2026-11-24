@@ -10,6 +10,7 @@ CT 缺陷检测 — Web 后端（文件上传 + 后端 batch 优化版）
 6. 移除 uploads 目录，所有文件只保存在 results/。
 """
 import os
+import re
 # 修复：部分 Windows 环境缺少 PROCESSOR_ARCHITECTURE 变量，
 # 会导致 ultralytics 依赖的 py-cpuinfo 直接崩溃（误认为非 x86 CPU）
 os.environ.setdefault('PROCESSOR_ARCHITECTURE', 'AMD64')
@@ -1081,6 +1082,11 @@ def _list_images(d):
         return []
 
 
+def _natural_key(s):
+    """自然排序键：数字按数值比（1-10, 2-10, 10-10 而不是 1-10, 10-10, 2-10）"""
+    return [int(t) if t.isdigit() else t.lower() for t in re.split(r'(\d+)', s)]
+
+
 def scan_structure(root):
     """分析目录结构，返回 (mode, groups)；group = {name, dir, count}
     flat:   root 下直接是图        → 隐式单组
@@ -1094,7 +1100,7 @@ def scan_structure(root):
     if os.path.isdir(front) and _list_images(front):
         return 'view', [{'name': '', 'dir': front, 'count': len(_list_images(front))}]
     groups = []
-    for sub in sorted(os.listdir(root)):
+    for sub in sorted(os.listdir(root), key=_natural_key):
         sd = os.path.join(root, sub)
         if not os.path.isdir(sd):
             continue
@@ -1105,7 +1111,7 @@ def scan_structure(root):
         elif direct_sub:
             groups.append({'name': sub, 'dir': sd, 'count': len(direct_sub)})
         else:  # 再深一层（如选了 图片合集：图片合集/A/1-10/正面）
-            for sub2 in sorted(os.listdir(sd)):
+            for sub2 in sorted(os.listdir(sd), key=_natural_key):
                 sd2 = os.path.join(sd, sub2)
                 if not os.path.isdir(sd2):
                     continue
