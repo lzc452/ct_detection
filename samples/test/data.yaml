@@ -1,0 +1,10 @@
+# 统一考卷清洗版：剔除噪声图，标签以当前母本为准
+path: D:\CT Detection\datasets\考卷_清洗版
+train: images
+val: images
+
+nc: 3
+names:
+  0: damage
+  1: dark
+  2: light

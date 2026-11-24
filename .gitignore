@@ -38,7 +38,7 @@ web/results/
 web/uploads/
 
 # ---------- 汇报材料中的图片/媒体（保留 md 文档，排除媒体） ----------
-ppt汇报/media/
+ppt汇报/
 ppt汇报/pages/
 ppt汇报/screenshots/
 ppt汇报_screenshot/
